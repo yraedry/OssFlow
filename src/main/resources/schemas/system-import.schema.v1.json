@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["systems"],
+  "properties": {
+    "systems": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "flowDefinition"],
+        "properties": {
+          "name":           { "type": "string", "maxLength": 120 },
+          "description":    { "type": "string" },
+          "flowDefinition": { "type": "string" },
+          "visibility":     { "enum": ["PRIVATE", "PUBLIC"], "default": "PRIVATE" }
+        }
+      }
+    }
+  }
+}

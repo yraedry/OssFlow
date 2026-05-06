@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["positions", "techniques"],
+  "properties": {
+    "positions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "type"],
+        "properties": {
+          "name":        { "type": "string", "maxLength": 120 },
+          "type":        { "enum": ["TOP", "BOTTOM", "STANDING", "GROUND_NEUTRAL", "SUBMITTED"] },
+          "description": { "type": "string" },
+          "visibility":  { "enum": ["PRIVATE", "PUBLIC"], "default": "PRIVATE" }
+        }
+      }
+    },
+    "techniques": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "category", "minimumBelt", "modality", "startPositionName"],
+        "properties": {
+          "name":              { "type": "string", "maxLength": 120 },
+          "category":         { "enum": ["SUBMISSION", "SWEEP", "PASS", "TAKEDOWN", "ESCAPE", "TRANSITION"] },
+          "description":      { "type": "string" },
+          "youtubeUrl":       { "type": "string" },
+          "minimumBelt":      { "enum": ["WHITE", "BLUE", "PURPLE", "BROWN", "BLACK"] },
+          "modality":         { "enum": ["GI", "NOGI", "BOTH"] },
+          "startPositionName":{ "type": "string" },
+          "endPositionName":  { "type": "string" },
+          "visibility":       { "enum": ["PRIVATE", "PUBLIC"], "default": "PRIVATE" }
+        }
+      }
+    }
+  }
+}
