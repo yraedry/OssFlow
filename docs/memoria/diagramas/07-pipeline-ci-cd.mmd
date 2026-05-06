@@ -1,0 +1,40 @@
+flowchart LR
+    Dev[Desarrollador]
+    PR[Pull Request a main]
+    Push[Push a main]
+    Tag[Tag v X Y Z]
+
+    subgraph CI["W1 - Workflow CI"]
+        Compile[mvn compile o npm ci]
+        Tests[mvn test o vitest]
+        Lint[Checkstyle o ESLint]
+        Coverage[JaCoCo umbral 75 porciento]
+        GodFiles[Top 10 archivos largos]
+    end
+
+    subgraph Release["W2 - Workflow Release"]
+        Build[Docker build multistage]
+        Push2[Push a ghcr.io]
+        Tags[Tags semver - latest]
+        OpenAPI[Publicar openapi.json en GitHub Release]
+    end
+
+    Sync[repository_dispatch<br/>backend dispara regen tipos en frontend]
+
+    Dev --> PR
+    Dev --> Push
+    Dev --> Tag
+
+    PR --> CI
+    Push --> CI
+
+    Tag --> Release
+    Release --> Sync
+
+    CI -->|verde| MergeOk[Merge permitido]
+    CI -->|rojo| Block[Bloquea merge]
+
+    classDef ok fill:#16a34a,stroke:#15803d,color:#f0fdf4
+    classDef bad fill:#dc2626,stroke:#b91c1c,color:#fef2f2
+    class MergeOk ok
+    class Block bad

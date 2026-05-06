@@ -72,3 +72,12 @@ docs/templates/Cómo_referenciar_con_APA*.pdf
 ### Memoria generada (output Word/PDF) ###
 docs/memoria/memoria.docx
 docs/memoria/memoria.pdf
+
+### Mermaid CLI artefactos transitorios ###
+docs/memoria/diagramas/.puppeteer.json
+docs/memoria/diagramas/placeholder.svg
+
+### Plantillas de logos para reemplazar manualmente ###
+docs/memoria/diagramas/placeholder.png
+docs/memoria/diagramas/placeholder-logo.png
+docs/memoria/diagramas/placeholder-tech-*.png
