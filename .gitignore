@@ -55,3 +55,20 @@ build/
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+
+### macOS ###
+.DS_Store
+**/.DS_Store
+
+### Claude Code / Agentes ###
+.agents/
+.claude/
+skills-lock.json
+
+### Plantillas de memoria del profesor (referencia local, no se sube) ###
+docs/templates/Ejemplo_Memoria_TFG*.docx
+docs/templates/Cómo_referenciar_con_APA*.pdf
+
+### Memoria generada (output Word/PDF) ###
+docs/memoria/memoria.docx
+docs/memoria/memoria.pdf
