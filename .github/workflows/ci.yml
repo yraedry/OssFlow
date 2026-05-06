@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+
+      - name: Build + test + jacoco + checkstyle
+        run: mvn -B verify
+
+      - name: Upload jacoco report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: target/site/jacoco/
+
+      - name: Top-10 archivos más largos (god file watch)
+        run: |
+          echo "## Top 10 archivos más largos" >> $GITHUB_STEP_SUMMARY
+          find src/main/java -name '*.java' | xargs wc -l | sort -rn | head -10 >> $GITHUB_STEP_SUMMARY
