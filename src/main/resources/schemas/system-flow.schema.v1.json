@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["nodes", "edges"],
+  "additionalProperties": false,
+  "properties": {
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "kind", "refId"],
+        "additionalProperties": false,
+        "properties": {
+          "id":    { "type": "string", "minLength": 1 },
+          "kind":  { "enum": ["POSITION", "TECHNIQUE"] },
+          "refId": { "type": "integer", "minimum": 1 },
+          "label": { "type": "string" },
+          "x":     { "type": "number" },
+          "y":     { "type": "number" }
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["from", "to", "trigger"],
+        "additionalProperties": false,
+        "properties": {
+          "from":      { "type": "string" },
+          "to":        { "type": "string" },
+          "trigger":   { "enum": ["ATTACK", "DEFENSE", "PASS", "ESCAPE", "TRANSITION"] },
+          "condition": { "type": "string" }
+        }
+      }
+    }
+  }
+}
