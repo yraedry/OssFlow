@@ -1,0 +1,141 @@
+erDiagram
+    POSITION ||--o{ TECHNIQUE : "start_position_id"
+    POSITION ||--o{ TECHNIQUE : "end_position_id (nullable)"
+    POSITION ||--o{ SYSTEM : "anchor_position_id"
+
+    TECHNIQUE ||--o{ TRAINING_SESSION_TECHNIQUE : "técnica trabajada"
+    TECHNIQUE ||--o{ COMPETITION_MATCH : "submission_technique_id (nullable)"
+    TECHNIQUE ||--o{ RULESET_TECHNIQUE : "legalidad"
+
+    FEDERATION ||--o{ RULESET : ""
+    FEDERATION ||--o{ USER_PROFILE_FEDERATION : ""
+    RULESET ||--o{ RULESET_TECHNIQUE : ""
+
+    USER_PROFILE ||--o{ USER_PROFILE_FEDERATION : ""
+
+    NOTE ||--o{ NOTE_TAG : ""
+    TAG ||--o{ NOTE_TAG : "global, sin owner"
+
+    TRAINING_SESSION ||--o{ TRAINING_SESSION_TECHNIQUE : ""
+    COMPETITION_LOG ||--o{ COMPETITION_MATCH : ""
+
+    STUDY_PLAN ||--o{ STUDY_BLOCK : ""
+    STUDY_BLOCK ||--o{ STUDY_ITEM : ""
+
+    POSITION {
+        bigint id PK
+        varchar name
+        varchar type "TOP/BOTTOM/STANDING/GROUND_NEUTRAL/SUBMITTED"
+        text description
+        varchar visibility "PRIVATE/PUBLIC"
+        bigint owner_id
+        timestamp deleted_at
+        timestamp purge_at
+    }
+    TECHNIQUE {
+        bigint id PK
+        varchar name
+        varchar category
+        varchar minimum_belt
+        varchar modality
+        bigint start_position_id FK
+        bigint end_position_id FK
+    }
+    SYSTEM {
+        bigint id PK
+        varchar name
+        bigint anchor_position_id FK
+        text flow_definition "JSON validado por schema"
+    }
+    FEDERATION {
+        bigint id PK
+        varchar code "IBJJF/ADCC/AJP/NAGA/UAEJJF/FEJJB/AEJJ/SBJJ/CBJJE/GI"
+        varchar name
+    }
+    RULESET {
+        bigint id PK
+        bigint federation_id FK
+        varchar belt
+        varchar modality
+        date effective_from
+    }
+    RULESET_TECHNIQUE {
+        bigint ruleset_id FK
+        bigint technique_id FK
+        varchar status "ALLOWED/PROHIBITED/CONDITIONAL"
+    }
+    USER_PROFILE {
+        bigint id PK
+        bigint owner_id UK
+        varchar current_belt
+        date belt_since
+        varchar academy
+        boolean onboarding_completed
+    }
+    USER_PROFILE_FEDERATION {
+        bigint user_profile_id FK
+        bigint federation_id FK
+        boolean is_primary
+    }
+    NOTE {
+        bigint id PK
+        varchar title
+        text body_markdown
+        varchar target_type "POSITION/TECHNIQUE/SYSTEM/NONE"
+        bigint target_id
+    }
+    TAG {
+        bigint id PK
+        varchar name UK "global"
+    }
+    NOTE_TAG {
+        bigint note_id FK
+        bigint tag_id FK
+    }
+    TRAINING_SESSION {
+        bigint id PK
+        date session_date
+        int duration_minutes
+        varchar intensity
+        text notes_markdown
+    }
+    TRAINING_SESSION_TECHNIQUE {
+        bigint training_session_id FK
+        bigint technique_id FK
+        int rep_count
+    }
+    COMPETITION_LOG {
+        bigint id PK
+        varchar event_name
+        date event_date
+        varchar result
+    }
+    COMPETITION_MATCH {
+        bigint id PK
+        bigint competition_log_id FK
+        int match_order
+        varchar opponent_name
+        varchar outcome
+        varchar method
+        bigint submission_technique_id FK
+    }
+    STUDY_PLAN {
+        bigint id PK
+        varchar title
+        date start_date
+        date end_date
+        varchar status
+    }
+    STUDY_BLOCK {
+        bigint id PK
+        bigint study_plan_id FK
+        varchar title
+        text focus_entities "JSON polimórfico"
+    }
+    STUDY_ITEM {
+        bigint id PK
+        bigint study_block_id FK
+        varchar description
+        varchar status "TODO/DOING/DONE/SKIPPED"
+        boolean ai_generated
+    }
