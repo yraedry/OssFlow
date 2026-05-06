@@ -1,0 +1,10 @@
+target/
+.git/
+.idea/
+.vscode/
+*.iml
+docs/
+.DS_Store
+.agents/
+.claude/
+README.md
