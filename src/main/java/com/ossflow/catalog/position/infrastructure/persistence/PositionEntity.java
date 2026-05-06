@@ -5,7 +5,6 @@ import com.ossflow.catalog.position.domain.Visibility;
 import com.ossflow.shared.persistence.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 @Getter
@@ -15,7 +14,6 @@ import org.hibernate.annotations.SQLRestriction;
 @Builder
 @Entity
 @Table(name = "position")
-@SQLDelete(sql = "UPDATE position SET deleted_at = CURRENT_TIMESTAMP, purge_at = datetime('now', '+30 days') WHERE id = ? AND version = ?")
 @SQLRestriction("deleted_at IS NULL")
 public class PositionEntity extends BaseEntity {
 
