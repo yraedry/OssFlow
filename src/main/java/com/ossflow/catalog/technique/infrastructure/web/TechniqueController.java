@@ -1,5 +1,9 @@
 package com.ossflow.catalog.technique.infrastructure.web;
 
+import com.ossflow.catalog.ruleset.application.RulesetService;
+import com.ossflow.catalog.ruleset.domain.RulesetTechnique;
+import com.ossflow.catalog.ruleset.infrastructure.web.RulesetWebMapper;
+import com.ossflow.catalog.ruleset.infrastructure.web.dto.RulesetTechniqueResponse;
 import com.ossflow.catalog.technique.application.TechniqueService;
 import com.ossflow.catalog.technique.domain.Belt;
 import com.ossflow.catalog.technique.domain.Modality;
@@ -20,6 +24,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/catalog/techniques")
@@ -30,6 +35,8 @@ public class TechniqueController {
     private final TechniqueService service;
     private final TechniqueWebMapper mapper;
     private final CurrentOwner currentOwner;
+    private final RulesetService rulesetService;
+    private final RulesetWebMapper rulesetMapper;
 
     @GetMapping
     public Page<TechniqueResponse> list(
@@ -90,6 +97,12 @@ public class TechniqueController {
     @PostMapping("/{id}/restore")
     public TechniqueResponse restore(@PathVariable @Positive Long id) {
         return mapper.toResponse(service.restore(id, currentOwner.id()));
+    }
+
+    @GetMapping("/{id}/legality")
+    public List<RulesetTechniqueResponse> legality(@PathVariable @Positive Long id) {
+        return rulesetService.getLegalityForTechnique(id).stream()
+                .map(rulesetMapper::toResponse).toList();
     }
 
     private static Sort parseSort(String s) {
