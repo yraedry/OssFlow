@@ -22,7 +22,7 @@ OssFlow es una aplicación web monousuario (con modelo de datos preparado para f
 - Avisos de **legalidad técnica** según federación y cinturón (warning, no bloqueo).
 - **Importación y exportación** masiva en JSON con validación por schema.
 
-El stack es Spring Boot 3 (Java 21) + SQLite + React/Vite + Cloudflare Tunnel sobre Proxmox para la futura puesta en producción.
+El stack es Spring Boot 4 (Java 25) + SQLite + React/Vite + Cloudflare Tunnel sobre Proxmox para la futura puesta en producción.
 
 ---
 
@@ -45,8 +45,8 @@ El stack es Spring Boot 3 (Java 21) + SQLite + React/Vite + Cloudflare Tunnel so
                          │ HTTP red interna
                          ▼
               ┌───────────────────────┐
-              │  Spring Boot 3.x      │  contenedor Docker
-              │  Java 21              │
+              │  Spring Boot 4.x      │  contenedor Docker
+              │  Java 25              │
               │  · API REST /api/v1   │
               │  · Actuator /actuator │
               │  · Flyway en arranque │
@@ -1054,7 +1054,7 @@ VITE_API_BASE_URL=/api/v1
 ```
 github.com/<user>/
 ├─ OssFlow                    backend
-│   ├─ Dockerfile             distroless Java 21
+│   ├─ Dockerfile             multi-stage, runtime eclipse-temurin:25-jre-noble
 │   └─ .github/workflows/ci.yml, release.yml
 ├─ OssFlow-frontend           frontend
 │   ├─ Dockerfile             multi-stage Node → Nginx
@@ -1073,7 +1073,7 @@ github.com/<user>/
 
 ```dockerfile
 # Stage 1: build
-FROM maven:3.9-eclipse-temurin-21 AS builder
+FROM maven:3.9-eclipse-temurin-25 AS builder
 WORKDIR /build
 COPY pom.xml .
 RUN mvn dependency:go-offline -B
@@ -1081,19 +1081,20 @@ COPY src ./src
 RUN mvn clean package -DskipTests -B
 RUN java -Djarmode=layertools -jar target/*.jar extract --destination target/extracted
 
-# Stage 2: distroless runtime
-FROM gcr.io/distroless/java21-debian12:nonroot
+# Stage 2: runtime (Eclipse Temurin oficial)
+FROM eclipse-temurin:25-jre-noble
+RUN groupadd --system spring && useradd --system --gid spring --shell /bin/false spring
 WORKDIR /app
-COPY --from=builder /build/target/extracted/dependencies/ ./
-COPY --from=builder /build/target/extracted/spring-boot-loader/ ./
-COPY --from=builder /build/target/extracted/snapshot-dependencies/ ./
-COPY --from=builder /build/target/extracted/application/ ./
+COPY --from=builder --chown=spring:spring /build/target/extracted/dependencies/ ./
+COPY --from=builder --chown=spring:spring /build/target/extracted/spring-boot-loader/ ./
+COPY --from=builder --chown=spring:spring /build/target/extracted/snapshot-dependencies/ ./
+COPY --from=builder --chown=spring:spring /build/target/extracted/application/ ./
 EXPOSE 8080
-USER nonroot
+USER spring
 ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]
 ```
 
-Distroless: imagen mínima, sin shell, ~150MB. Layered jar para cache. Usuario no-root.
+Imagen base: `eclipse-temurin:25-jre-noble` (Eclipse Adoptium, oficial). Tamaño ~250MB. Se descartó distroless (`gcr.io/distroless/java25-debian12`) porque a fecha del proyecto Google aún no publica imágenes distroless para Java 25 (LTS de septiembre de 2025); el retraso histórico de distroless tras cada nueva LTS lo hace inviable. La diferencia de superficie de ataque (~100MB extra) es asumible para un despliegue monousuario tras Cloudflare Tunnel. Usuario `spring` no-root creado explícitamente. Layered jar para cache. Cuando Google publique la imagen distroless de Java 25, la migración será cambiar la línea `FROM` (un commit trivial).
 
 ### 7.3 Frontend Dockerfile y nginx.conf
 
@@ -1237,7 +1238,7 @@ Reescritura **incremental sobre el repo existente**. Cada fase = un PR mergeable
 
 | # | Fase | Estimación | Riesgo |
 |---|---|---|---|
-| 0 | Bootstrap & limpieza (Java 21, alinear pom, drop graphql/postgres, seed sqlite-jdbc) | 0.5d | Bajo |
+| 0 | Bootstrap & limpieza (Java 25, alinear pom, drop graphql/postgres, seed sqlite-jdbc) | 0.5d | Bajo |
 | 1 | Estructura por contextos (catalog/{position,technique}, eliminar puertos in) | 1d | Medio |
 | 2 | Excepciones, validación, traceId (GlobalExceptionHandler, RequestTracingFilter, Bean Validation) | 1d | Bajo |
 | 3 | DTOs y CRUD completo del catálogo (response DTOs, GET/{id}, PUT, PATCH, DELETE, restore) | 1.5d | Bajo |

@@ -58,13 +58,13 @@ A todos los compañeros de tatami que han aportado, sin saberlo, el conocimiento
 
 OssFlow es una aplicación web concebida como **segundo cerebro técnico** para practicantes de Brazilian Jiu-Jitsu. El sistema modela el conocimiento del deporte como un **grafo relacional** de posiciones (nodos) y técnicas (transiciones), permitiendo además construir **sistemas** que representan árboles de decisión técnico-tácticos completos. Sobre ese catálogo objetivo, el usuario superpone su capa subjetiva: notas tipo Obsidian, un registro detallado de sesiones de entrenamiento, log de competiciones combate a combate, y un plan de estudio jerárquico a meses vista. Una capa de identidad asocia al usuario su cinturón actual y federaciones preferidas (IBJJF, ADCC, AJP, NAGA, UAEJJF, FEJJB, AEJJ, SBJJ, CBJJE, GI), y muestra avisos no bloqueantes sobre la legalidad de las técnicas según la federación y cinturón.
 
-El backend está construido con Spring Boot 3 y Java 21, sigue una arquitectura **hexagonal-lite** con cinco bounded contexts, persiste en SQLite (con H2 in-memory para desarrollo) y expone una API REST documentada con OpenAPI. El frontend es una SPA en React 18 + Vite + TypeScript con shadcn/ui, e integra **React Flow** para el editor visual de los árboles de decisión. El despliegue se diseña sobre Docker Compose y Cloudflare Tunnel sobre un servidor Proxmox personal, con CI/CD automatizado en GitHub Actions.
+El backend está construido con Spring Boot 4 y Java 25, sigue una arquitectura **hexagonal-lite** con cinco bounded contexts, persiste en SQLite (con H2 in-memory para desarrollo) y expone una API REST documentada con OpenAPI. El frontend es una SPA en React 18 + Vite + TypeScript con shadcn/ui, e integra **React Flow** para el editor visual de los árboles de decisión. El despliegue se diseña sobre Docker Compose y Cloudflare Tunnel sobre un servidor Proxmox personal, con CI/CD automatizado en GitHub Actions.
 
 ## English
 
 OssFlow is a web application conceived as a **technical second brain** for Brazilian Jiu-Jitsu practitioners. The system models the sport's knowledge as a **relational graph** of positions (nodes) and techniques (transitions), and additionally enables building **systems** that represent complete tactical decision trees. On top of that objective catalogue, the user layers a subjective side: Obsidian-style notes, a detailed training session log, a competition log with per-match analysis, and a hierarchical study plan spanning months. An identity layer links the user with their current belt and preferred federations (IBJJF, ADCC, AJP, NAGA, UAEJJF, FEJJB, AEJJ, SBJJ, CBJJE, GI) and shows non-blocking warnings about technique legality based on federation and belt.
 
-The backend is built with Spring Boot 3 and Java 21, follows a **hexagonal-lite** architecture with five bounded contexts, persists in SQLite (H2 in-memory for development), and exposes a REST API documented with OpenAPI. The frontend is a React 18 + Vite + TypeScript SPA with shadcn/ui that integrates **React Flow** for the visual decision-tree editor. Deployment targets Docker Compose and Cloudflare Tunnel on a personal Proxmox server, with CI/CD automated through GitHub Actions.
+The backend is built with Spring Boot 4 and Java 25, follows a **hexagonal-lite** architecture with five bounded contexts, persists in SQLite (H2 in-memory for development), and exposes a REST API documented with OpenAPI. The frontend is a React 18 + Vite + TypeScript SPA with shadcn/ui that integrates **React Flow** for the visual decision-tree editor. Deployment targets Docker Compose and Cloudflare Tunnel on a personal Proxmox server, with CI/CD automated through GitHub Actions.
 
 \newpage
 
@@ -170,7 +170,7 @@ Diseñar, implementar, probar y desplegar una aplicación web personal de gesti�
 ## Objetivos específicos
 
 1. Diseñar un modelo de datos **normalizado** que represente fielmente el dominio BJJ y soporte los cinco bounded contexts, con soft delete y multi-ready.
-2. Implementar un backend en Spring Boot 3 + Java 21 con CRUD completo, validación rigurosa, manejo de errores uniforme y trazabilidad por `traceId`.
+2. Implementar un backend en Spring Boot 4 + Java 25 con CRUD completo, validación rigurosa, manejo de errores uniforme y trazabilidad por `traceId`.
 3. Implementar un frontend en React 18 + Vite + TypeScript que aporte una experiencia visual moderna en tema oscuro, con editor de árbol de decisión basado en React Flow.
 4. Aplicar al menos **cinco patrones de comportamiento** del catálogo GoF de forma justificada (Strategy, Chain of Responsibility, Template Method, State, Observer).
 5. Cubrir el código con tests en tres niveles (unit, slice e integration) alcanzando los umbrales de cobertura definidos.
@@ -286,7 +286,7 @@ Análogo a R01 con cinco funciones (CRUD + restore) y validación adicional de F
 - **R07.** Federaciones y rulesets: gestión de las 10 federaciones seed (IBJJF, ADCC, AJP, NAGA, UAEJJF, FEJJB, AEJJ, SBJJ, CBJJE, GI), creación de rulesets vacíos rellenables a posteriori vía import o panel.
 - **R08.** Manejo uniforme de errores: jerarquía `OssFlowException`, `GlobalExceptionHandler`, `ApiError` con `code`, `message`, `traceId`, `details`.
 - **R09.** Importación y exportación: `Importer<T>` (Strategy + Template Method), exportación full streaming.
-- **R10.** Despliegue: Dockerfile distroless, `docker-compose.{yml, prod.yml}`, GitHub Actions CI + Release, integración Cloudflare Tunnel.
+- **R10.** Despliegue: Dockerfile multi-stage con runtime `eclipse-temurin:25-jre-noble`, `docker-compose.{yml, prod.yml}`, GitHub Actions CI + Release, integración Cloudflare Tunnel.
 
 \newpage
 
@@ -476,8 +476,8 @@ A continuación se justifica cada herramienta del stack y su uso concreto en el 
 
 | Logo | Tecnología y uso |
 | --- | --- |
-| ![](./diagramas/placeholder-tech-java.png){width=80px} | **Java 21 (LTS).** Lenguaje principal del backend. Se sube desde Java 17 (versión inicial del proyecto) hasta 21 porque es la nueva LTS recomendada por Spring Boot 3.x y aporta mejoras relevantes (records, pattern matching, virtual threads disponibles). Java 25 fue descartado por estar fuera de la línea LTS oficial. |
-| ![](./diagramas/placeholder-tech-spring.png){width=80px} | **Spring Boot 3.x.** Framework base del backend. Aporta inyección de dependencias (Singleton implícito), starters opinados (web MVC, data-jpa, validation, actuator) y autoconfiguración. Se descartó GraphQL —dependencia presente en el proyecto inicial sin uso— porque las queries del dominio son perfectamente cubiertas por REST y la complejidad añadida no se justifica. |
+| ![](./diagramas/placeholder-tech-java.png){width=80px} | **Java 25 (LTS).** Lenguaje principal del backend. Se sube desde Java 17 (versión inicial del proyecto) hasta 25 porque es la nueva LTS oficial publicada en septiembre de 2025 y la combinación canónica recomendada por Spring Boot 4.x. Aporta mejoras relevantes acumuladas desde Java 17: records con pattern matching, switch patterns, virtual threads estabilizados, sequenced collections, structured concurrency en preview. |
+| ![](./diagramas/placeholder-tech-spring.png){width=80px} | **Spring Boot 4.x.** Framework base del backend, asentado sobre Spring Framework 7. Aporta inyección de dependencias (Singleton implícito), starters opinados (web MVC, data-jpa, validation, actuator), autoconfiguración y mejoras nativas para Java 25 (records de configuración, AOT compilation con GraalVM mejorada). Se descartó GraphQL —dependencia presente en el proyecto inicial sin uso— porque las queries del dominio son perfectamente cubiertas por REST y la complejidad añadida no se justifica. |
 | ![](./diagramas/placeholder-tech-sqlite.png){width=80px} | **SQLite.** Base de datos en producción. Decisión documentada: para una aplicación monousuario con volumen de datos pequeño-medio y necesidad de **autohospedaje simple**, SQLite ofrece cero administración, backup trivial (copia de fichero) y rendimiento sobrado. PostgreSQL (presente en el `pom.xml` original) se descartó por sobreingeniería. |
 | ![](./diagramas/placeholder-tech-h2.png){width=80px} | **H2 in-memory.** Base de datos en perfil de desarrollo local. Arranca en milisegundos y se reinicia en cada bootstrap, lo cual acelera enormemente el ciclo TDD. La consola web (`/h2-console`) facilita inspección manual durante el desarrollo. |
 | ![](./diagramas/placeholder-tech-flyway.png){width=80px} | **Flyway.** Versionado y aplicación automática de migraciones SQL en arranque del backend. Sustituye al peligroso `ddl-auto: update` de Hibernate en producción, donde se usa `ddl-auto: validate` para verificar que las entidades JPA coinciden con el esquema desplegado. |
@@ -492,7 +492,7 @@ A continuación se justifica cada herramienta del stack y su uso concreto en el 
 | ![](./diagramas/placeholder-tech-tanstack.png){width=80px} | **TanStack Query v5.** Gestión del estado servidor (cache, refetch, optimistic updates, stale-while-revalidate). Evita Redux/Context para datos remotos. |
 | ![](./diagramas/placeholder-tech-zod.png){width=80px} | **Zod + React Hook Form.** Validación de formularios cliente. Los mismos schemas se usan también para validar `flowDefinition` antes de enviar al backend (DRY entre validación cliente y servidor). |
 | ![](./diagramas/placeholder-tech-vitest.png){width=80px} | **Vitest + React Testing Library + MSW.** Stack de testing del frontend. Vitest es API-compatible con Jest pero más rápido en proyectos Vite. MSW intercepta fetch para mockear el backend con tipos generados. |
-| ![](./diagramas/placeholder-tech-docker.png){width=80px} | **Docker + Docker Compose.** Empaquetado y orquestación local/producción. Backend en imagen distroless Java 21 (mínima superficie de ataque); frontend en imagen multi-stage Node → Nginx. Compose con dos perfiles (`dev`, `prod`). |
+| ![](./diagramas/placeholder-tech-docker.png){width=80px} | **Docker + Docker Compose.** Empaquetado y orquestación local/producción. Backend en imagen multi-stage con `eclipse-temurin:25-jre-noble` como runtime (oficial de Eclipse Adoptium); frontend en imagen multi-stage Node → Nginx. Se evaluó `gcr.io/distroless/java25-debian12` pero se descartó porque a fecha de este proyecto Google todavía no la había publicado (retraso histórico tras cada nueva LTS). Compose con dos perfiles (`dev`, `prod`). |
 | ![](./diagramas/placeholder-tech-github.png){width=80px} | **GitHub Actions.** Pipeline CI/CD. Workflow CI (`mvn verify`, `npm ci && tsc && lint && test && build`) en cada PR; workflow Release (`docker build && push ghcr.io`) en tags `v*.*.*`. Sincronización entre repos vía `repository_dispatch`. |
 | ![](./diagramas/placeholder-tech-cloudflare.png){width=80px} | **Cloudflare Tunnel.** Exposición pública sin abrir puertos en el router doméstico, con TLS automático y origen oculto. Integrado como contenedor en `docker-compose.prod.yml`. |
 | ![](./diagramas/placeholder-tech-proxmox.png){width=80px} | **Proxmox.** Hipervisor de virtualización en servidor doméstico, donde se aloja la VM/LXC con Docker que ejecuta OssFlow. No forma parte del stack del producto; sí del ecosistema de despliegue elegido. |
@@ -700,9 +700,13 @@ Colin McDonnell. (s. f.). *Zod — TypeScript-first schema validation*. Recupera
 
 Cloudflare. (s. f.). *Cloudflare Tunnel*. Recuperado el 6 de mayo de 2026, de <https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/>
 
-*Aplicada en la elección del runtime distroless del backend:*
+*Aplicada en la evaluación del runtime del backend (alternativa distroless considerada y descartada):*
 
 Google. (s. f.). *Distroless container images*. Recuperado el 6 de mayo de 2026, de <https://github.com/GoogleContainerTools/distroless>
+
+*Aplicada en la elección final del runtime del backend:*
+
+Eclipse Foundation. (s. f.). *Eclipse Temurin OpenJDK distribution*. Recuperado el 6 de mayo de 2026, de <https://adoptium.net/temurin/>
 
 *Aplicada en la consulta de las normas de citación de esta memoria:*
 
