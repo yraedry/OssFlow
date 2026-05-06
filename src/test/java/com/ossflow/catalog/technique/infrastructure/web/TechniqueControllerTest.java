@@ -2,6 +2,8 @@ package com.ossflow.catalog.technique.infrastructure.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ossflow.catalog.position.domain.Visibility;
+import com.ossflow.catalog.ruleset.application.RulesetService;
+import com.ossflow.catalog.ruleset.infrastructure.web.RulesetWebMapperImpl;
 import com.ossflow.catalog.technique.application.TechniqueService;
 import com.ossflow.catalog.technique.domain.Belt;
 import com.ossflow.catalog.technique.domain.Modality;
@@ -30,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class TechniqueControllerTest {
 
     @Mock TechniqueService service;
+    @Mock RulesetService rulesetService;
 
     MockMvc mvc;
     ObjectMapper json = new ObjectMapper();
@@ -37,7 +40,8 @@ class TechniqueControllerTest {
     @BeforeEach
     void setUp() {
         var mapper = new TechniqueWebMapperImpl();
-        var controller = new TechniqueController(service, mapper, new CurrentOwner());
+        var rulesetMapper = new RulesetWebMapperImpl();
+        var controller = new TechniqueController(service, mapper, new CurrentOwner(), rulesetService, rulesetMapper);
         mvc = MockMvcBuilders.standaloneSetup(controller)
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
