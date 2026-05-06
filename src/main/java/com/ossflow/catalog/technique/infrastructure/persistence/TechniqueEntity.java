@@ -7,7 +7,6 @@ import com.ossflow.catalog.technique.domain.TechniqueCategory;
 import com.ossflow.shared.persistence.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 @Getter
@@ -17,7 +16,6 @@ import org.hibernate.annotations.SQLRestriction;
 @Builder
 @Entity
 @Table(name = "technique")
-@SQLDelete(sql = "UPDATE technique SET deleted_at = CURRENT_TIMESTAMP, purge_at = datetime('now', '+30 days') WHERE id = ? AND version = ?")
 @SQLRestriction("deleted_at IS NULL")
 public class TechniqueEntity extends BaseEntity {
 
