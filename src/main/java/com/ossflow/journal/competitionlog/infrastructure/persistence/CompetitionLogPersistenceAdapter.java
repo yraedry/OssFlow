@@ -102,6 +102,7 @@ public class CompetitionLogPersistenceAdapter implements CompetitionLogRepositor
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<CompetitionLog> findTrash(Long ownerId, Pageable pageable) {
         var countQuery = em.createNativeQuery(
                 "SELECT COUNT(*) FROM competition_log WHERE owner_id = ?1 AND deleted_at IS NOT NULL");
