@@ -64,11 +64,13 @@ public class UserProfilePersistenceAdapter implements UserProfileRepositoryPort 
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<UserProfile> findByOwnerId(Long ownerId) {
         return repository.findByOwnerId(ownerId).map(mapper::toDomain);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean existsByOwnerId(Long ownerId) {
         return repository.existsByOwnerId(ownerId);
     }

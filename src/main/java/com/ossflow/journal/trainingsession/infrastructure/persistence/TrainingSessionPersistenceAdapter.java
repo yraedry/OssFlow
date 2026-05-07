@@ -85,6 +85,7 @@ public class TrainingSessionPersistenceAdapter implements TrainingSessionReposit
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<TrainingSession> findTrash(Long ownerId, Pageable pageable) {
         var countQuery = em.createNativeQuery(
                 "SELECT COUNT(*) FROM training_session WHERE owner_id = ?1 AND deleted_at IS NOT NULL");
@@ -135,6 +136,7 @@ public class TrainingSessionPersistenceAdapter implements TrainingSessionReposit
     }
 
     @Override
+    @Transactional(readOnly = true)
     public long countByOwnerAndWeek(Long ownerId, LocalDate weekStart, LocalDate weekEnd) {
         return repository.countByOwnerIdAndSessionDateBetween(ownerId, weekStart, weekEnd);
     }

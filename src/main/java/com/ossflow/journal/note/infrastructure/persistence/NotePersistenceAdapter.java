@@ -140,6 +140,7 @@ public class NotePersistenceAdapter implements NoteRepositoryPort {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<Note> findTrash(Long ownerId, Pageable pageable) {
         var countQuery = em.createNativeQuery(
                 "SELECT COUNT(*) FROM note WHERE owner_id = ?1 AND deleted_at IS NOT NULL");
@@ -158,6 +159,7 @@ public class NotePersistenceAdapter implements NoteRepositoryPort {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public long countByTagId(Long tagId) {
         var query = em.createNativeQuery(
                 "SELECT COUNT(*) FROM note_tag WHERE tag_id = ?1");

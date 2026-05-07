@@ -46,11 +46,13 @@ public class RulesetPersistenceAdapter implements RulesetRepositoryPort {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Ruleset> findById(Long id) {
         return repository.findById(id).map(mapper::toDomain);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<Ruleset> findByFilters(Long federationId, Belt belt, Modality modality, Pageable pageable) {
         return repository.findByFilters(federationId, belt, modality, pageable).map(mapper::toDomain);
     }
@@ -90,6 +92,7 @@ public class RulesetPersistenceAdapter implements RulesetRepositoryPort {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<RulesetTechnique> findTechniquesByTechniqueId(Long techniqueId) {
         return techniqueRepository.findByIdTechniqueId(techniqueId).stream()
                 .map(techniqueMapper::toDomain).toList();
