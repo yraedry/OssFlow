@@ -4,6 +4,7 @@ import com.ossflow.planning.weeklytemplate.application.port.WeeklyTemplateReposi
 import com.ossflow.planning.weeklytemplate.domain.WeeklyTemplate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -19,6 +20,7 @@ public class WeeklyTemplatePersistenceAdapter implements WeeklyTemplateRepositor
         return jpa.findByOwnerId(ownerId).map(mapper::toDomain);
     }
 
+    @Transactional
     @Override
     public WeeklyTemplate save(WeeklyTemplate template) {
         WeeklyTemplateEntity entity = jpa.findByOwnerId(template.ownerId())

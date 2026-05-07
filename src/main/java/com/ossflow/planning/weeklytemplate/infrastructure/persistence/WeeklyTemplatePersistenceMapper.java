@@ -19,10 +19,9 @@ public class WeeklyTemplatePersistenceMapper {
     }
 
     public WeeklyTemplateEntity toEntity(WeeklyTemplate d) {
-        return WeeklyTemplateEntity.builder()
-                .id(d.id())
-                .ownerId(d.ownerId())
-                .days(d.days())
-                .build();
+        WeeklyTemplateEntity entity = new WeeklyTemplateEntity();
+        entity.setOwnerId(d.ownerId());
+        entity.setDays(d.days());
+        return entity;
     }
 }
