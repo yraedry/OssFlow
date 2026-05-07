@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Map;
@@ -43,7 +44,7 @@ public class PhysicalSessionPersistenceAdapter implements PhysicalSessionReposit
                         "PHYSICAL_SESSION_NOT_FOUND",
                         "No existe la sesión física con id %d".formatted(id),
                         Map.of("sessionId", id)));
-        entity.setDeletedAt(Instant.now());
+        entity.softDelete(Instant.now(), Duration.ofDays(30));
         jpaRepository.save(entity);
     }
 
