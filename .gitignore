@@ -81,3 +81,10 @@ docs/memoria/diagramas/placeholder.svg
 docs/memoria/diagramas/placeholder.png
 docs/memoria/diagramas/placeholder-logo.png
 docs/memoria/diagramas/placeholder-tech-*.png
+
+### Playwright MCP snapshots ###
+.playwright-mcp/
+
+### Screenshots temporales de desarrollo ###
+*.png
+!docs/**/*.png

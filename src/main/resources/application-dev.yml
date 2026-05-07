@@ -5,10 +5,11 @@ spring:
   jpa:
     database-platform: org.hibernate.community.dialect.SQLiteDialect
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
     show-sql: true
   flyway:
-    enabled: false
+    enabled: true
+    baseline-on-migrate: true
 springdoc:
   swagger-ui:
     enabled: true

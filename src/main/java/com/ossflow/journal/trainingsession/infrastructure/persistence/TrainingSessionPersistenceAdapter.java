@@ -44,13 +44,17 @@ public class TrainingSessionPersistenceAdapter implements TrainingSessionReposit
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<TrainingSession> findById(Long id, Long ownerId) {
         return repository.findByIdAndOwnerId(id, ownerId).map(mapper::toDomain);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<TrainingSession> findAll(Long ownerId, Pageable pageable) {
-        return repository.findByOwnerId(ownerId, pageable).map(mapper::toDomain);
+        Page<TrainingSessionEntity> page = repository.findByOwnerId(ownerId, pageable);
+        List<TrainingSession> domain = page.getContent().stream().map(mapper::toDomain).toList();
+        return new PageImpl<>(domain, pageable, page.getTotalElements());
     }
 
     @Override

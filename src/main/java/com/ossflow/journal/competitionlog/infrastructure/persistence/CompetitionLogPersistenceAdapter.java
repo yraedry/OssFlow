@@ -59,13 +59,17 @@ public class CompetitionLogPersistenceAdapter implements CompetitionLogRepositor
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<CompetitionLog> findById(Long id, Long ownerId) {
         return repository.findByIdAndOwnerId(id, ownerId).map(mapper::toDomain);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<CompetitionLog> findAll(Long ownerId, Pageable pageable) {
-        return repository.findByOwnerId(ownerId, pageable).map(mapper::toDomain);
+        Page<CompetitionLogEntity> page = repository.findByOwnerId(ownerId, pageable);
+        List<CompetitionLog> domain = page.getContent().stream().map(mapper::toDomain).toList();
+        return new PageImpl<>(domain, pageable, page.getTotalElements());
     }
 
     @Override
