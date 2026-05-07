@@ -10,6 +10,7 @@ import com.ossflow.journal.physicalsession.infrastructure.web.dto.CreatePhysical
 import com.ossflow.shared.exception.GlobalExceptionHandler;
 import com.ossflow.shared.web.CurrentOwner;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class PhysicalSessionControllerTest {
 
     private final PhysicalSessionService service = mock(PhysicalSessionService.class);
-    private final PhysicalSessionWebMapper mapper = new PhysicalSessionWebMapper();
+    private final PhysicalSessionWebMapper mapper = Mappers.getMapper(PhysicalSessionWebMapper.class);
     private final CurrentOwner currentOwner = mock(CurrentOwner.class);
     private final MockMvc mvc = MockMvcBuilders
             .standaloneSetup(new PhysicalSessionController(service, mapper, currentOwner))

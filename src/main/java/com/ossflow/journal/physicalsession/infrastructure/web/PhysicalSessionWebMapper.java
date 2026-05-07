@@ -3,31 +3,22 @@ package com.ossflow.journal.physicalsession.infrastructure.web;
 import com.ossflow.journal.physicalsession.domain.PhysicalSession;
 import com.ossflow.journal.physicalsession.infrastructure.web.dto.CreatePhysicalSessionRequest;
 import com.ossflow.journal.physicalsession.infrastructure.web.dto.PhysicalSessionResponse;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
-@Component
-public class PhysicalSessionWebMapper {
+@Mapper(componentModel = "spring",
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+public interface PhysicalSessionWebMapper {
 
-    public PhysicalSession fromCreate(CreatePhysicalSessionRequest req) {
-        return PhysicalSession.builder()
-                .sessionDate(req.sessionDate())
-                .sessionType(req.sessionType())
-                .title(req.title())
-                .durationMinutes(req.durationMinutes())
-                .notes(req.notes())
-                .build();
-    }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "ownerId", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "version", ignore = true)
+    @Mapping(target = "deletedAt", ignore = true)
+    @Mapping(target = "purgeAt", ignore = true)
+    PhysicalSession fromCreate(CreatePhysicalSessionRequest req);
 
-    public PhysicalSessionResponse toResponse(PhysicalSession d) {
-        return new PhysicalSessionResponse(
-                d.id(),
-                d.sessionDate(),
-                d.sessionType(),
-                d.title(),
-                d.durationMinutes(),
-                d.notes(),
-                d.createdAt(),
-                d.updatedAt()
-        );
-    }
+    PhysicalSessionResponse toResponse(PhysicalSession session);
 }
