@@ -14,6 +14,8 @@ COPY --from=builder --chown=spring:spring /build/target/extracted/spring-boot-lo
 COPY --from=builder --chown=spring:spring /build/target/extracted/snapshot-dependencies/ ./
 COPY --from=builder --chown=spring:spring /build/target/extracted/application/ ./
 
+RUN mkdir -p /data && chown spring:spring /data
+
 EXPOSE 8080
 USER spring
 ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]
