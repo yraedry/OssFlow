@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -127,6 +128,11 @@ public class TrainingSessionPersistenceAdapter implements TrainingSessionReposit
                 .repCount(entity.getRepCount())
                 .notesMarkdown(entity.getNotesMarkdown())
                 .build();
+    }
+
+    @Override
+    public long countByOwnerAndWeek(Long ownerId, LocalDate weekStart, LocalDate weekEnd) {
+        return repository.countByOwnerIdAndSessionDateBetween(ownerId, weekStart, weekEnd);
     }
 
     @Override

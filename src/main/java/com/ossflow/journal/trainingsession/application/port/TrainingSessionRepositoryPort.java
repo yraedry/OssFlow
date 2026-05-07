@@ -5,6 +5,7 @@ import com.ossflow.journal.trainingsession.domain.WorkedTechnique;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 public interface TrainingSessionRepositoryPort {
@@ -16,4 +17,5 @@ public interface TrainingSessionRepositoryPort {
     Page<TrainingSession> findTrash(Long ownerId, Pageable pageable);
     WorkedTechnique upsertWorkedTechnique(Long sessionId, Long ownerId, WorkedTechnique wt);
     void removeWorkedTechnique(Long sessionId, Long ownerId, Long techniqueId);
+    long countByOwnerAndWeek(Long ownerId, LocalDate weekStart, LocalDate weekEnd);
 }

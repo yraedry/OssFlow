@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 @Slf4j
@@ -76,5 +77,9 @@ public class TrainingSessionService {
     public void removeWorkedTechnique(Long sessionId, Long ownerId, Long techniqueId) {
         repository.removeWorkedTechnique(sessionId, ownerId, techniqueId);
         log.info("WorkedTechnique removed sessionId={} techniqueId={}", sessionId, techniqueId);
+    }
+
+    public long countByWeek(Long ownerId, LocalDate weekStart, LocalDate weekEnd) {
+        return repository.countByOwnerAndWeek(ownerId, weekStart, weekEnd);
     }
 }
