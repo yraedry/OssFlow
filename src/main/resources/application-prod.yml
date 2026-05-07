@@ -10,6 +10,7 @@ spring:
   flyway:
     enabled: true
     baseline-on-migrate: true
+    baseline-version: 100
 springdoc:
   swagger-ui:
     enabled: false
