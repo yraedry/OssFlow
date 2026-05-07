@@ -18,4 +18,4 @@ RUN mkdir -p /data && chown spring:spring /data
 
 EXPOSE 8080
 USER spring
-ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]
+ENTRYPOINT ["java", "--enable-native-access=ALL-UNNAMED", "org.springframework.boot.loader.launch.JarLauncher"]
