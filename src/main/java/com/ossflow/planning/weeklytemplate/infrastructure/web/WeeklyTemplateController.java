@@ -6,10 +6,12 @@ import com.ossflow.planning.weeklytemplate.infrastructure.web.dto.WeeklyTemplate
 import com.ossflow.shared.web.CurrentOwner;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/planning/weekly-template")
+@Validated
 @RequiredArgsConstructor
 public class WeeklyTemplateController {
 
