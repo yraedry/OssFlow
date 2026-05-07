@@ -62,11 +62,13 @@ public class NotePersistenceAdapter implements NoteRepositoryPort {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Note> findById(Long id, Long ownerId) {
         return repository.findByIdAndOwnerId(id, ownerId).map(mapper::toDomain);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<Note> findAll(Long ownerId, String targetType, Long targetId, String tag, String q, Pageable pageable) {
         StringBuilder jpql = new StringBuilder(
                 "SELECT DISTINCT n FROM NoteEntity n LEFT JOIN n.tags t WHERE n.ownerId = :ownerId");
@@ -106,7 +108,8 @@ public class NotePersistenceAdapter implements NoteRepositoryPort {
         query.setMaxResults(pageable.getPageSize());
         List<NoteEntity> results = query.getResultList();
 
-        return new PageImpl<>(results.stream().map(mapper::toDomain).toList(), pageable, total);
+        List<Note> domain = results.stream().map(mapper::toDomain).toList();
+        return new PageImpl<>(domain, pageable, total);
     }
 
     @Override
