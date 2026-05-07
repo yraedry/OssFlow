@@ -1,0 +1,54 @@
+-- V200__seed_positions.sql
+-- 40 posiciones BJJ curadas (datos públicos del sistema, owner_id=1)
+
+INSERT INTO position (owner_id, name, type, description, visibility, created_at, updated_at, version) VALUES
+
+-- STANDING
+(1, 'Standing Neutral',              'STANDING',       'Ambos luchadores de pie, sin clinch. Posición de inicio de combate.',                                                                                       'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, 'Clinch',                        'STANDING',       'Cuerpo a cuerpo de pie. Base para derribos, proyecciones y guillotinas de pie.',                                                                            'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, 'Single Leg',                    'STANDING',       'Control de una pierna del oponente de pie. Transición al derribo single leg.',                                                                              'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, 'Double Leg',                    'STANDING',       'Control de ambas piernas del oponente de pie. Transición al derribo double leg.',                                                                           'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, 'Arm Drag Position',             'STANDING',       'Arrastre de brazo de pie para llegar a la espalda o ejecutar derribo.',                                                                                     'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+
+-- TOP
+(1, 'Full Mount',                    'TOP',            'Montado encima del oponente en decúbito supino. Posición dominante alta. Base para armbar, triángulo y estrangulaciones.',                                  'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, 'High Mount',                    'TOP',            'Mount con las rodillas cerca de las axilas del oponente. Mayor control y acceso a ataques de cuello.',                                                      'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, 'Back Mount',                    'TOP',            'Control de espalda con ganchos (hooks) insertados. La posición más dominante del BJJ. Acceso directo a RNC y bow-and-arrow.',                              'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, 'Side Control',                  'TOP',            'Control lateral sobre el oponente, perpendicular al cuerpo. Posición muy dominante. Base para kimura, americana y papercutter.',                           'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, 'North South',                   'TOP',            'Control perpendicular sobre la cabeza del oponente, mirando hacia sus pies. Ataque north-south choke y kimura.',                                            'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, 'Knee On Belly',                 'TOP',            'Rodilla sobre el abdomen del oponente. Posición transitoria con opciones de estrangulación y armbar.',                                                      'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, 'Scarf Hold',                    'TOP',            'Control de cabeza y brazo desde el suelo (kesa gatame). Ataque a estrangulación y americana.',                                                              'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, 'Turtle Top',                    'TOP',            'Encima del oponente en posición de tortuga. Ataque clock choke, anaconda y toma de espalda.',                                                               'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, 'Crucifix',                      'TOP',            'Un brazo del oponente atrapado entre las piernas, el otro controlado. Ataque RNC o estrangulaciones.',                                                      'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+
+-- GROUND_NEUTRAL
+(1, 'Leg Entanglement',              'GROUND_NEUTRAL', 'Ashi garami básico para leg locks. Single ashi garami. Posición de enredo de piernas.',                                                                     'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, '50/50',                         'GROUND_NEUTRAL', 'Enredo de piernas simétrico. Ambos luchadores atacan heel hooks simultáneamente. Alta relevancia en no-gi moderno.',                                       'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, 'Outside Heel Hook Position',    'GROUND_NEUTRAL', 'Ashi garami exterior. Posición para outside heel hook atacando la rodilla externa.',                                                                        'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, 'Seated Guard',                  'GROUND_NEUTRAL', 'Guardia sentada (combat base). Posición neutral de inicio en el suelo.',                                                                                    'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+
+-- BOTTOM
+(1, 'Closed Guard',                  'BOTTOM',         'Guardia cerrada: piernas cruzadas en la espalda del oponente. La guardia fundamental del BJJ.',                                                             'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, 'Half Guard',                    'BOTTOM',         'Media guardia: una pierna del oponente atrapada entre las propias. Posición de abajo muy versátil.',                                                        'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, 'Z-Guard',                       'BOTTOM',         'Media guardia con la espinilla interpuesta como escudo (knee shield). Mayor control de distancia.',                                                          'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, 'Deep Half Guard',               'BOTTOM',         'Media guardia profunda: debajo del oponente controlando su pierna lejana. Acceso a barridos y toma de espalda.',                                            'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, 'Lockdown',                      'BOTTOM',         'Media guardia con enganche de pierna en figura de 4. Sistema 10th Planet. Limita el paso del oponente.',                                                    'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, 'Butterfly Guard',               'BOTTOM',         'Guardia mariposa: ganchos de pie bajo los muslos del oponente sentado. Barridos explosivos y toma de espalda.',                                            'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, 'De La Riva Guard',              'BOTTOM',         'DLR: gancho externo en la pierna delantera del oponente. Barridos, berimbolo y transiciones a leg locks.',                                                  'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, 'Reverse De La Riva',            'BOTTOM',         'RDLR: gancho interno en la pierna delantera. Acceso directo a single leg X y leg entanglements.',                                                          'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, 'Spider Guard',                  'BOTTOM',         'Pies en bíceps del oponente con control de mangas. Solo gi. Triángulos, omoplatas y barridos.',                                                             'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, 'Lasso Guard',                   'BOTTOM',         'Pierna enroscada en el brazo del oponente (gi). Control extremo del brazo. Barridos y ataques articulares.',                                               'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, 'X-Guard',                       'BOTTOM',         'Configuración en X con ambas piernas controlando caderas del oponente. Barridos de elevación y technical stands.',                                         'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, 'Single Leg X',                  'BOTTOM',         'SLX / Ashi garami: una pierna del oponente inmovilizada. El punto de entrada estándar para el juego de leg locks moderno.',                                'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, 'K-Guard',                       'BOTTOM',         'Guardia dinámica que combina gancho exterior con control del tobillo. Acceso a heel hooks y barridos.',                                                     'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, 'Rubber Guard',                  'BOTTOM',         'Sistema 10th Planet: pierna sobre el cuello del oponente desde guardia cerrada. Requiere gran flexibilidad.',                                               'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, 'Worm Guard',                    'BOTTOM',         'Guardia de solapa: usa la propia solapa del gi del oponente para controlarlo. Solo gi. Creada por Keenan Cornelius.',                                       'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, 'Collar Sleeve Guard',           'BOTTOM',         'Un grip al cuello, otro a la manga. Guardia de distancia media. Transición a spider, lasso y DLR.',                                                        'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, 'Bottom Side Control',           'BOTTOM',         'Bajo el control lateral del oponente. Objetivo: recuperar guardia o tomar la espalda.',                                                                     'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, 'Bottom Mount',                  'BOTTOM',         'Debajo del mount del oponente. La peor posición del BJJ junto con bottom back mount.',                                                                      'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, 'Bottom Back Mount',             'BOTTOM',         'Con el oponente en nuestra espalda con ganchos. La posición más peligrosa y difícil de escapar.',                                                           'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, 'Turtle',                        'BOTTOM',         'Posición de tortuga defensiva: rodillas y codos en el suelo. Defensa temporal pero bajo ataque constante.',                                                 'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, 'Bottom Knee On Belly',          'BOTTOM',         'Bajo la rodilla en el abdomen del oponente. Posición incómoda y transitoria. Objetivo: escapar o recuperar guardia.',                                      'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+
+-- SUBMITTED
+(1, 'Submitted',                     'SUBMITTED',      'El luchador ha tapado. Fin del combate o round.',                                                                                                           'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0);
