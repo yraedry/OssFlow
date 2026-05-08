@@ -1,10 +1,10 @@
 -- La columna id fue creada sin tipo en SQLite, lo que hace que Hibernate no pueda
 -- autogenerar el ID y la columna queda NULL en inserciones nuevas.
 -- SQLite no permite ALTER COLUMN, hay que recrear la tabla.
--- PRAGMA foreign_keys omitido: Flyway no permite mezclar DDL transaccional y no transaccional.
+-- En SQLite AUTOINCREMENT solo funciona con INTEGER PRIMARY KEY (no BIGINT).
 
 CREATE TABLE training_session_new (
-    id          BIGINT PRIMARY KEY AUTOINCREMENT,
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
     owner_id    BIGINT NOT NULL,
     session_date VARCHAR(255) NOT NULL,
     duration_minutes INTEGER NOT NULL,
