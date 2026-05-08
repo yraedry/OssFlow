@@ -14,6 +14,7 @@ public record TrainingSession(
         int durationMinutes,
         String location,
         Intensity intensity,
+        SessionType sessionType,
         String notesMarkdown,
         List<WorkedTechnique> workedTechniques,
         Instant createdAt,
