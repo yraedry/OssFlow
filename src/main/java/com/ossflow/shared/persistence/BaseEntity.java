@@ -25,21 +25,21 @@ public abstract class BaseEntity {
     private Long ownerId = 1L;
 
     @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = false, updatable = false, columnDefinition = "timestamp")
     private Instant createdAt;
 
     @LastModifiedDate
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updated_at", nullable = false, columnDefinition = "timestamp")
     private Instant updatedAt;
 
     @Version
     @Column(name = "version", nullable = false)
     private Long version = 0L;
 
-    @Column(name = "deleted_at")
+    @Column(name = "deleted_at", columnDefinition = "timestamp")
     private Instant deletedAt;
 
-    @Column(name = "purge_at")
+    @Column(name = "purge_at", columnDefinition = "timestamp")
     private Instant purgeAt;
 
     public boolean isSoftDeleted() {
