@@ -24,4 +24,4 @@ CREATE TABLE user_profile_federation (
 );
 
 CREATE UNIQUE INDEX ux_user_profile_one_primary
-    ON user_profile_federation(user_profile_id) WHERE is_primary = 1;
+    ON user_profile_federation(user_profile_id) WHERE is_primary = TRUE;
