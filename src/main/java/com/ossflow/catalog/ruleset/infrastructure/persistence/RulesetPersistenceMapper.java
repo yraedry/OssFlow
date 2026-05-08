@@ -11,8 +11,6 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 public interface RulesetPersistenceMapper {
 
     @Mapping(target = "techniques", source = "techniques")
-    @Mapping(target = "createdAt", expression = "java(entity.getCreatedAtInstant())")
-    @Mapping(target = "updatedAt", expression = "java(entity.getUpdatedAtInstant())")
     Ruleset toDomain(RulesetEntity entity);
 
     @Mapping(target = "techniques", ignore = true)

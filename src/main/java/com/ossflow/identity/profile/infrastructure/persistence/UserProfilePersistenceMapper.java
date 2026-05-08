@@ -2,15 +2,22 @@ package com.ossflow.identity.profile.infrastructure.persistence;
 
 import com.ossflow.identity.profile.domain.UserProfile;
 import com.ossflow.identity.profile.domain.UserProfileFederation;
+import com.ossflow.shared.persistence.InstantOffsetDateTimeMapper;
+import org.mapstruct.BeanMapping;
+import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(componentModel = "spring",
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+        uses = InstantOffsetDateTimeMapper.class)
 public interface UserProfilePersistenceMapper {
 
+    @BeanMapping(builder = @Builder(disableBuilder = true))
     @Mapping(target = "federations", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     UserProfileEntity toEntity(UserProfile domain);
 
     @Mapping(target = "federations", source = "federations")
