@@ -50,7 +50,7 @@ class TechniqueControllerTest {
     @Test
     void post_should_return_201_with_location_header() throws Exception {
         var req = new CreateTechniqueRequest(
-                "Armbar", TechniqueCategory.SUBMISSION, null, null,
+                "Armbar", TechniqueCategory.SUBMISSION, null, null, null,
                 Belt.WHITE, Modality.GI, 1L, null, Visibility.PRIVATE);
         given(service.create(org.mockito.ArgumentMatchers.any())).willReturn(
                 Technique.builder().id(3L).ownerId(1L).name("Armbar")
@@ -69,7 +69,7 @@ class TechniqueControllerTest {
     @Test
     void post_should_return_400_when_name_blank() throws Exception {
         var req = new CreateTechniqueRequest(
-                "", TechniqueCategory.SUBMISSION, null, null,
+                "", TechniqueCategory.SUBMISSION, null, null, null,
                 Belt.WHITE, Modality.GI, 1L, null, Visibility.PRIVATE);
 
         mvc.perform(post("/api/v1/catalog/techniques")
@@ -83,7 +83,7 @@ class TechniqueControllerTest {
     @Test
     void post_should_return_409_when_name_duplicate() throws Exception {
         var req = new CreateTechniqueRequest(
-                "Armbar", TechniqueCategory.SUBMISSION, null, null,
+                "Armbar", TechniqueCategory.SUBMISSION, null, null, null,
                 Belt.WHITE, Modality.GI, 1L, null, Visibility.PRIVATE);
         given(service.create(org.mockito.ArgumentMatchers.any()))
                 .willThrow(new DuplicateNameException("TECHNIQUE_NAME_DUPLICATE", "duplicado", Map.of()));

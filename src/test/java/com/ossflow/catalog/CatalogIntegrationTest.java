@@ -52,7 +52,7 @@ class CatalogIntegrationTest {
 
         // create technique referencing the position
         var techReq = new CreateTechniqueRequest(
-                "Armbar", TechniqueCategory.SUBMISSION, null, null,
+                "Armbar", TechniqueCategory.SUBMISSION, null, null, null,
                 Belt.WHITE, Modality.GI, positionId, null, Visibility.PRIVATE);
         mvc.perform(post("/api/v1/catalog/techniques")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -64,7 +64,7 @@ class CatalogIntegrationTest {
     @Test
     void should_return_404_when_technique_startPositionId_unknown() throws Exception {
         var req = new CreateTechniqueRequest(
-                "Armbar", TechniqueCategory.SUBMISSION, null, null,
+                "Armbar", TechniqueCategory.SUBMISSION, null, null, null,
                 Belt.WHITE, Modality.GI, 9999L, null, Visibility.PRIVATE);
 
         mvc.perform(post("/api/v1/catalog/techniques")
@@ -88,7 +88,7 @@ class CatalogIntegrationTest {
 
         // create technique
         var techReq = new CreateTechniqueRequest(
-                "Kimura", TechniqueCategory.SUBMISSION, null, null,
+                "Kimura", TechniqueCategory.SUBMISSION, null, null, null,
                 Belt.WHITE, Modality.GI, positionId, null, Visibility.PRIVATE);
         String techBody = mvc.perform(post("/api/v1/catalog/techniques")
                         .contentType(MediaType.APPLICATION_JSON)
