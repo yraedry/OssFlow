@@ -10,6 +10,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring",
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface TrainingSessionWebMapper {
@@ -24,6 +26,7 @@ public interface TrainingSessionWebMapper {
     @Mapping(target = "purgeAt", ignore = true)
     TrainingSession fromCreate(CreateTrainingSessionRequest req);
 
+    @Mapping(target = "workedTechniques", expression = "java(session.workedTechniques() != null ? session.workedTechniques().stream().map(this::toWorkedTechniqueResponse).toList() : java.util.List.of())")
     TrainingSessionResponse toResponse(TrainingSession session);
 
     WorkedTechniqueResponse toWorkedTechniqueResponse(WorkedTechnique wt);
