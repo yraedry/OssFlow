@@ -33,7 +33,7 @@ CREATE TABLE study_item (
     target_type      VARCHAR(20),
     target_id        BIGINT,
     due_date         DATE,
-    ai_generated     BOOLEAN NOT NULL DEFAULT 0,
+    ai_generated     BOOLEAN NOT NULL DEFAULT FALSE,
     completed_at     TIMESTAMP,
     created_at       TIMESTAMP NOT NULL,
     updated_at       TIMESTAMP NOT NULL,
