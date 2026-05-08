@@ -27,6 +27,9 @@ public class PositionEntity extends BaseEntity {
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
+    @Column(name = "youtube_url", length = 500)
+    private String youtubeUrl;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "visibility", nullable = false, length = 10)
     private Visibility visibility;
