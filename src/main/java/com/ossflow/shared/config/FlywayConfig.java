@@ -19,7 +19,7 @@ public class FlywayConfig {
     @Value("${spring.flyway.baseline-version:1}")
     private String baselineVersion;
 
-    @Bean(initMethod = "migrate")
+    @Bean
     public Flyway flyway(DataSource dataSource) {
         if (!flywayEnabled) {
             return Flyway.configure().dataSource(dataSource).load();
@@ -31,6 +31,7 @@ public class FlywayConfig {
                 .baselineVersion(baselineVersion)
                 .load();
         flyway.repair();
+        flyway.migrate();
         return flyway;
     }
 }
