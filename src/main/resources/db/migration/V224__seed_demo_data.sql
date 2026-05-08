@@ -9,59 +9,59 @@
 INSERT INTO training_session (owner_id, session_date, duration_minutes, location, intensity, notes_markdown, created_at, updated_at, version)
 VALUES
 -- Semana 13 (hace ~90 días)
-(1, CURRENT_DATE - 90, 90, 'Gimnasio',    'HIGH',   'Sparring intenso. Trabajé mucho la guardia cerrada.',          CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-(1, CURRENT_DATE - 88, 75, 'Gimnasio',    'MEDIUM', 'Clase técnica: triángulos y armbars encadenados.',             CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-(1, CURRENT_DATE - 86, 60, 'Gimnasio',    'LOW',    'Técnica. Enfocado en pasadas de guardia.',                     CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 90, 90, 'Gimnasio',    'HARD',   'Sparring intenso. Trabajé mucho la guardia cerrada.',          CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 88, 75, 'Gimnasio',    'MODERATE', 'Clase técnica: triángulos y armbars encadenados.',             CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 86, 60, 'Gimnasio',    'LIGHT',    'Técnica. Enfocado en pasadas de guardia.',                     CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
 -- Semana 12
-(1, CURRENT_DATE - 83, 90, 'Gimnasio',    'HIGH',   'Competición interna. 4 luchas.',                               CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-(1, CURRENT_DATE - 81, 75, 'Gimnasio',    'MEDIUM', 'Clase: leg locks básicos y defensa.',                          CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-(1, CURRENT_DATE - 79, 60, 'Casa',        'LOW',    'Solo drilling. Movimiento de caderas y shrimping.',            CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 83, 90, 'Gimnasio',    'HARD',   'Competición interna. 4 luchas.',                               CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 81, 75, 'Gimnasio',    'MODERATE', 'Clase: leg locks básicos y defensa.',                          CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 79, 60, 'Casa',        'LIGHT',    'Solo drilling. Movimiento de caderas y shrimping.',            CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
 -- Semana 11
-(1, CURRENT_DATE - 76, 90, 'Gimnasio',    'HIGH',   'Sparring. Trabajé tomas de espalda.',                          CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-(1, CURRENT_DATE - 74, 75, 'Gimnasio',    'MEDIUM', 'Clase: barridas desde half guard.',                            CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-(1, CURRENT_DATE - 72, 90, 'Gimnasio',    'HIGH',   'Open mat. Mucho juego con guillotinas.',                       CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-(1, CURRENT_DATE - 71, 60, 'Gimnasio',    'LOW',    'Técnica: derribos y takedowns.',                               CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 76, 90, 'Gimnasio',    'HARD',   'Sparring. Trabajé tomas de espalda.',                          CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 74, 75, 'Gimnasio',    'MODERATE', 'Clase: barridas desde half guard.',                            CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 72, 90, 'Gimnasio',    'HARD',   'Open mat. Mucho juego con guillotinas.',                       CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 71, 60, 'Gimnasio',    'LIGHT',    'Técnica: derribos y takedowns.',                               CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
 -- Semana 10
-(1, CURRENT_DATE - 69, 90, 'Gimnasio',    'HIGH',   'Sparring duro. Shoulder locks encadenados.',                   CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-(1, CURRENT_DATE - 67, 75, 'Gimnasio',    'MEDIUM', 'Clase: escapadas de mount y side control.',                    CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-(1, CURRENT_DATE - 65, 60, 'Gimnasio',    'LOW',    'Técnica: chokes desde guardia.',                               CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 69, 90, 'Gimnasio',    'HARD',   'Sparring duro. Shoulder locks encadenados.',                   CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 67, 75, 'Gimnasio',    'MODERATE', 'Clase: escapadas de mount y side control.',                    CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 65, 60, 'Gimnasio',    'LIGHT',    'Técnica: chokes desde guardia.',                               CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
 -- Semana 9
-(1, CURRENT_DATE - 62, 90, 'Gimnasio',    'HIGH',   'Open mat. Triángulos y omoplatas.',                            CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-(1, CURRENT_DATE - 60, 75, 'Gimnasio',    'MEDIUM', 'Clase: pasadas de guardia spider y lasso.',                    CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-(1, CURRENT_DATE - 58, 90, 'Gimnasio',    'HIGH',   'Sparring. Mucho back take desde turtle.',                      CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 62, 90, 'Gimnasio',    'HARD',   'Open mat. Triángulos y omoplatas.',                            CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 60, 75, 'Gimnasio',    'MODERATE', 'Clase: pasadas de guardia spider y lasso.',                    CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 58, 90, 'Gimnasio',    'HARD',   'Sparring. Mucho back take desde turtle.',                      CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
 -- Semana 8
-(1, CURRENT_DATE - 55, 90, 'Gimnasio',    'HIGH',   'Competición externa. 3 luchas ganadas.',                       CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-(1, CURRENT_DATE - 53, 75, 'Gimnasio',    'MEDIUM', 'Clase técnica: RNC y bow and arrow.',                          CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-(1, CURRENT_DATE - 51, 60, 'Casa',        'LOW',    'Drilling: armbars desde guardia.',                             CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 55, 90, 'Gimnasio',    'HARD',   'Competición externa. 3 luchas ganadas.',                       CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 53, 75, 'Gimnasio',    'MODERATE', 'Clase técnica: RNC y bow and arrow.',                          CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 51, 60, 'Casa',        'LIGHT',    'Drilling: armbars desde guardia.',                             CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
 -- Semana 7
-(1, CURRENT_DATE - 48, 90, 'Gimnasio',    'HIGH',   'Sparring intenso. Leg locks ataques y defensas.',              CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-(1, CURRENT_DATE - 46, 75, 'Gimnasio',    'MEDIUM', 'Clase: barridas desde X-guard.',                               CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-(1, CURRENT_DATE - 44, 90, 'Gimnasio',    'HIGH',   'Open mat. Juego de guardia abierta.',                          CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-(1, CURRENT_DATE - 43, 60, 'Gimnasio',    'LOW',    'Técnica: double leg y penetration step.',                      CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 48, 90, 'Gimnasio',    'HARD',   'Sparring intenso. Leg locks ataques y defensas.',              CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 46, 75, 'Gimnasio',    'MODERATE', 'Clase: barridas desde X-guard.',                               CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 44, 90, 'Gimnasio',    'HARD',   'Open mat. Juego de guardia abierta.',                          CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 43, 60, 'Gimnasio',    'LIGHT',    'Técnica: double leg y penetration step.',                      CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
 -- Semana 6
-(1, CURRENT_DATE - 41, 90, 'Gimnasio',    'HIGH',   'Sparring. Kimuras y americanas encadenadas.',                  CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-(1, CURRENT_DATE - 39, 75, 'Gimnasio',    'MEDIUM', 'Clase: D''Arce y Anaconda choke.',                             CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-(1, CURRENT_DATE - 37, 60, 'Gimnasio',    'LOW',    'Técnica: Omoplata y baratoplata.',                             CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 41, 90, 'Gimnasio',    'HARD',   'Sparring. Kimuras y americanas encadenadas.',                  CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 39, 75, 'Gimnasio',    'MODERATE', 'Clase: D''Arce y Anaconda choke.',                             CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 37, 60, 'Gimnasio',    'LIGHT',    'Técnica: Omoplata y baratoplata.',                             CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
 -- Semana 5
-(1, CURRENT_DATE - 34, 90, 'Gimnasio',    'HIGH',   'Open mat. Mucho trabajo en el suelo.',                         CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-(1, CURRENT_DATE - 32, 75, 'Gimnasio',    'MEDIUM', 'Clase: tomas de espalda desde guardia.',                       CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-(1, CURRENT_DATE - 30, 90, 'Gimnasio',    'HIGH',   'Sparring duro. Triangulos desde guardia invertida.',           CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 34, 90, 'Gimnasio',    'HARD',   'Open mat. Mucho trabajo en el suelo.',                         CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 32, 75, 'Gimnasio',    'MODERATE', 'Clase: tomas de espalda desde guardia.',                       CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 30, 90, 'Gimnasio',    'HARD',   'Sparring duro. Triangulos desde guardia invertida.',           CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
 -- Semana 4
-(1, CURRENT_DATE - 27, 90, 'Gimnasio',    'HIGH',   'Open mat. Leg locks y kneebars.',                              CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-(1, CURRENT_DATE - 25, 75, 'Gimnasio',    'MEDIUM', 'Clase: pasadas pressure y toreando.',                          CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-(1, CURRENT_DATE - 23, 60, 'Gimnasio',    'LOW',    'Técnica: guillotinas arm-in y high elbow.',                    CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 27, 90, 'Gimnasio',    'HARD',   'Open mat. Leg locks y kneebars.',                              CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 25, 75, 'Gimnasio',    'MODERATE', 'Clase: pasadas pressure y toreando.',                          CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 23, 60, 'Gimnasio',    'LIGHT',    'Técnica: guillotinas arm-in y high elbow.',                    CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
 -- Semana 3
-(1, CURRENT_DATE - 20, 90, 'Gimnasio',    'HIGH',   'Sparring. Mucho trabajo de top game.',                         CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-(1, CURRENT_DATE - 18, 75, 'Gimnasio',    'MEDIUM', 'Clase: escapadas de guardia cerrada.',                         CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-(1, CURRENT_DATE - 16, 90, 'Gimnasio',    'HIGH',   'Open mat. Back mount ataques.',                                CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 20, 90, 'Gimnasio',    'HARD',   'Sparring. Mucho trabajo de top game.',                         CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 18, 75, 'Gimnasio',    'MODERATE', 'Clase: escapadas de guardia cerrada.',                         CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 16, 90, 'Gimnasio',    'HARD',   'Open mat. Back mount ataques.',                                CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
 -- Semana 2
-(1, CURRENT_DATE - 13, 90, 'Gimnasio',    'HIGH',   'Sparring intenso. Mejor ritmo en guard passing.',              CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-(1, CURRENT_DATE - 11, 75, 'Gimnasio',    'MEDIUM', 'Clase: single leg y double leg desde clinch.',                 CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-(1, CURRENT_DATE - 9,  60, 'Gimnasio',    'LOW',    'Técnica: wristlocks y pequeñas llaves.',                       CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 13, 90, 'Gimnasio',    'HARD',   'Sparring intenso. Mejor ritmo en guard passing.',              CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 11, 75, 'Gimnasio',    'MODERATE', 'Clase: single leg y double leg desde clinch.',                 CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 9,  60, 'Gimnasio',    'LIGHT',    'Técnica: wristlocks y pequeñas llaves.',                       CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
 -- Semana 1 (última semana)
-(1, CURRENT_DATE - 6,  90, 'Gimnasio',    'HIGH',   'Open mat. Fui de competición. Buen día.',                      CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-(1, CURRENT_DATE - 4,  75, 'Gimnasio',    'MEDIUM', 'Clase: triángulos desde X-guard.',                             CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-(1, CURRENT_DATE - 2,  90, 'Gimnasio',    'HIGH',   'Sparring. Armbar desde guardia muy fluido hoy.',               CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0);
+(1, CURRENT_DATE - 6,  90, 'Gimnasio',    'HARD',   'Open mat. Fui de competición. Buen día.',                      CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 4,  75, 'Gimnasio',    'MODERATE', 'Clase: triángulos desde X-guard.',                             CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(1, CURRENT_DATE - 2,  90, 'Gimnasio',    'HARD',   'Sparring. Armbar desde guardia muy fluido hoy.',               CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0);
 
 -- ============================================================
 -- TÉCNICAS TRABAJADAS EN SESIONES BJJ
