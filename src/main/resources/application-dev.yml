@@ -12,8 +12,6 @@ spring:
       hibernate:
         jdbc:
           time_zone: UTC
-        type:
-          preferred_java_type_jdbc_types: true
     show-sql: true
   flyway:
     enabled: true

@@ -27,12 +27,12 @@ public abstract class BaseEntity {
     private Long ownerId = 1L;
 
     @CreatedDate
-    @JdbcTypeCode(SqlTypes.TIMESTAMP_WITH_TIMEZONE)
+    @JdbcTypeCode(SqlTypes.TIMESTAMP)
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
     @LastModifiedDate
-    @JdbcTypeCode(SqlTypes.TIMESTAMP_WITH_TIMEZONE)
+    @JdbcTypeCode(SqlTypes.TIMESTAMP)
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
@@ -40,11 +40,11 @@ public abstract class BaseEntity {
     @Column(name = "version", nullable = false)
     private Long version = 0L;
 
-    @JdbcTypeCode(SqlTypes.TIMESTAMP_WITH_TIMEZONE)
+    @JdbcTypeCode(SqlTypes.TIMESTAMP)
     @Column(name = "deleted_at")
     private Instant deletedAt;
 
-    @JdbcTypeCode(SqlTypes.TIMESTAMP_WITH_TIMEZONE)
+    @JdbcTypeCode(SqlTypes.TIMESTAMP)
     @Column(name = "purge_at")
     private Instant purgeAt;
 
