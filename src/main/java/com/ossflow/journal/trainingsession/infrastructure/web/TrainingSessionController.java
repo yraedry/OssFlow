@@ -17,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +34,7 @@ public class TrainingSessionController {
     private final CurrentOwner currentOwner;
 
     @GetMapping
+    @Transactional(readOnly = true)
     public Page<TrainingSessionResponse> list(
             @RequestParam(defaultValue = "0") @Min(0) int page,
             @RequestParam(defaultValue = "20") @Min(1) int size) {
@@ -41,6 +43,7 @@ public class TrainingSessionController {
     }
 
     @GetMapping("/{id}")
+    @Transactional(readOnly = true)
     public TrainingSessionResponse get(@PathVariable @Positive Long id) {
         return mapper.toResponse(service.findById(id, currentOwner.id()));
     }
