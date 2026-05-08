@@ -36,10 +36,10 @@ public class RulesetEntity {
     @Column(nullable = false, length = 10)
     private Modality modality;
 
-    @Column(name = "effective_from", nullable = false)
+    @Column(name = "effective_from", nullable = false, columnDefinition = "date")
     private LocalDate effectiveFrom;
 
-    @Column(name = "effective_to")
+    @Column(name = "effective_to", columnDefinition = "date")
     private LocalDate effectiveTo;
 
     @Column(name = "source_url", length = 500)

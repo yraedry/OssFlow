@@ -18,7 +18,7 @@ public abstract class BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, columnDefinition = "INTEGER")
+    @Column(name = "id", nullable = false)
     private Long id;
 
     @Column(name = "owner_id", nullable = false)

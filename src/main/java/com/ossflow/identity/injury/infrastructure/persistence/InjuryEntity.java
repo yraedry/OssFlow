@@ -43,10 +43,10 @@ public class InjuryEntity {
     @Column(name = "status", nullable = false, length = 20)
     private InjuryStatus status;
 
-    @Column(name = "started_on", length = 20)
+    @Column(name = "started_on", length = 20, columnDefinition = "date")
     private LocalDate startedOn;
 
-    @Column(name = "recovered_on", length = 20)
+    @Column(name = "recovered_on", length = 20, columnDefinition = "date")
     private LocalDate recoveredOn;
 
     @CreatedDate

@@ -21,7 +21,7 @@ import java.util.List;
 @SQLRestriction("deleted_at IS NULL")
 public class TrainingSessionEntity extends BaseEntity {
 
-    @Column(name = "session_date", nullable = false)
+    @Column(name = "session_date", nullable = false, columnDefinition = "date")
     private LocalDate sessionDate;
 
     @Column(name = "duration_minutes", nullable = false)

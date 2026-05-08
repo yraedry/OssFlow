@@ -29,10 +29,10 @@ public class StudyBlockEntity {
     @Column(name = "title", nullable = false, length = 200)
     private String title;
 
-    @Column(name = "start_date")
+    @Column(name = "start_date", columnDefinition = "date")
     private LocalDate startDate;
 
-    @Column(name = "end_date")
+    @Column(name = "end_date", columnDefinition = "date")
     private LocalDate endDate;
 
     @Column(name = "block_order", nullable = false)

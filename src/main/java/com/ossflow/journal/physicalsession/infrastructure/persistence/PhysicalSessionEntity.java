@@ -18,7 +18,7 @@ import java.time.LocalDate;
 @SQLRestriction("deleted_at IS NULL")
 public class PhysicalSessionEntity extends BaseEntity {
 
-    @Column(name = "session_date", nullable = false)
+    @Column(name = "session_date", nullable = false, columnDefinition = "date")
     private LocalDate sessionDate;
 
     @Enumerated(EnumType.STRING)
