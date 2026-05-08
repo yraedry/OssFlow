@@ -4,7 +4,9 @@ import com.ossflow.journal.physicalsession.domain.PhysicalSessionType;
 import com.ossflow.shared.persistence.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
 
@@ -19,6 +21,7 @@ import java.time.LocalDate;
 public class PhysicalSessionEntity extends BaseEntity {
 
     @Column(name = "session_date", nullable = false, columnDefinition = "date")
+    @JdbcTypeCode(SqlTypes.DATE)
     private LocalDate sessionDate;
 
     @Enumerated(EnumType.STRING)

@@ -8,6 +8,9 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import java.time.Instant;
 import java.time.LocalDate;
 
@@ -44,9 +47,11 @@ public class InjuryEntity {
     private InjuryStatus status;
 
     @Column(name = "started_on", length = 20, columnDefinition = "date")
+    @JdbcTypeCode(SqlTypes.DATE)
     private LocalDate startedOn;
 
     @Column(name = "recovered_on", length = 20, columnDefinition = "date")
+    @JdbcTypeCode(SqlTypes.DATE)
     private LocalDate recoveredOn;
 
     @CreatedDate

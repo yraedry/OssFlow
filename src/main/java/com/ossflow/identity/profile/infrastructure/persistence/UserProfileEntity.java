@@ -3,7 +3,9 @@ package com.ossflow.identity.profile.infrastructure.persistence;
 import com.ossflow.shared.persistence.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -25,7 +27,8 @@ public class UserProfileEntity extends BaseEntity {
     @Column(name = "current_belt", nullable = false, length = 15)
     private String currentBelt;
 
-    @Column(name = "belt_since", columnDefinition = "date")
+    @Column(name = "belt_since")
+    @JdbcTypeCode(SqlTypes.DATE)
     private LocalDate beltSince;
 
     @Column(name = "academy", length = 200)

@@ -4,7 +4,9 @@ import com.ossflow.planning.studyplan.domain.StudyPlanStatus;
 import com.ossflow.shared.persistence.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
 
@@ -25,9 +27,11 @@ public class StudyPlanEntity extends BaseEntity {
     private String goalMarkdown;
 
     @Column(name = "start_date", columnDefinition = "date")
+    @JdbcTypeCode(SqlTypes.DATE)
     private LocalDate startDate;
 
     @Column(name = "end_date", columnDefinition = "date")
+    @JdbcTypeCode(SqlTypes.DATE)
     private LocalDate endDate;
 
     @Enumerated(EnumType.STRING)
