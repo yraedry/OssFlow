@@ -69,12 +69,13 @@ public class RadarController {
         "STRENGTH",    "Fuerza",
         "CARDIO",      "Cardio",
         "FLEXIBILITY", "Flexibilidad",
+        "MOBILITY",    "Movilidad",
         "HIIT",        "Explosividad",
         "OTHER",       "General"
     );
 
     private static final List<String> PHYSICAL_RADAR_TYPES = List.of(
-        "STRENGTH", "CARDIO", "FLEXIBILITY", "HIIT", "OTHER"
+        "STRENGTH", "CARDIO", "FLEXIBILITY", "MOBILITY", "HIIT", "OTHER"
     );
 
     @GetMapping("/radar/fisico")
