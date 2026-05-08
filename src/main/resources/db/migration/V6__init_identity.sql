@@ -6,7 +6,7 @@ CREATE TABLE user_profile (
     belt_since               DATE,
     academy                  VARCHAR(200),
     preferred_modality       VARCHAR(10) NOT NULL,
-    onboarding_completed     BOOLEAN NOT NULL DEFAULT 0,
+    onboarding_completed     BOOLEAN NOT NULL DEFAULT FALSE,
     created_at               TIMESTAMP NOT NULL,
     updated_at               TIMESTAMP NOT NULL,
     version                  BIGINT NOT NULL DEFAULT 0,
@@ -17,7 +17,7 @@ CREATE TABLE user_profile (
 CREATE TABLE user_profile_federation (
     user_profile_id   BIGINT NOT NULL,
     federation_id     BIGINT NOT NULL,
-    is_primary        BOOLEAN NOT NULL DEFAULT 0,
+    is_primary        BOOLEAN NOT NULL DEFAULT FALSE,
     PRIMARY KEY (user_profile_id, federation_id),
     FOREIGN KEY (user_profile_id) REFERENCES user_profile(id) ON DELETE CASCADE,
     FOREIGN KEY (federation_id)   REFERENCES federation(id)

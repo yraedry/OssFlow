@@ -7,7 +7,7 @@ CREATE TABLE injury (
     status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
     started_on VARCHAR(20),
     recovered_on VARCHAR(20),
-    created_at VARCHAR(255) NOT NULL,
-    updated_at VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL,
     version BIGINT NOT NULL
 );

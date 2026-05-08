@@ -7,9 +7,9 @@ CREATE TABLE exercise (
     equipment VARCHAR(30) NOT NULL DEFAULT 'NO_EQUIPMENT',
     youtube_url VARCHAR(500),
     visibility VARCHAR(20) NOT NULL DEFAULT 'PUBLIC',
-    created_at VARCHAR(255) NOT NULL,
-    updated_at VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL,
     version BIGINT NOT NULL,
-    deleted_at VARCHAR(255),
-    purge_at VARCHAR(255)
+    deleted_at TIMESTAMP,
+    purge_at TIMESTAMP
 );
