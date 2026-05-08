@@ -11,6 +11,7 @@ public record Technique(
         Long ownerId,
         String name,
         TechniqueCategory category,
+        TechniqueFamily family,
         String description,
         String youtubeUrl,
         Belt minimumBelt,

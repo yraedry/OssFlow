@@ -4,6 +4,7 @@ import com.ossflow.catalog.position.domain.Visibility;
 import com.ossflow.catalog.technique.domain.Belt;
 import com.ossflow.catalog.technique.domain.Modality;
 import com.ossflow.catalog.technique.domain.TechniqueCategory;
+import com.ossflow.catalog.technique.domain.TechniqueFamily;
 import com.ossflow.shared.persistence.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -25,6 +26,10 @@ public class TechniqueEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false, length = 30)
     private TechniqueCategory category;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "family", length = 30)
+    private TechniqueFamily family;
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
