@@ -24,31 +24,43 @@ public class RadarController {
     private final CurrentOwner currentOwner;
 
     private static final Map<TechniqueFamily, String> FAMILY_LABELS = Map.ofEntries(
-        Map.entry(TechniqueFamily.CHOKES,         "Chokes"),
-        Map.entry(TechniqueFamily.TRIANGLES,       "Triángulos"),
-        Map.entry(TechniqueFamily.ARMBARS,         "Armbars"),
-        Map.entry(TechniqueFamily.SHOULDER_LOCKS,  "Shoulder Locks"),
-        Map.entry(TechniqueFamily.LEG_LOCKS,       "Leg Locks"),
-        Map.entry(TechniqueFamily.GUILLOTINES,     "Guillotinas"),
-        Map.entry(TechniqueFamily.SWEEPS,          "Barridas"),
-        Map.entry(TechniqueFamily.GUARD_PASSES,    "Pasadas"),
-        Map.entry(TechniqueFamily.TAKEDOWNS,       "Derribos"),
-        Map.entry(TechniqueFamily.BACK_TAKES,      "Tomas de Espalda"),
-        Map.entry(TechniqueFamily.ESCAPES,         "Escapadas"),
-        Map.entry(TechniqueFamily.OTHER,           "Otras")
+        Map.entry(TechniqueFamily.CLOSED_GUARD,     "Guardia Cerrada"),
+        Map.entry(TechniqueFamily.HALF_GUARD,       "Media Guardia"),
+        Map.entry(TechniqueFamily.OPEN_GUARD,       "Guardia Abierta"),
+        Map.entry(TechniqueFamily.DLR_GUARD,        "De La Riva"),
+        Map.entry(TechniqueFamily.BUTTERFLY_GUARD,  "Guardia Mariposa"),
+        Map.entry(TechniqueFamily.LEG_ENTANGLEMENT, "Leg Locks / Entrelazados"),
+        Map.entry(TechniqueFamily.GUARD_PASSES,     "Pasajes"),
+        Map.entry(TechniqueFamily.CHOKES,           "Estrangulaciones"),
+        Map.entry(TechniqueFamily.GUILLOTINES,      "Guillotinas"),
+        Map.entry(TechniqueFamily.TRIANGLES,        "Triángulos"),
+        Map.entry(TechniqueFamily.ARMBARS,          "Armbars"),
+        Map.entry(TechniqueFamily.SHOULDER_LOCKS,   "Kimura / Americana"),
+        Map.entry(TechniqueFamily.LEG_LOCKS,        "Leg Locks"),
+        Map.entry(TechniqueFamily.TAKEDOWNS,        "Derribos"),
+        Map.entry(TechniqueFamily.SWEEPS,           "Barridas"),
+        Map.entry(TechniqueFamily.BACK_TAKES,       "Tomas de Espalda"),
+        Map.entry(TechniqueFamily.ESCAPES,          "Escapadas"),
+        Map.entry(TechniqueFamily.OTHER,            "Otras")
     );
 
     // Familias del radar BJJ (excluimos OTHER por ruido)
     private static final List<TechniqueFamily> BJJ_RADAR_FAMILIES = List.of(
+        TechniqueFamily.CLOSED_GUARD,
+        TechniqueFamily.HALF_GUARD,
+        TechniqueFamily.OPEN_GUARD,
+        TechniqueFamily.DLR_GUARD,
+        TechniqueFamily.BUTTERFLY_GUARD,
+        TechniqueFamily.LEG_ENTANGLEMENT,
+        TechniqueFamily.GUARD_PASSES,
         TechniqueFamily.CHOKES,
+        TechniqueFamily.GUILLOTINES,
         TechniqueFamily.TRIANGLES,
         TechniqueFamily.ARMBARS,
         TechniqueFamily.SHOULDER_LOCKS,
         TechniqueFamily.LEG_LOCKS,
-        TechniqueFamily.GUILLOTINES,
-        TechniqueFamily.SWEEPS,
-        TechniqueFamily.GUARD_PASSES,
         TechniqueFamily.TAKEDOWNS,
+        TechniqueFamily.SWEEPS,
         TechniqueFamily.BACK_TAKES,
         TechniqueFamily.ESCAPES
     );
