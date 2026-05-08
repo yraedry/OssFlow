@@ -1,6 +1,7 @@
 package com.ossflow.journal.trainingsession.infrastructure.persistence;
 
 import com.ossflow.journal.trainingsession.domain.Intensity;
+import com.ossflow.journal.trainingsession.domain.SessionType;
 import com.ossflow.shared.persistence.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -32,6 +33,10 @@ public class TrainingSessionEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "intensity", nullable = false, length = 15)
     private Intensity intensity;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "session_type", nullable = false, length = 20)
+    private SessionType sessionType;
 
     @Column(name = "notes_markdown", columnDefinition = "TEXT")
     private String notesMarkdown;

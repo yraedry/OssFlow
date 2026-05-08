@@ -1,6 +1,7 @@
 package com.ossflow.journal.trainingsession.infrastructure.web.dto;
 
 import com.ossflow.journal.trainingsession.domain.Intensity;
+import com.ossflow.journal.trainingsession.domain.SessionType;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -12,6 +13,7 @@ public record TrainingSessionResponse(
         int durationMinutes,
         String location,
         Intensity intensity,
+        SessionType sessionType,
         String notesMarkdown,
         List<WorkedTechniqueResponse> workedTechniques,
         Instant createdAt,
