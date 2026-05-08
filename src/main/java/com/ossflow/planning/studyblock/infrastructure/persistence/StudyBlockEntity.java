@@ -6,6 +6,9 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import java.time.Instant;
 import java.time.LocalDate;
 
@@ -30,9 +33,11 @@ public class StudyBlockEntity {
     private String title;
 
     @Column(name = "start_date", columnDefinition = "date")
+    @JdbcTypeCode(SqlTypes.DATE)
     private LocalDate startDate;
 
     @Column(name = "end_date", columnDefinition = "date")
+    @JdbcTypeCode(SqlTypes.DATE)
     private LocalDate endDate;
 
     @Column(name = "block_order", nullable = false)

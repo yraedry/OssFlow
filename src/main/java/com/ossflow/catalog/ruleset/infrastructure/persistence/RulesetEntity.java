@@ -9,6 +9,9 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -37,9 +40,11 @@ public class RulesetEntity {
     private Modality modality;
 
     @Column(name = "effective_from", nullable = false, columnDefinition = "date")
+    @JdbcTypeCode(SqlTypes.DATE)
     private LocalDate effectiveFrom;
 
     @Column(name = "effective_to", columnDefinition = "date")
+    @JdbcTypeCode(SqlTypes.DATE)
     private LocalDate effectiveTo;
 
     @Column(name = "source_url", length = 500)
