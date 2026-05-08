@@ -6,53 +6,53 @@
 
 -- IBJJF Gi — todas las categorías de cinturón
 INSERT INTO ruleset (federation_id, belt, modality, effective_from, source_url, created_at, updated_at, version)
-SELECT f.id, 'WHITE',  'GI', '2024-01-01', 'https://ibjjf.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'IBJJF'
+SELECT f.id, 'WHITE',  'GI', DATE '2024-01-01', 'https://ibjjf.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'IBJJF'
 UNION ALL
-SELECT f.id, 'BLUE',   'GI', '2024-01-01', 'https://ibjjf.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'IBJJF'
+SELECT f.id, 'BLUE',   'GI', DATE '2024-01-01', 'https://ibjjf.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'IBJJF'
 UNION ALL
-SELECT f.id, 'PURPLE', 'GI', '2024-01-01', 'https://ibjjf.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'IBJJF'
+SELECT f.id, 'PURPLE', 'GI', DATE '2024-01-01', 'https://ibjjf.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'IBJJF'
 UNION ALL
-SELECT f.id, 'BROWN',  'GI', '2024-01-01', 'https://ibjjf.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'IBJJF'
+SELECT f.id, 'BROWN',  'GI', DATE '2024-01-01', 'https://ibjjf.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'IBJJF'
 UNION ALL
-SELECT f.id, 'BLACK',  'GI', '2024-01-01', 'https://ibjjf.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'IBJJF';
+SELECT f.id, 'BLACK',  'GI', DATE '2024-01-01', 'https://ibjjf.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'IBJJF';
 
 -- IBJJF No-Gi — cinturón equivalente por años de experiencia
 INSERT INTO ruleset (federation_id, belt, modality, effective_from, source_url, created_at, updated_at, version)
-SELECT f.id, 'WHITE',  'NOGI', '2024-01-01', 'https://ibjjf.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'IBJJF'
+SELECT f.id, 'WHITE',  'NOGI', DATE '2024-01-01', 'https://ibjjf.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'IBJJF'
 UNION ALL
-SELECT f.id, 'BLUE',   'NOGI', '2024-01-01', 'https://ibjjf.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'IBJJF'
+SELECT f.id, 'BLUE',   'NOGI', DATE '2024-01-01', 'https://ibjjf.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'IBJJF'
 UNION ALL
-SELECT f.id, 'PURPLE', 'NOGI', '2024-01-01', 'https://ibjjf.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'IBJJF'
+SELECT f.id, 'PURPLE', 'NOGI', DATE '2024-01-01', 'https://ibjjf.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'IBJJF'
 UNION ALL
-SELECT f.id, 'BROWN',  'NOGI', '2024-01-01', 'https://ibjjf.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'IBJJF'
+SELECT f.id, 'BROWN',  'NOGI', DATE '2024-01-01', 'https://ibjjf.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'IBJJF'
 UNION ALL
-SELECT f.id, 'BLACK',  'NOGI', '2024-01-01', 'https://ibjjf.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'IBJJF';
+SELECT f.id, 'BLACK',  'NOGI', DATE '2024-01-01', 'https://ibjjf.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'IBJJF';
 
 -- ADCC — solo no-gi, categoría única (usa BLACK como equivalente pro)
 INSERT INTO ruleset (federation_id, belt, modality, effective_from, source_url, created_at, updated_at, version)
-SELECT f.id, 'BLACK', 'NOGI', '2022-01-01', 'https://adcombat.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'ADCC';
+SELECT f.id, 'BLACK', 'NOGI', DATE '2022-01-01', 'https://adcombat.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'ADCC';
 
 -- AJP — gi y no-gi
 INSERT INTO ruleset (federation_id, belt, modality, effective_from, source_url, created_at, updated_at, version)
-SELECT f.id, 'WHITE',  'GI', '2023-01-01', 'https://ajptour.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'AJP'
+SELECT f.id, 'WHITE',  'GI', DATE '2023-01-01', 'https://ajptour.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'AJP'
 UNION ALL
-SELECT f.id, 'BLUE',   'GI', '2023-01-01', 'https://ajptour.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'AJP'
+SELECT f.id, 'BLUE',   'GI', DATE '2023-01-01', 'https://ajptour.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'AJP'
 UNION ALL
-SELECT f.id, 'PURPLE', 'GI', '2023-01-01', 'https://ajptour.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'AJP'
+SELECT f.id, 'PURPLE', 'GI', DATE '2023-01-01', 'https://ajptour.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'AJP'
 UNION ALL
-SELECT f.id, 'BROWN',  'GI', '2023-01-01', 'https://ajptour.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'AJP'
+SELECT f.id, 'BROWN',  'GI', DATE '2023-01-01', 'https://ajptour.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'AJP'
 UNION ALL
-SELECT f.id, 'BLACK',  'GI', '2023-01-01', 'https://ajptour.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'AJP'
+SELECT f.id, 'BLACK',  'GI', DATE '2023-01-01', 'https://ajptour.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'AJP'
 UNION ALL
-SELECT f.id, 'WHITE',  'NOGI', '2023-01-01', 'https://ajptour.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'AJP'
+SELECT f.id, 'WHITE',  'NOGI', DATE '2023-01-01', 'https://ajptour.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'AJP'
 UNION ALL
-SELECT f.id, 'BLUE',   'NOGI', '2023-01-01', 'https://ajptour.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'AJP'
+SELECT f.id, 'BLUE',   'NOGI', DATE '2023-01-01', 'https://ajptour.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'AJP'
 UNION ALL
-SELECT f.id, 'PURPLE', 'NOGI', '2023-01-01', 'https://ajptour.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'AJP'
+SELECT f.id, 'PURPLE', 'NOGI', DATE '2023-01-01', 'https://ajptour.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'AJP'
 UNION ALL
-SELECT f.id, 'BROWN',  'NOGI', '2023-01-01', 'https://ajptour.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'AJP'
+SELECT f.id, 'BROWN',  'NOGI', DATE '2023-01-01', 'https://ajptour.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'AJP'
 UNION ALL
-SELECT f.id, 'BLACK',  'NOGI', '2023-01-01', 'https://ajptour.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'AJP';
+SELECT f.id, 'BLACK',  'NOGI', DATE '2023-01-01', 'https://ajptour.com/rules', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0 FROM federation f WHERE f.code = 'AJP';
 
 -- Técnicas prohibidas por cinturón: IBJJF Gi
 -- WHITE: No heel hooks, no knee bars, no toe holds, no reaping
