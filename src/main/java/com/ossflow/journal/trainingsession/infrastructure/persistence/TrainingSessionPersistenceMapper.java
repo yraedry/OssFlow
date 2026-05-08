@@ -12,9 +12,17 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 public interface TrainingSessionPersistenceMapper {
 
     @Mapping(target = "workedTechniques", ignore = true)
+    @Mapping(target = "createdAt", expression = "java(entity.getCreatedAtInstant())")
+    @Mapping(target = "updatedAt", expression = "java(entity.getUpdatedAtInstant())")
+    @Mapping(target = "deletedAt", expression = "java(entity.getDeletedAtInstant())")
+    @Mapping(target = "purgeAt", expression = "java(entity.getPurgeAtInstant())")
     TrainingSession toDomain(TrainingSessionEntity entity);
 
     @Mapping(target = "workedTechniques", source = "workedTechniques")
+    @Mapping(target = "createdAt", expression = "java(entity.getCreatedAtInstant())")
+    @Mapping(target = "updatedAt", expression = "java(entity.getUpdatedAtInstant())")
+    @Mapping(target = "deletedAt", expression = "java(entity.getDeletedAtInstant())")
+    @Mapping(target = "purgeAt", expression = "java(entity.getPurgeAtInstant())")
     TrainingSession toDomainWithTechniques(TrainingSessionEntity entity);
 
     @Mapping(target = "workedTechniques", ignore = true)

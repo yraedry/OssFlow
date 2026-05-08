@@ -13,8 +13,8 @@ public class WeeklyTemplatePersistenceMapper {
                 .id(e.getId())
                 .ownerId(e.getOwnerId())
                 .days(e.getDays() != null ? List.copyOf(e.getDays()) : List.of())
-                .createdAt(e.getCreatedAt())
-                .updatedAt(e.getUpdatedAt())
+                .createdAt(e.getCreatedAtInstant())
+                .updatedAt(e.getUpdatedAtInstant())
                 .build();
     }
 

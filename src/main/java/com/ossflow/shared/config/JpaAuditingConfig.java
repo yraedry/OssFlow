@@ -5,15 +5,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.auditing.DateTimeProvider;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.Optional;
 
 @Configuration
-@EnableJpaAuditing(dateTimeProviderRef = "instantDateTimeProvider")
+@EnableJpaAuditing(dateTimeProviderRef = "offsetDateTimeProvider")
 public class JpaAuditingConfig {
 
     @Bean
-    public DateTimeProvider instantDateTimeProvider() {
-        return () -> Optional.of(Instant.now());
+    public DateTimeProvider offsetDateTimeProvider() {
+        return () -> Optional.of(OffsetDateTime.now());
     }
 }

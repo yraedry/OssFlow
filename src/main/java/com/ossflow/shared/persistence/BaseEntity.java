@@ -9,6 +9,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 @Getter
 @Setter
@@ -25,30 +27,46 @@ public abstract class BaseEntity {
     private Long ownerId = 1L;
 
     @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false, columnDefinition = "timestamp")
-    private Instant createdAt;
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private OffsetDateTime createdAt;
 
     @LastModifiedDate
-    @Column(name = "updated_at", nullable = false, columnDefinition = "timestamp")
-    private Instant updatedAt;
+    @Column(name = "updated_at", nullable = false)
+    private OffsetDateTime updatedAt;
 
     @Version
     @Column(name = "version", nullable = false)
     private Long version = 0L;
 
-    @Column(name = "deleted_at", columnDefinition = "timestamp")
-    private Instant deletedAt;
+    @Column(name = "deleted_at")
+    private OffsetDateTime deletedAt;
 
-    @Column(name = "purge_at", columnDefinition = "timestamp")
-    private Instant purgeAt;
+    @Column(name = "purge_at")
+    private OffsetDateTime purgeAt;
+
+    public Instant getCreatedAtInstant() {
+        return createdAt != null ? createdAt.toInstant() : null;
+    }
+
+    public Instant getUpdatedAtInstant() {
+        return updatedAt != null ? updatedAt.toInstant() : null;
+    }
+
+    public Instant getDeletedAtInstant() {
+        return deletedAt != null ? deletedAt.toInstant() : null;
+    }
+
+    public Instant getPurgeAtInstant() {
+        return purgeAt != null ? purgeAt.toInstant() : null;
+    }
 
     public boolean isSoftDeleted() {
         return deletedAt != null;
     }
 
     public void softDelete(Instant now, Duration retention) {
-        this.deletedAt = now;
-        this.purgeAt = now.plus(retention);
+        this.deletedAt = now.atOffset(ZoneOffset.UTC);
+        this.purgeAt = now.plus(retention).atOffset(ZoneOffset.UTC);
     }
 
     public void restore() {

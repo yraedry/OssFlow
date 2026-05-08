@@ -11,6 +11,10 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
         uses = {CompetitionMatchMapper.class})
 public interface CompetitionLogPersistenceMapper {
 
+    @Mapping(target = "createdAt", expression = "java(entity.getCreatedAtInstant())")
+    @Mapping(target = "updatedAt", expression = "java(entity.getUpdatedAtInstant())")
+    @Mapping(target = "deletedAt", expression = "java(entity.getDeletedAtInstant())")
+    @Mapping(target = "purgeAt", expression = "java(entity.getPurgeAtInstant())")
     CompetitionLog toDomain(CompetitionLogEntity entity);
 
     @Mapping(target = "matches", ignore = true)
