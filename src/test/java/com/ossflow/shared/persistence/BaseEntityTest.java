@@ -25,8 +25,8 @@ class BaseEntityTest {
         entity.softDelete(now, Duration.ofDays(30));
 
         assertThat(entity.isSoftDeleted()).isTrue();
-        assertThat(entity.getDeletedAt()).isEqualTo(now);
-        assertThat(entity.getPurgeAt()).isEqualTo(now.plus(Duration.ofDays(30)));
+        assertThat(entity.getDeletedAtInstant()).isEqualTo(now);
+        assertThat(entity.getPurgeAtInstant()).isEqualTo(now.plus(Duration.ofDays(30)));
     }
 
     @Test
