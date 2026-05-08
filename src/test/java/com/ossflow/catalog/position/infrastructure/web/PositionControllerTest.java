@@ -43,7 +43,7 @@ class PositionControllerTest {
 
     @Test
     void post_should_return_201_with_location_header() throws Exception {
-        var req = new CreatePositionRequest("Guardia Cerrada", PositionType.BOTTOM, null, Visibility.PRIVATE);
+        var req = new CreatePositionRequest("Guardia Cerrada", PositionType.BOTTOM, null, null, Visibility.PRIVATE);
         given(service.create(org.mockito.ArgumentMatchers.any())).willReturn(
                 Position.builder().id(7L).ownerId(1L).name("Guardia Cerrada")
                         .type(PositionType.BOTTOM).visibility(Visibility.PRIVATE).build());
@@ -58,7 +58,7 @@ class PositionControllerTest {
 
     @Test
     void post_should_return_400_when_name_blank() throws Exception {
-        var req = new CreatePositionRequest("", PositionType.BOTTOM, null, Visibility.PRIVATE);
+        var req = new CreatePositionRequest("", PositionType.BOTTOM, null, null, Visibility.PRIVATE);
 
         mvc.perform(post("/api/v1/catalog/positions")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -70,7 +70,7 @@ class PositionControllerTest {
 
     @Test
     void post_should_return_409_when_name_duplicate() throws Exception {
-        var req = new CreatePositionRequest("Guardia Cerrada", PositionType.BOTTOM, null, Visibility.PRIVATE);
+        var req = new CreatePositionRequest("Guardia Cerrada", PositionType.BOTTOM, null, null, Visibility.PRIVATE);
         given(service.create(org.mockito.ArgumentMatchers.any()))
                 .willThrow(new DuplicateNameException("POSITION_NAME_DUPLICATE", "duplicado", Map.of()));
 

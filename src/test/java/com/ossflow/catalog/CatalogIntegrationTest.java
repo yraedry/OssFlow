@@ -41,7 +41,7 @@ class CatalogIntegrationTest {
     @Test
     void should_create_position_then_technique_referencing_it() throws Exception {
         // create position
-        var posReq = new CreatePositionRequest("Guardia Cerrada", PositionType.BOTTOM, null, Visibility.PRIVATE);
+        var posReq = new CreatePositionRequest("Guardia Cerrada", PositionType.BOTTOM, null, null, Visibility.PRIVATE);
         String posBody = mvc.perform(post("/api/v1/catalog/positions")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(posReq)))
@@ -77,7 +77,7 @@ class CatalogIntegrationTest {
     @Test
     void should_soft_delete_and_restore_technique() throws Exception {
         // create position
-        var posReq = new CreatePositionRequest("Monte", PositionType.TOP, null, Visibility.PRIVATE);
+        var posReq = new CreatePositionRequest("Monte", PositionType.TOP, null, null, Visibility.PRIVATE);
         String posBody = mvc.perform(post("/api/v1/catalog/positions")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(posReq)))
