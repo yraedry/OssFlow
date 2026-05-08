@@ -1,5 +1,5 @@
 CREATE TABLE position (
-    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    id              BIGSERIAL PRIMARY KEY,
     owner_id        BIGINT       NOT NULL DEFAULT 1,
     name            VARCHAR(120) NOT NULL,
     type            VARCHAR(30)  NOT NULL,
@@ -17,7 +17,7 @@ CREATE UNIQUE INDEX ux_position_owner_name_active
 CREATE INDEX ix_position_owner_deleted ON position(owner_id, deleted_at);
 
 CREATE TABLE technique (
-    id                  INTEGER PRIMARY KEY AUTOINCREMENT,
+    id                  BIGSERIAL PRIMARY KEY,
     owner_id            BIGINT       NOT NULL DEFAULT 1,
     name                VARCHAR(120) NOT NULL,
     category            VARCHAR(30)  NOT NULL,

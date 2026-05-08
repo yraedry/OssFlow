@@ -1,9 +1,11 @@
 spring:
   datasource:
-    url: jdbc:sqlite:${OSSFLOW_DB_PATH:/data/ossflow.db}
-    driver-class-name: org.sqlite.JDBC
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/${POSTGRES_DB:ossflow}
+    username: ${POSTGRES_USER:ossflow}
+    password: ${POSTGRES_PASSWORD:ossflow}
+    driver-class-name: org.postgresql.Driver
   jpa:
-    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: none
     show-sql: false

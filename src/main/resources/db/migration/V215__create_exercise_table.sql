@@ -1,5 +1,5 @@
 CREATE TABLE exercise (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id BIGSERIAL PRIMARY KEY,
     owner_id BIGINT NOT NULL,
     name VARCHAR(200) NOT NULL,
     description TEXT,

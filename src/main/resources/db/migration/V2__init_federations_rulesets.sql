@@ -1,5 +1,5 @@
 CREATE TABLE federation (
-    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    id              BIGSERIAL PRIMARY KEY,
     code            VARCHAR(20)  NOT NULL UNIQUE,
     name            VARCHAR(120) NOT NULL,
     official_url    VARCHAR(500),
@@ -9,7 +9,7 @@ CREATE TABLE federation (
 );
 
 CREATE TABLE ruleset (
-    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    id               BIGSERIAL PRIMARY KEY,
     federation_id    BIGINT       NOT NULL,
     belt             VARCHAR(15)  NOT NULL,
     modality         VARCHAR(10)  NOT NULL,
