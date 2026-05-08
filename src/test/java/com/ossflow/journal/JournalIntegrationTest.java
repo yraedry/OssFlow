@@ -77,6 +77,7 @@ class JournalIntegrationTest {
                   "durationMinutes": 90,
                   "location": "Gym Central",
                   "intensity": "MODERATE",
+                  "sessionType": "BJJ",
                   "notesMarkdown": "Good session"
                 }
                 """;
