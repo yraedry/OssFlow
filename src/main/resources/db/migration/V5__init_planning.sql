@@ -1,5 +1,5 @@
 CREATE TABLE study_plan (
-    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    id              BIGSERIAL PRIMARY KEY,
     owner_id        BIGINT NOT NULL DEFAULT 1,
     title           VARCHAR(200) NOT NULL,
     goal_markdown   TEXT,
@@ -14,7 +14,7 @@ CREATE TABLE study_plan (
 );
 
 CREATE TABLE study_block (
-    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    id              BIGSERIAL PRIMARY KEY,
     study_plan_id   BIGINT NOT NULL,
     title           VARCHAR(200) NOT NULL,
     start_date      DATE NOT NULL,
@@ -26,7 +26,7 @@ CREATE TABLE study_block (
 );
 
 CREATE TABLE study_item (
-    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    id               BIGSERIAL PRIMARY KEY,
     study_block_id   BIGINT NOT NULL,
     description      VARCHAR(500) NOT NULL,
     status           VARCHAR(15) NOT NULL,

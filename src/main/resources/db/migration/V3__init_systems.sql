@@ -1,5 +1,5 @@
 CREATE TABLE system (
-    id                   INTEGER PRIMARY KEY AUTOINCREMENT,
+    id                   BIGSERIAL PRIMARY KEY,
     owner_id             BIGINT       NOT NULL DEFAULT 1,
     name                 VARCHAR(120) NOT NULL,
     description          TEXT,

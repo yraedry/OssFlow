@@ -1,5 +1,5 @@
 CREATE TABLE injury (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id BIGSERIAL PRIMARY KEY,
     owner_id BIGINT NOT NULL,
     body_part VARCHAR(100) NOT NULL,
     description TEXT,

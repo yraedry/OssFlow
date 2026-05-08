@@ -1,5 +1,5 @@
 CREATE TABLE user_profile (
-    id                       INTEGER PRIMARY KEY AUTOINCREMENT,
+    id                       BIGSERIAL PRIMARY KEY,
     owner_id                 BIGINT NOT NULL UNIQUE,
     display_name             VARCHAR(120) NOT NULL,
     current_belt             VARCHAR(15) NOT NULL,

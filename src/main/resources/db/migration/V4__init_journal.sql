@@ -1,11 +1,11 @@
 CREATE TABLE tag (
-    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    id          BIGSERIAL PRIMARY KEY,
     name        VARCHAR(60) NOT NULL UNIQUE,
     created_at  TIMESTAMP NOT NULL
 );
 
 CREATE TABLE note (
-    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    id              BIGSERIAL PRIMARY KEY,
     owner_id        BIGINT NOT NULL DEFAULT 1,
     title           VARCHAR(200) NOT NULL,
     body_markdown   TEXT NOT NULL,
@@ -29,7 +29,7 @@ CREATE TABLE note_tag (
 );
 
 CREATE TABLE training_session (
-    id                INTEGER PRIMARY KEY AUTOINCREMENT,
+    id                BIGSERIAL PRIMARY KEY,
     owner_id          BIGINT NOT NULL DEFAULT 1,
     session_date      DATE NOT NULL,
     duration_minutes  INTEGER NOT NULL,
@@ -55,7 +55,7 @@ CREATE TABLE training_session_technique (
 );
 
 CREATE TABLE competition_log (
-    id                  INTEGER PRIMARY KEY AUTOINCREMENT,
+    id                  BIGSERIAL PRIMARY KEY,
     owner_id            BIGINT NOT NULL DEFAULT 1,
     event_name          VARCHAR(200) NOT NULL,
     event_date          DATE NOT NULL,
@@ -71,7 +71,7 @@ CREATE TABLE competition_log (
 );
 
 CREATE TABLE competition_match (
-    id                       INTEGER PRIMARY KEY AUTOINCREMENT,
+    id                       BIGSERIAL PRIMARY KEY,
     competition_log_id       BIGINT NOT NULL,
     match_order              INTEGER NOT NULL,
     opponent_name            VARCHAR(120) NOT NULL,

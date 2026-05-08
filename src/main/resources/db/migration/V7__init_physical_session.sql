@@ -1,5 +1,5 @@
 CREATE TABLE physical_session (
-    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    id              BIGSERIAL PRIMARY KEY,
     owner_id        INTEGER NOT NULL,
     session_date    TEXT    NOT NULL,
     session_type    TEXT    NOT NULL CHECK (session_type IN ('STRENGTH','CARDIO','FLEXIBILITY','HIIT','OTHER')),

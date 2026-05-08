@@ -1,5 +1,5 @@
 CREATE TABLE weekly_template (
-    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    id          BIGSERIAL PRIMARY KEY,
     owner_id    INTEGER NOT NULL UNIQUE,
     days_json   TEXT,
     created_at  TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now')),
