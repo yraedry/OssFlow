@@ -53,6 +53,48 @@ public class RadarController {
         TechniqueFamily.ESCAPES
     );
 
+    private static final Map<String, String> PHYSICAL_LABELS = Map.of(
+        "STRENGTH",    "Fuerza",
+        "CARDIO",      "Cardio",
+        "FLEXIBILITY", "Flexibilidad",
+        "HIIT",        "Explosividad",
+        "OTHER",       "General"
+    );
+
+    private static final List<String> PHYSICAL_RADAR_TYPES = List.of(
+        "STRENGTH", "CARDIO", "FLEXIBILITY", "HIIT", "OTHER"
+    );
+
+    @GetMapping("/radar/fisico")
+    public List<RadarDataPoint> fisicoRadar(@RequestParam(defaultValue = "90") int days) {
+        Long ownerId = currentOwner.id();
+
+        String sql = """
+            SELECT ps.session_type, COUNT(*) as total
+            FROM physical_session ps
+            WHERE ps.owner_id = :ownerId
+              AND ps.deleted_at IS NULL
+              AND ps.session_date >= CURRENT_DATE - :days
+            GROUP BY ps.session_type
+            """;
+
+        Map<String, Long> counts = jdbcClient.sql(sql)
+            .param("ownerId", ownerId)
+            .param("days", days)
+            .query((rs, _) -> Map.entry(rs.getString("session_type"), rs.getLong("total")))
+            .list()
+            .stream()
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        return PHYSICAL_RADAR_TYPES.stream()
+            .map(type -> new RadarDataPoint(
+                type,
+                PHYSICAL_LABELS.get(type),
+                counts.getOrDefault(type, 0L)
+            ))
+            .toList();
+    }
+
     @GetMapping("/radar/bjj")
     public List<RadarDataPoint> bjjRadar(@RequestParam(defaultValue = "90") int days) {
         Long ownerId = currentOwner.id();
