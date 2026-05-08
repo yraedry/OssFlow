@@ -22,7 +22,7 @@ public class CompetitionLogEntity extends BaseEntity {
     @Column(name = "event_name", nullable = false, length = 255)
     private String eventName;
 
-    @Column(name = "event_date", nullable = false)
+    @Column(name = "event_date", nullable = false, columnDefinition = "date")
     private LocalDate eventDate;
 
     @Column(name = "weight_category", length = 50)

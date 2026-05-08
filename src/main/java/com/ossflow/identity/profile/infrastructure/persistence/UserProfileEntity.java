@@ -25,7 +25,7 @@ public class UserProfileEntity extends BaseEntity {
     @Column(name = "current_belt", nullable = false, length = 15)
     private String currentBelt;
 
-    @Column(name = "belt_since")
+    @Column(name = "belt_since", columnDefinition = "date")
     private LocalDate beltSince;
 
     @Column(name = "academy", length = 200)

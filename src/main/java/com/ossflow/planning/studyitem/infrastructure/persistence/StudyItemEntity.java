@@ -40,7 +40,7 @@ public class StudyItemEntity {
     @Column(name = "target_id")
     private Long targetId;
 
-    @Column(name = "due_date")
+    @Column(name = "due_date", columnDefinition = "date")
     private LocalDate dueDate;
 
     @Column(name = "ai_generated", nullable = false)

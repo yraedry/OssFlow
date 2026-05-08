@@ -24,10 +24,10 @@ public class StudyPlanEntity extends BaseEntity {
     @Column(name = "goal_markdown", columnDefinition = "TEXT")
     private String goalMarkdown;
 
-    @Column(name = "start_date")
+    @Column(name = "start_date", columnDefinition = "date")
     private LocalDate startDate;
 
-    @Column(name = "end_date")
+    @Column(name = "end_date", columnDefinition = "date")
     private LocalDate endDate;
 
     @Enumerated(EnumType.STRING)
