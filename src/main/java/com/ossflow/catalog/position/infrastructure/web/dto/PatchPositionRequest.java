@@ -8,5 +8,6 @@ public record PatchPositionRequest(
         @Size(max = 120) String name,
         PositionType type,
         @Size(max = 10000) String description,
+        @Size(max = 500) String youtubeUrl,
         Visibility visibility
 ) {}

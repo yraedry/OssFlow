@@ -11,6 +11,7 @@ public record Position(
         String name,
         PositionType type,
         String description,
+        String youtubeUrl,
         Visibility visibility,
         Instant createdAt,
         Instant updatedAt,

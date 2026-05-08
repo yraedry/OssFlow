@@ -57,7 +57,8 @@ public class PositionController {
                                     @Valid @RequestBody UpdatePositionRequest req) {
         Position replacement = Position.builder()
                 .name(req.name()).type(req.type())
-                .description(req.description()).visibility(req.visibility())
+                .description(req.description()).youtubeUrl(req.youtubeUrl())
+                .visibility(req.visibility())
                 .build();
         return mapper.toResponse(service.replace(id, currentOwner.id(), replacement));
     }
