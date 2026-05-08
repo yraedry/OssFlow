@@ -14,6 +14,8 @@ public interface UserProfilePersistenceMapper {
     UserProfileEntity toEntity(UserProfile domain);
 
     @Mapping(target = "federations", source = "federations")
+    @Mapping(target = "createdAt", expression = "java(entity.getCreatedAtInstant())")
+    @Mapping(target = "updatedAt", expression = "java(entity.getUpdatedAtInstant())")
     UserProfile toDomain(UserProfileEntity entity);
 
     @Mapping(target = "id", ignore = true)
