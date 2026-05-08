@@ -40,13 +40,13 @@ public class TrainingSessionPersistenceAdapter implements TrainingSessionReposit
             mapper.updateEntity(session, entity);
         }
         if (entity.getOwnerId() == null) entity.setOwnerId(session.ownerId());
-        return mapper.toDomain(repository.save(entity));
+        return mapper.toDomainWithTechniques(repository.save(entity));
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<TrainingSession> findById(Long id, Long ownerId) {
-        return repository.findByIdAndOwnerId(id, ownerId).map(mapper::toDomain);
+        return repository.findByIdAndOwnerId(id, ownerId).map(mapper::toDomainWithTechniques);
     }
 
     @Override

@@ -11,8 +11,11 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
         uses = {WorkedTechniqueMapper.class})
 public interface TrainingSessionPersistenceMapper {
 
-    @Mapping(target = "workedTechniques", source = "workedTechniques")
+    @Mapping(target = "workedTechniques", ignore = true)
     TrainingSession toDomain(TrainingSessionEntity entity);
+
+    @Mapping(target = "workedTechniques", source = "workedTechniques")
+    TrainingSession toDomainWithTechniques(TrainingSessionEntity entity);
 
     @Mapping(target = "workedTechniques", ignore = true)
     TrainingSessionEntity toEntity(TrainingSession domain);
