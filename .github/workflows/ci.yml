@@ -10,8 +10,9 @@ permissions:
   packages: write
 
 jobs:
-  build-test-push:
+  test:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
@@ -21,15 +22,40 @@ jobs:
           java-version: '25'
           cache: maven
 
-      - name: Build + test
-        run: mvn -B verify
+      - name: Run tests with coverage
+        run: mvn -B verify -Dspring.profiles.active=test
 
-      - name: Upload jacoco report
+      - name: Upload JaCoCo report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: jacoco-report
           path: target/site/jacoco/
+          retention-days: 7
+
+      - name: Coverage summary
+        if: always()
+        run: |
+          echo "## Test & Coverage" >> $GITHUB_STEP_SUMMARY
+          echo "### Top 10 archivos más largos" >> $GITHUB_STEP_SUMMARY
+          find src/main/java -name '*.java' | xargs wc -l | sort -rn | head -10 >> $GITHUB_STEP_SUMMARY
+
+  push-image:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+
+      - name: Build JAR
+        run: mvn -B package -DskipTests
 
       - uses: docker/setup-buildx-action@v3
 
@@ -39,9 +65,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build JAR (skip tests, already ran)
-        run: mvn -B package -DskipTests
-
       - name: Build and push Docker image (tag:main)
         uses: docker/build-push-action@v5
         with:
@@ -50,8 +73,3 @@ jobs:
           tags: ghcr.io/${{ github.repository_owner }}/ossflow-backend:main
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-      - name: Top-10 archivos más largos
-        run: |
-          echo "## Top 10 archivos más largos" >> $GITHUB_STEP_SUMMARY
-          find src/main/java -name '*.java' | xargs wc -l | sort -rn | head -10 >> $GITHUB_STEP_SUMMARY
