@@ -7,7 +7,7 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: validate           # detecta desfases schema/entidad sin modificar nada
+      ddl-auto: update             # actualiza schema automáticamente (validate requiere audit completo pendiente)
     properties:
       hibernate:
         jdbc:
