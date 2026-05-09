@@ -58,13 +58,13 @@ A todos los compañeros de tatami que han aportado, sin saberlo, el conocimiento
 
 OssFlow es una aplicación web concebida como **segundo cerebro técnico** para practicantes de Brazilian Jiu-Jitsu. El sistema modela el conocimiento del deporte como un **grafo relacional** de posiciones (nodos) y técnicas (transiciones), permitiendo además construir **sistemas** que representan árboles de decisión técnico-tácticos completos. Sobre ese catálogo objetivo, el usuario superpone su capa subjetiva: notas tipo Obsidian, un registro detallado de sesiones de entrenamiento, log de competiciones combate a combate, y un plan de estudio jerárquico a meses vista. Una capa de identidad asocia al usuario su cinturón actual y federaciones preferidas (IBJJF, ADCC, AJP, NAGA, UAEJJF, FEJJB, AEJJ, SBJJ, CBJJE, GI), y muestra avisos no bloqueantes sobre la legalidad de las técnicas según la federación y cinturón.
 
-El backend está construido con Spring Boot 4 y Java 25, sigue una arquitectura **hexagonal-lite** con cinco bounded contexts, persiste en SQLite (con H2 in-memory para desarrollo) y expone una API REST documentada con OpenAPI. El frontend es una SPA en React 18 + Vite + TypeScript con shadcn/ui, e integra **React Flow** para el editor visual de los árboles de decisión. El despliegue se diseña sobre Docker Compose y Cloudflare Tunnel sobre un servidor Proxmox personal, con CI/CD automatizado en GitHub Actions.
+El backend está construido con Spring Boot 4 y Java 25, sigue una arquitectura **hexagonal-lite** con seis bounded contexts, persiste en **PostgreSQL 17** (con H2 in-memory para tests de CI) y expone una API REST documentada con OpenAPI. El frontend es una SPA en React 19 + Vite + TypeScript con shadcn/ui. El despliegue se realiza sobre Docker Compose en un contenedor LXC en servidor doméstico, con CI/CD automatizado en GitHub Actions.
 
 ## English
 
 OssFlow is a web application conceived as a **technical second brain** for Brazilian Jiu-Jitsu practitioners. The system models the sport's knowledge as a **relational graph** of positions (nodes) and techniques (transitions), and additionally enables building **systems** that represent complete tactical decision trees. On top of that objective catalogue, the user layers a subjective side: Obsidian-style notes, a detailed training session log, a competition log with per-match analysis, and a hierarchical study plan spanning months. An identity layer links the user with their current belt and preferred federations (IBJJF, ADCC, AJP, NAGA, UAEJJF, FEJJB, AEJJ, SBJJ, CBJJE, GI) and shows non-blocking warnings about technique legality based on federation and belt.
 
-The backend is built with Spring Boot 4 and Java 25, follows a **hexagonal-lite** architecture with five bounded contexts, persists in SQLite (H2 in-memory for development), and exposes a REST API documented with OpenAPI. The frontend is a React 18 + Vite + TypeScript SPA with shadcn/ui that integrates **React Flow** for the visual decision-tree editor. Deployment targets Docker Compose and Cloudflare Tunnel on a personal Proxmox server, with CI/CD automated through GitHub Actions.
+The backend is built with Spring Boot 4 and Java 25, follows a **hexagonal-lite** architecture with six bounded contexts, persists in **PostgreSQL 17** (H2 in-memory for CI tests), and exposes a REST API documented with OpenAPI. The frontend is a React 19 + Vite + TypeScript SPA with shadcn/ui. Deployment runs on Docker Compose inside an LXC container on a home server, with CI/CD automated through GitHub Actions.
 
 \newpage
 
@@ -116,9 +116,9 @@ El proyecto nace **monousuario** para resolver primero el caso del autor, pero e
 
 ## Funciones principales
 
-OssFlow articula sus funcionalidades en torno a **cinco bounded contexts** que se traducen en cinco grandes áreas funcionales para el usuario:
+OssFlow articula sus funcionalidades en torno a **seis bounded contexts** que se traducen en seis grandes áreas funcionales para el usuario:
 
-1. **Catálogo de conocimiento BJJ.** Gestión completa (CRUD) de Posiciones, Técnicas y Sistemas. Las posiciones son nodos del grafo (Guardia Cerrada, Media Guardia, Montada, Espalda, etc.) y se clasifican por tipo (TOP / BOTTOM / STANDING / GROUND_NEUTRAL / SUBMITTED). Las técnicas son aristas dirigidas: tienen una posición de inicio obligatoria, una posición de fin opcional (las sumisiones no transitan, finalizan), una categoría (SUBMISSION, SWEEP, PASS, TAKEDOWN, ESCAPE, TRANSITION), un cinturón mínimo recomendado, una modalidad (Gi / NoGi / ambas) y un enlace opcional a YouTube. Los sistemas son árboles de decisión completos donde cada nodo refiere a una posición o técnica del catálogo y cada arista lleva un disparador (ATTACK, DEFENSE, PASS, ESCAPE, TRANSITION) más una condición textual ("si rival empuja con la cadera...").
+1. **Catálogo de conocimiento BJJ.** Gestión completa (CRUD) de Posiciones, Técnicas, Ejercicios físicos y Sistemas. Las posiciones son nodos del grafo (Guardia Cerrada, Media Guardia, Montada, Espalda, etc.) y se clasifican por tipo (TOP / BOTTOM / STANDING / GROUND_NEUTRAL / SUBMITTED). Las técnicas son aristas dirigidas: tienen una posición de inicio obligatoria, una posición de fin opcional (las sumisiones no transitan, finalizan), una categoría (SUBMISSION, SWEEP, PASS, TAKEDOWN, ESCAPE, TRANSITION), un cinturón mínimo recomendado, una modalidad (Gi / NoGi / ambas) y un enlace opcional a YouTube. Los ejercicios físicos (movilidad, flexibilidad, acondicionamiento) pueden referenciarse desde las sesiones de entrenamiento. Los sistemas son árboles de decisión completos donde cada nodo refiere a una posición o técnica del catálogo y cada arista lleva un disparador (ATTACK, DEFENSE, PASS, ESCAPE, TRANSITION) más una condición textual ("si rival empuja con la cadera...").
 
 2. **Diario personal.** Tres entidades hermanas con responsabilidad única (SRP):
     - **Notas** estilo Obsidian: título, cuerpo markdown, etiquetas globales, target opcional (apuntan a una Posición, Técnica o Sistema concreto).
@@ -134,6 +134,8 @@ OssFlow articula sus funcionalidades en torno a **cinco bounded contexts** que s
 
 5. **Portabilidad.** Importación masiva de JSON validado por schema (catálogo, sistemas, rulesets) y exportación completa para respaldo.
 
+6. **Dashboard de análisis (Radar).** Módulo de visualización de datos de entrenamiento mediante gráficos radar interactivos (Recharts). Muestra la distribución del entrenamiento por familia de técnica (sumisiones, barridos, pasajes, derribos, escapes, transiciones) y por tipo de sesión física (LOW / MEDIUM / HIGH / SPARRING), permitiendo al usuario identificar de un vistazo los desequilibrios en su entrenamiento y los vacíos técnicos a nivel agregado.
+
 ## Problemas que resuelve
 
 | Problema cotidiano del practicante | Cómo lo resuelve OssFlow |
@@ -148,7 +150,7 @@ OssFlow articula sus funcionalidades en torno a **cinco bounded contexts** que s
 
 ## Lista de requisitos principales
 
-- **RF-1.** El sistema permitirá un CRUD completo sobre 18 entidades distribuidas en cinco bounded contexts.
+- **RF-1.** El sistema permitirá un CRUD completo sobre las entidades distribuidas en seis bounded contexts.
 - **RF-2.** El sistema validará las entradas tanto a nivel de DTO como a nivel semántico (JSON schemas) y de integridad referencial.
 - **RF-3.** El sistema implementará soft delete con ventana de recuperación de 30 días y purga automática diaria.
 - **RF-4.** El sistema importará y exportará información en formato JSON validado.
@@ -169,9 +171,9 @@ Diseñar, implementar, probar y desplegar una aplicación web personal de gesti�
 
 ## Objetivos específicos
 
-1. Diseñar un modelo de datos **normalizado** que represente fielmente el dominio BJJ y soporte los cinco bounded contexts, con soft delete y multi-ready.
+1. Diseñar un modelo de datos **normalizado** que represente fielmente el dominio BJJ y soporte los seis bounded contexts, con soft delete y multi-ready.
 2. Implementar un backend en Spring Boot 4 + Java 25 con CRUD completo, validación rigurosa, manejo de errores uniforme y trazabilidad por `traceId`.
-3. Implementar un frontend en React 18 + Vite + TypeScript que aporte una experiencia visual moderna en tema oscuro, con editor de árbol de decisión basado en React Flow.
+3. Implementar un frontend en React 19 + Vite + TypeScript que aporte una experiencia visual moderna en tema oscuro, con gráficos de análisis basados en Recharts.
 4. Aplicar al menos **cinco patrones de comportamiento** del catálogo GoF de forma justificada (Strategy, Chain of Responsibility, Template Method, State, Observer).
 5. Cubrir el código con tests en tres niveles (unit, slice e integration) alcanzando los umbrales de cobertura definidos.
 6. Empaquetar la aplicación con Docker y publicar imágenes versionadas en `ghcr.io` mediante GitHub Actions.
@@ -412,7 +414,7 @@ catalog/position/
 
 ![Diagrama Entidad-Relación del modelo de datos completo](./diagramas/03-er-modelo-datos.png){width=95%}
 
-*Ilustración 4: diagrama Entidad-Relación. 18 tablas distribuidas en cinco bounded contexts.*
+*Ilustración 4: diagrama Entidad-Relación. Más de 20 tablas distribuidas en seis bounded contexts.*
 
 ## Diagrama de la base de datos con detalle de campos
 
@@ -478,24 +480,24 @@ A continuación se justifica cada herramienta del stack y su uso concreto en el 
 | --- | --- |
 | ![](./diagramas/placeholder-tech-java.png){width=80px} | **Java 25 (LTS).** Lenguaje principal del backend. Se sube desde Java 17 (versión inicial del proyecto) hasta 25 porque es la nueva LTS oficial publicada en septiembre de 2025 y la combinación canónica recomendada por Spring Boot 4.x. Aporta mejoras relevantes acumuladas desde Java 17: records con pattern matching, switch patterns, virtual threads estabilizados, sequenced collections, structured concurrency en preview. |
 | ![](./diagramas/placeholder-tech-spring.png){width=80px} | **Spring Boot 4.x.** Framework base del backend, asentado sobre Spring Framework 7. Aporta inyección de dependencias (Singleton implícito), starters opinados (web MVC, data-jpa, validation, actuator), autoconfiguración y mejoras nativas para Java 25 (records de configuración, AOT compilation con GraalVM mejorada). Se descartó GraphQL —dependencia presente en el proyecto inicial sin uso— porque las queries del dominio son perfectamente cubiertas por REST y la complejidad añadida no se justifica. |
-| ![](./diagramas/placeholder-tech-sqlite.png){width=80px} | **SQLite.** Base de datos en producción. Decisión documentada: para una aplicación monousuario con volumen de datos pequeño-medio y necesidad de **autohospedaje simple**, SQLite ofrece cero administración, backup trivial (copia de fichero) y rendimiento sobrado. PostgreSQL (presente en el `pom.xml` original) se descartó por sobreingeniería. |
-| ![](./diagramas/placeholder-tech-h2.png){width=80px} | **H2 in-memory.** Base de datos en perfil de desarrollo local. Arranca en milisegundos y se reinicia en cada bootstrap, lo cual acelera enormemente el ciclo TDD. La consola web (`/h2-console`) facilita inspección manual durante el desarrollo. |
+| ![](./diagramas/placeholder-tech-sqlite.png){width=80px} | **PostgreSQL 17.** Base de datos principal en producción. Se optó por PostgreSQL 17 en lugar de SQLite ya que ofrece mejor soporte de tipos nativos (`timestamptz`, `date`) con Hibernate 7, concurrencia real y despliegue más limpio en Docker. La migración de SQLite a PostgreSQL requirió resolver incompatibilidades de Hibernate 7 con tipos temporales (`Instant` → `OffsetDateTime`), lo que añadió tiempo no estimado pero produjo una base de código más sólida. |
+| ![](./diagramas/placeholder-tech-h2.png){width=80px} | **H2 in-memory.** Base de datos utilizada exclusivamente en el perfil de test para CI. Arranca en milisegundos y se reinicia en cada ejecución, lo que acelera el ciclo de tests automatizados. El entorno de desarrollo local usa directamente PostgreSQL 17 vía Docker Compose. |
 | ![](./diagramas/placeholder-tech-flyway.png){width=80px} | **Flyway.** Versionado y aplicación automática de migraciones SQL en arranque del backend. Sustituye al peligroso `ddl-auto: update` de Hibernate en producción, donde se usa `ddl-auto: validate` para verificar que las entidades JPA coinciden con el esquema desplegado. |
 | ![](./diagramas/placeholder-tech-mapstruct.png){width=80px} | **MapStruct.** Mapeo en tiempo de compilación entre capas (DTO ↔ domain ↔ entity). Genera código eficiente sin reflexión, mantenible y rastreable. Coexiste con Lombok mediante `lombok-mapstruct-binding`. |
 | ![](./diagramas/placeholder-tech-lombok.png){width=80px} | **Lombok.** Reducción de boilerplate (`@Data`, `@Builder`, `@RequiredArgsConstructor`, `@Slf4j`). Uso conservador: en el dominio para builders fluidos (patrón Builder); en servicios para inyección por constructor. |
 | ![](./diagramas/placeholder-tech-junit.png){width=80px} | **JUnit 5 + Mockito + AssertJ.** Stack de testing del backend. Tres niveles: unit, slice (`@WebMvcTest`, `@DataJpaTest`), integration (`@SpringBootTest` con SQLite `:memory:`). Cobertura medida con **JaCoCo** (umbral global 75 %, services 90 %). |
-| ![](./diagramas/placeholder-tech-react.png){width=80px} | **React 18.** Framework del frontend. Alta empleabilidad post-DAM, ecosistema maduro, soporte de concurrent features que será útil para listados grandes (catálogo de técnicas). |
+| ![](./diagramas/placeholder-tech-react.png){width=80px} | **React 19.** Framework del frontend. Alta empleabilidad post-DAM, ecosistema maduro, soporte de concurrent features y las nuevas APIs de React 19 (use, Actions, optimistic UI) que simplifican la gestión de estado en formularios y operaciones asíncronas. |
 | ![](./diagramas/placeholder-tech-vite.png){width=80px} | **Vite 5.** Build tool y dev server. HMR instantáneo, builds rápidos. Estándar moderno frente al deprecado Create React App. |
 | ![](./diagramas/placeholder-tech-typescript.png){width=80px} | **TypeScript 5 (strict).** Tipado estricto en el frontend. Tipos generados automáticamente desde el `openapi.json` del backend mediante `openapi-typescript`: contract-testing gratis. |
 | ![](./diagramas/placeholder-tech-tailwind.png){width=80px} | **Tailwind CSS v4 + shadcn/ui.** Sistema de diseño utility-first con componentes accesibles basados en Radix UI copiados al repo (no como dependencia npm). Tema oscuro por defecto, personalizable. |
-| ![](./diagramas/placeholder-tech-reactflow.png){width=80px} | **React Flow (`@xyflow/react`).** Editor visual de árboles de decisión. Estándar de facto para diagramas nodo-arista interactivos en React. Resuelve el caso de uso UC3 sin reinventar drag-and-drop. |
+| ![](./diagramas/placeholder-tech-reactflow.png){width=80px} | **React Flow (`@xyflow/react`).** *(Planificado para futura versión; no implementado en el entregable actual.)* El módulo de sistemas se implementó con CRUD estándar. El editor visual tipo drag-and-drop fue descartado del alcance entregable por complejidad no compensada dado el tiempo disponible. Queda como la evolución natural más próxima del catálogo de conocimiento BJJ. |
 | ![](./diagramas/placeholder-tech-tanstack.png){width=80px} | **TanStack Query v5.** Gestión del estado servidor (cache, refetch, optimistic updates, stale-while-revalidate). Evita Redux/Context para datos remotos. |
 | ![](./diagramas/placeholder-tech-zod.png){width=80px} | **Zod + React Hook Form.** Validación de formularios cliente. Los mismos schemas se usan también para validar `flowDefinition` antes de enviar al backend (DRY entre validación cliente y servidor). |
 | ![](./diagramas/placeholder-tech-vitest.png){width=80px} | **Vitest + React Testing Library + MSW.** Stack de testing del frontend. Vitest es API-compatible con Jest pero más rápido en proyectos Vite. MSW intercepta fetch para mockear el backend con tipos generados. |
 | ![](./diagramas/placeholder-tech-docker.png){width=80px} | **Docker + Docker Compose.** Empaquetado y orquestación local/producción. Backend en imagen multi-stage con `eclipse-temurin:25-jre-noble` como runtime (oficial de Eclipse Adoptium); frontend en imagen multi-stage Node → Nginx. Se evaluó `gcr.io/distroless/java25-debian12` pero se descartó porque a fecha de este proyecto Google todavía no la había publicado (retraso histórico tras cada nueva LTS). Compose con dos perfiles (`dev`, `prod`). |
 | ![](./diagramas/placeholder-tech-github.png){width=80px} | **GitHub Actions.** Pipeline CI/CD. Workflow CI (`mvn verify`, `npm ci && tsc && lint && test && build`) en cada PR; workflow Release (`docker build && push ghcr.io`) en tags `v*.*.*`. Sincronización entre repos vía `repository_dispatch`. |
-| ![](./diagramas/placeholder-tech-cloudflare.png){width=80px} | **Cloudflare Tunnel.** Exposición pública sin abrir puertos en el router doméstico, con TLS automático y origen oculto. Integrado como contenedor en `docker-compose.prod.yml`. |
-| ![](./diagramas/placeholder-tech-proxmox.png){width=80px} | **Proxmox.** Hipervisor de virtualización en servidor doméstico, donde se aloja la VM/LXC con Docker que ejecuta OssFlow. No forma parte del stack del producto; sí del ecosistema de despliegue elegido. |
+| ![](./diagramas/placeholder-tech-cloudflare.png){width=80px} | **Cloudflare Tunnel.** *(No utilizado en la versión desplegada actual.)* El despliegue final se realiza en un contenedor LXC en servidor doméstico (Proxmox) con Docker Compose, accesible en la red local. Cloudflare Tunnel se evaluó pero no se incorporó al entregable. |
+| ![](./diagramas/placeholder-tech-proxmox.png){width=80px} | **Proxmox.** Hipervisor de virtualización en servidor doméstico, donde se aloja el contenedor LXC con Docker que ejecuta OssFlow. No forma parte del stack del producto; sí del ecosistema de despliegue elegido. El acceso al servidor se realiza vía SSH. |
 
 *Tabla 4: tecnologías utilizadas en OssFlow y justificación de su elección.*
 
@@ -567,11 +569,14 @@ A 12 horas semanales, el proyecto se estima en **~22 semanas** ≈ 5,5 meses. Co
 
 ## Planificación final (real)
 
-*Esta sección se completará tras la implementación. Se contrastará la estimación inicial con el tiempo real dedicado a cada fase, calculando desviaciones y razonándolas. Las desviaciones esperadas previsibles son:*
+La implementación real se concentró entre marzo y mayo de 2026, con un volumen de trabajo intensivo en las últimas semanas del proyecto. Las desviaciones principales respecto a la estimación inicial fueron:
 
-- *Fase 20 (React Flow): primera vez con la librería; se ha asignado buffer pero podría desviarse.*
-- *Fase 4 (SQLite + Flyway): la migración del esquema en uso es delicada; posible desviación al alza.*
-- *Fase 26 (memoria): tiende a infraestimarse; se intentará trabajar la memoria de forma viva durante todo el proyecto.*
+- **React Flow / editor visual**: descartado del alcance entregable por complejidad no compensada. El catálogo de sistemas se implementó con CRUD estándar sin editor visual.
+- **SQLite → PostgreSQL**: la migración a PostgreSQL requirió resolver incompatibilidades de Hibernate 7 con los tipos temporales (Instant → OffsetDateTime), lo que añadió tiempo no estimado pero produjo una base de código más sólida.
+- **Dashboard de análisis**: no estaba en la planificación original. Se implementó un módulo de radares interactivos (Recharts) que visualiza la distribución de entrenamiento por familia de técnica y tipo de sesión física, aportando valor diferencial a la aplicación.
+- **Seed data extenso**: se crearon más de 200 técnicas BJJ, 33 posiciones, 45 ejercicios de movilidad/flexibilidad y ~170 URLs de YouTube asociadas, lo que multiplicó el valor demostrable del sistema en la defensa.
+
+El tiempo real total se estima en torno a **220-240 horas**, ligeramente por debajo de la estimación inicial de 256-276, principalmente porque el descarte de React Flow liberó tiempo que se redirigió a completar features de mayor valor para el usuario.
 
 ## Diagrama de Gantt
 
@@ -618,13 +623,14 @@ OssFlow se ha diseñado como un proyecto **vivo y extensible**. Las siguientes l
 1. **Multi-usuario real con autenticación**. Añadir Spring Security + JWT, registro y login, gestión de sesiones. Todas las entidades ya incluyen `ownerId` y `visibility`, por lo que la migración será incremental.
 2. **Integración con IA externa**. Generación automática de rulesets a partir de los handbooks oficiales de cada federación; sugerencia de StudyItems en función del cinturón, federaciones preferidas y técnicas históricas; análisis de notas para detectar técnicas mencionadas y crear enlaces. Esta integración traerá consigo el **Circuit Breaker** (Resilience4j) y el patrón de retry con backoff.
 3. **Observabilidad avanzada**. Hoy la observabilidad es local (`@Slf4j` + Actuator). Una evolución natural es añadir Micrometer + Prometheus + Grafana para métricas, Loki para logs centralizados y OpenTelemetry para trazas distribuidas (la arquitectura ya contempla `traceId` propagado, lista para distribuirse).
-4. **Replicación continua de SQLite**. Sustituir el cron de backup por **Litestream** para conseguir RPO < 1 segundo replicando hacia almacenamiento S3-compatible (Backblaze B2, Cloudflare R2, MinIO autohospedado).
-5. **Tests E2E con Playwright**. Una vez la aplicación estabilice y aparezcan regresiones, añadir una suite E2E que ejecute los flujos críticos (UC1, UC3, UC9) contra la imagen Docker de releases.
-6. **Soporte multi-idioma completo**. La aplicación está preparada con `react-i18next`; añadir locale inglés es trivial (solo requiere traducir los JSON de mensajes).
-7. **Aplicación móvil nativa o PWA**. La SPA actual es responsive, pero una PWA con Service Worker permitiría uso offline y una experiencia más fluida en el tatami (donde tocar el móvil sudado y con manga es complicado, pero al menos puede consultarse).
-8. **Importación bidireccional de "todo"**. Hoy el export es total y la importación es solo de catálogo y rulesets. Permitir reimportar diarios y planes requiere resolver colisiones de IDs entre instancias multiusuario.
-9. **Integración con plataformas de vídeo**. Asociar marcas de tiempo concretas dentro de un vídeo de YouTube/Instagram a una técnica del catálogo: clic en la técnica abre el vídeo en el segundo correcto.
-10. **Compartición de sistemas y notas como recurso público**. La columna `visibility` ya está presente; queda construir la capa de "explorar" que permita a un usuario consumir el catálogo público de otro.
+4. **Tests E2E con Playwright**. Una vez la aplicación estabilice y aparezcan regresiones, añadir una suite E2E que ejecute los flujos críticos (UC1, UC3, UC9) contra la imagen Docker de releases.
+5. **Soporte multi-idioma completo**. La aplicación está preparada con `react-i18next`; añadir locale inglés es trivial (solo requiere traducir los JSON de mensajes).
+6. **Aplicación móvil nativa o PWA**. La SPA actual es responsive, pero una PWA con Service Worker permitiría uso offline y una experiencia más fluida en el tatami (donde tocar el móvil sudado y con manga es complicado, pero al menos puede consultarse).
+7. **Importación bidireccional de "todo"**. Hoy el export es total y la importación es solo de catálogo y rulesets. Permitir reimportar diarios y planes requiere resolver colisiones de IDs entre instancias multiusuario.
+8. **Integración con plataformas de vídeo**. Asociar marcas de tiempo concretas dentro de un vídeo de YouTube/Instagram a una técnica del catálogo: clic en la técnica abre el vídeo en el segundo correcto.
+9. **Compartición de sistemas y notas como recurso público**. La columna `visibility` ya está presente; queda construir la capa de "explorar" que permita a un usuario consumir el catálogo público de otro.
+10. **Replicación continua de base de datos**. Añadir un mecanismo de backup con RPO bajo (replicación continua hacia almacenamiento S3-compatible: Backblaze B2, Cloudflare R2 o MinIO autohospedado) para sustituir el cron de backup manual.
+11. **Editor visual de sistemas con React Flow**. El módulo de sistemas existe como CRUD pero el editor visual tipo drag-and-drop fue descartado del alcance actual. Implementarlo es la siguiente evolución natural del catálogo de conocimiento BJJ: permitiría al practicante construir árboles de decisión técnico-tácticos completos de forma gráfica, con nodos arrastrables y aristas etiquetadas con condiciones.
 
 \newpage
 
@@ -634,7 +640,7 @@ OssFlow aborda un problema real que el autor del proyecto experimenta como pract
 
 A nivel arquitectónico, el proyecto demuestra que **menos puede ser más**. La hexagonal-lite —retener inversión de dependencia donde sí aporta y eliminar puertos de entrada vacíos— resulta en un código más legible, más fácil de defender y libre de la ceremonia que el hexagonal puro arrastra cuando los casos de uso son simples. El uso explícitamente justificado de cinco patrones de comportamiento (Strategy, Chain of Responsibility, Template Method, State, Observer) y la aplicación rigurosa de los principios SOLID, KISS y DRY en cada decisión, con la regla de "no god files" enforzada en CI, configuran una base sólida y mantenible.
 
-A nivel del producto, el modelo de datos normalizado en 18 tablas, el soft delete con ventana de recuperación de 30 días, la validación en tres capas (DTO, dominio, semántica con Chain of Responsibility), la trazabilidad por `traceId` end-to-end y el versionado de migraciones con Flyway forman un conjunto que puede servir de **referencia técnica** para proyectos similares.
+A nivel del producto, el modelo de datos normalizado con más de 20 tablas, el soft delete con ventana de recuperación de 30 días, la validación en tres capas (DTO, dominio, semántica con Chain of Responsibility), la trazabilidad por `traceId` end-to-end y el versionado de migraciones con Flyway sobre PostgreSQL 17 forman un conjunto que puede servir de **referencia técnica** para proyectos similares.
 
 A nivel personal, este proyecto es un ejercicio doblemente alineado: encara una necesidad propia del autor en su práctica deportiva y consolida los conocimientos del módulo de DAM en un sistema de complejidad sustancial pero acotada. La intención es que OssFlow trascienda la entrega académica y se convierta en una herramienta usada de forma cotidiana durante muchos años, ampliada según las líneas de trabajos futuros descritas.
 
