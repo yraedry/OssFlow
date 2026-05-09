@@ -3,11 +3,23 @@ spring:
     name: ossflow
   profiles:
     active: dev
+  datasource:
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000   # 30 s — falla rápido si la BD no responde
+      idle-timeout: 600000        # 10 min — cierra conexiones ociosas
+      max-lifetime: 1800000       # 30 min — rota conexiones antes del timeout del servidor
+      pool-name: OssFlowHikari
   jpa:
     open-in-view: false
     properties:
       hibernate:
         physical_naming_strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+        jdbc:
+          batch_size: 25          # inserts/updates en lote para operaciones masivas
+        order_inserts: true
+        order_updates: true
 server:
   port: 8080
   error:
