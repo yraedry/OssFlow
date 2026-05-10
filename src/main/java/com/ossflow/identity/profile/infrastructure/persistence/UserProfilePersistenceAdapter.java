@@ -3,15 +3,13 @@ package com.ossflow.identity.profile.infrastructure.persistence;
 import com.ossflow.identity.profile.application.port.UserProfileRepositoryPort;
 import com.ossflow.identity.profile.domain.UserProfile;
 import com.ossflow.identity.profile.domain.UserProfileFederation;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -19,6 +17,7 @@ public class UserProfilePersistenceAdapter implements UserProfileRepositoryPort 
 
     private final UserProfileJpaRepository repository;
     private final UserProfilePersistenceMapper mapper;
+    private final EntityManager em;
 
     @Override
     @Transactional
@@ -50,29 +49,18 @@ public class UserProfilePersistenceAdapter implements UserProfileRepositoryPort 
     private void syncFederations(UserProfileEntity entity, List<UserProfileFederation> domainFeds) {
         List<UserProfileFederation> incoming = domainFeds != null ? domainFeds : List.of();
 
-        Set<Long> incomingIds = incoming.stream()
-                .map(UserProfileFederation::federationId)
-                .collect(Collectors.toSet());
+        // Clear all federations and flush so DELETEs hit the DB before INSERTs.
+        // This avoids violating the partial unique index (only one is_primary=TRUE per profile).
+        entity.getFederations().clear();
+        em.flush();
 
-        Map<Long, UserProfileFederationEntity> existing = entity.getFederations().stream()
-                .collect(Collectors.toMap(UserProfileFederationEntity::getFederationId, f -> f));
-
-        // Remove federations no longer in the incoming list
-        entity.getFederations().removeIf(f -> !incomingIds.contains(f.getFederationId()));
-
-        // Update or add
         for (UserProfileFederation fed : incoming) {
-            UserProfileFederationEntity fedEntity = existing.get(fed.federationId());
-            if (fedEntity != null) {
-                fedEntity.setPrimary(fed.isPrimary());
-            } else {
-                UserProfileFederationEntity newFed = UserProfileFederationEntity.builder()
-                        .id(new UserProfileFederationId(entity.getId(), fed.federationId()))
-                        .userProfile(entity)
-                        .isPrimary(fed.isPrimary())
-                        .build();
-                entity.getFederations().add(newFed);
-            }
+            UserProfileFederationEntity newFed = UserProfileFederationEntity.builder()
+                    .id(new UserProfileFederationId(entity.getId(), fed.federationId()))
+                    .userProfile(entity)
+                    .isPrimary(fed.isPrimary())
+                    .build();
+            entity.getFederations().add(newFed);
         }
     }
 
