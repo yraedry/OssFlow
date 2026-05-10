@@ -571,7 +571,7 @@ ON CONFLICT (owner_id, name) WHERE deleted_at IS NULL DO NOTHING;
 INSERT INTO exercise (owner_id, name, description, category, equipment, youtube_url, visibility, created_at, updated_at, version) VALUES
 (1, 'Rotational Medicine Ball Throw',
     'Lanzar el balón medicinal contra la pared con rotación de cadera. Potencia rotatoria explícita. Transferible a todos los sweeps y proyecciones del BJJ.',
-    'OTHER', 'GYM', NULL, 'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0);
+    'OTHER', 'GYM', NULL, 'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0)
 ON CONFLICT (owner_id, name) WHERE deleted_at IS NULL DO NOTHING;
 
 INSERT INTO exercise (owner_id, name, description, category, equipment, youtube_url, visibility, created_at, updated_at, version) VALUES
