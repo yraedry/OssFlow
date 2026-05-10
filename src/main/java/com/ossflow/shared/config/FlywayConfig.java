@@ -30,7 +30,6 @@ public class FlywayConfig {
                 .baselineOnMigrate(baselineOnMigrate)
                 .baselineVersion(baselineVersion)
                 .load();
-        flyway.repair();
         flyway.migrate();
         return flyway;
     }
