@@ -8,7 +8,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -39,28 +42,38 @@ public class UserProfilePersistenceAdapter implements UserProfileRepositoryPort 
             entity.setOnboardingCompleted(profile.onboardingCompleted());
         }
 
-        // Sync federations
-        entity.getFederations().clear();
-        List<UserProfileFederation> domainFeds = profile.federations();
-        if (domainFeds != null) {
-            for (UserProfileFederation fed : domainFeds) {
-                UserProfileFederationEntity fedEntity = UserProfileFederationEntity.builder()
-                        .id(new UserProfileFederationId(null, fed.federationId()))
+        syncFederations(entity, profile.federations());
+
+        return mapper.toDomain(repository.save(entity));
+    }
+
+    private void syncFederations(UserProfileEntity entity, List<UserProfileFederation> domainFeds) {
+        List<UserProfileFederation> incoming = domainFeds != null ? domainFeds : List.of();
+
+        Set<Long> incomingIds = incoming.stream()
+                .map(UserProfileFederation::federationId)
+                .collect(Collectors.toSet());
+
+        Map<Long, UserProfileFederationEntity> existing = entity.getFederations().stream()
+                .collect(Collectors.toMap(UserProfileFederationEntity::getFederationId, f -> f));
+
+        // Remove federations no longer in the incoming list
+        entity.getFederations().removeIf(f -> !incomingIds.contains(f.getFederationId()));
+
+        // Update or add
+        for (UserProfileFederation fed : incoming) {
+            UserProfileFederationEntity fedEntity = existing.get(fed.federationId());
+            if (fedEntity != null) {
+                fedEntity.setPrimary(fed.isPrimary());
+            } else {
+                UserProfileFederationEntity newFed = UserProfileFederationEntity.builder()
+                        .id(new UserProfileFederationId(entity.getId(), fed.federationId()))
                         .userProfile(entity)
                         .isPrimary(fed.isPrimary())
                         .build();
-                entity.getFederations().add(fedEntity);
+                entity.getFederations().add(newFed);
             }
         }
-
-        UserProfileEntity saved = repository.save(entity);
-        // Fix federation IDs after save (now entity has a real id)
-        saved.getFederations().forEach(f -> {
-            if (f.getId() != null && f.getId().getUserProfileId() == null) {
-                f.getId().setUserProfileId(saved.getId());
-            }
-        });
-        return mapper.toDomain(saved);
     }
 
     @Override
