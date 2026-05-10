@@ -10,5 +10,5 @@ public record CreateSystemRequest(
         @Size(max = 10000) String description,
         Long anchorPositionId,
         @NotBlank String flowDefinition,
-        @NotNull Visibility visibility
+        Visibility visibility
 ) {}

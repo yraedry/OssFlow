@@ -14,5 +14,5 @@ public record UpdateExerciseRequest(
         @NotNull ExerciseCategory category,
         @NotNull EquipmentType equipment,
         @Pattern(regexp = "^(https?://.*)?$") @Size(max = 500) String youtubeUrl,
-        @NotNull Visibility visibility
+        Visibility visibility
 ) {}
