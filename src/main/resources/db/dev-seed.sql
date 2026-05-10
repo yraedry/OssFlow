@@ -26,14 +26,62 @@ VALUES
 (1, NOW() - INTERVAL '20 days', 75, 'HARD',        'BJJ', 'Sparring libre. Foco en no perder posición. Aguanté bien desde bottom side control.', NOW(), NOW(), 0),
 (1, NOW() - INTERVAL '23 days', 90, 'MODERATE',    'BJJ', 'Open mat. Experimenté con rubber guard. Muy difícil sin flexibilidad suficiente.', NOW(), NOW(), 0);
 
--- Técnicas trabajadas en sesiones
+-- Técnicas de SUBMISSION (sumisiones)
 INSERT INTO training_session_technique (training_session_id, technique_id, rep_count, notes_markdown)
-SELECT ts.id, t.id, 20, 'Trabajado en clase'
+SELECT ts.id, t.id, 20, NULL
 FROM training_session ts
 CROSS JOIN technique t
 WHERE ts.owner_id = 1
   AND t.name IN ('Armbar', 'Triangle Choke', 'Kimura', 'Rear Naked Choke', 'Guillotine')
   AND t.owner_id = 1
+ON CONFLICT DO NOTHING;
+
+-- Técnicas de PASS (pasajes) — necesarias para el radar de pasajes
+INSERT INTO training_session_technique (training_session_id, technique_id, rep_count, notes_markdown)
+SELECT ts.id, t.id,
+       (ARRAY[10,15,20,12,18])[((ts.id + t.id) % 5) + 1], NULL
+FROM training_session ts
+CROSS JOIN (
+    SELECT id FROM technique WHERE name IN (
+        'Backstep Pass','Body Lock Pass','Double Under Pass',
+        'Float Pass','Half Guard Pass','Headquarters Pass',
+        'Cartwheel Pass','Drive Through Pass','Esgrima Pass',
+        'Folding Pass','Forced Half Pass','Half Guard Top Pass'
+    ) AND owner_id = 1
+) t
+WHERE ts.owner_id = 1 AND ts.id % 2 = 0
+ON CONFLICT DO NOTHING;
+
+-- Técnicas de SWEEP (barridos/guardias) — necesarias para el radar de guardias
+INSERT INTO training_session_technique (training_session_id, technique_id, rep_count, notes_markdown)
+SELECT ts.id, t.id,
+       (ARRAY[10,15,20,12,18])[((ts.id + t.id) % 5) + 1], NULL
+FROM training_session ts
+CROSS JOIN (
+    SELECT id FROM technique WHERE name IN (
+        'Butterfly Sweep','De La Riva Sweep','Hip Bump Sweep',
+        'Flower Sweep','Elevator Sweep','Berimbolo Back Take',
+        'K-Guard Sweep','Hook Sweep','Collar Drag Sweep',
+        'Double Ankle Sweep','Deep Half Sweep','Half Guard Back Sweep'
+    ) AND owner_id = 1
+) t
+WHERE ts.owner_id = 1 AND ts.id % 2 = 1
+ON CONFLICT DO NOTHING;
+
+-- Técnicas de TAKEDOWN (derribos) — necesarias para el radar de derribos
+INSERT INTO training_session_technique (training_session_id, technique_id, rep_count, notes_markdown)
+SELECT ts.id, t.id,
+       (ARRAY[10,15,20,12,18])[((ts.id + t.id) % 5) + 1], NULL
+FROM training_session ts
+CROSS JOIN (
+    SELECT id FROM technique WHERE name IN (
+        'Double Leg Takedown','Ankle Pick','Arm Drag to Back Take',
+        'Hip Throw','Foot Sweep','Guard Pull',
+        'Fireman Carry','Blast Double Leg','Duck Under',
+        'High Crotch','Inside Trip','Harai Goshi'
+    ) AND owner_id = 1
+) t
+WHERE ts.owner_id = 1
 ON CONFLICT DO NOTHING;
 
 -- =====================================================================
