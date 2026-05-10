@@ -15,9 +15,8 @@ spring:
     show-sql: false
   flyway:
     enabled: true
-    # baseline-on-migrate eliminado en prod: en una BD ya inicializada con Flyway
-    # este flag es innecesario y puede silenciar migraciones no aplicadas.
-    # Mantenlo únicamente la primera vez que se migra una BD legacy sin historial Flyway.
+    baseline-on-migrate: true
+    baseline-version: 0
 springdoc:
   swagger-ui:
     enabled: false
