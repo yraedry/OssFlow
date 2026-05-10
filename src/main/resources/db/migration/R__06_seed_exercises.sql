@@ -427,4 +427,4 @@ INSERT INTO exercise (owner_id, name, description, category, equipment, youtube_
  'Flujo completo de estiramientos post-entrenamiento BJJ: child''s pose + spinal twist + pigeon + butterfly + forward fold. 10 minutos de recuperación activa.',
  'FLEXIBILITY', 'NO_EQUIPMENT', NULL, 'PUBLIC', NOW(), NOW(), 0);
 
-ON CONFLICT DO NOTHING;
+ON CONFLICT (owner_id, name) WHERE deleted_at IS NULL DO NOTHING;
