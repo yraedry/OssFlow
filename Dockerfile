@@ -7,6 +7,7 @@ RUN mvn clean package -DskipTests -B
 RUN java -Djarmode=layertools -jar target/*.jar extract --destination target/extracted
 
 FROM eclipse-temurin:25-jre-noble
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
 RUN groupadd --system spring && useradd --system --gid spring --shell /bin/false spring
 WORKDIR /app
 COPY --from=builder --chown=spring:spring /build/target/extracted/dependencies/ ./
