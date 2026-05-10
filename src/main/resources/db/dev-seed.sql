@@ -15,16 +15,16 @@ ON CONFLICT (owner_id) DO NOTHING;
 -- =====================================================================
 INSERT INTO training_session (owner_id, session_date, duration_minutes, intensity, session_type, notes_markdown, created_at, updated_at, version)
 VALUES
-(1, NOW() - INTERVAL '2 days',  90, 'HIGH',   'BJJ', 'Sparring con cinturones azules. Trabajé guardia De La Riva. Conseguí 3 barridos exitosos.', NOW(), NOW(), 0),
-(1, NOW() - INTERVAL '4 days',  60, 'MEDIUM', 'BJJ', 'Drill de cadenas desde half guard. 200 repeticiones cada lado. Muy cansado al final.', NOW(), NOW(), 0),
-(1, NOW() - INTERVAL '6 days',  75, 'HIGH',   'BJJ', 'Open mat del sábado. 6 rounds de 6 minutos. Me costó mantener el juego de piernas.', NOW(), NOW(), 0),
-(1, NOW() - INTERVAL '9 days',  90, 'HIGH',   'BJJ', 'Clase nocturna. Trabajé pasajes bajo presión. El torreando me está saliendo bien.', NOW(), NOW(), 0),
-(1, NOW() - INTERVAL '11 days', 60, 'LOW',    'BJJ', 'Clase técnica: sistema De La Riva completo. Muchos detalles nuevos sobre el berimbolo.', NOW(), NOW(), 0),
-(1, NOW() - INTERVAL '13 days', 75, 'HIGH',   'BJJ', 'Sparring competitivo con visitantes. Perdí posición varias veces desde DLR.', NOW(), NOW(), 0),
-(1, NOW() - INTERVAL '16 days', 90, 'MEDIUM', 'BJJ', 'Drill de camarones y movimientos de cadera. Fundamental para la defensa.', NOW(), NOW(), 0),
-(1, NOW() - INTERVAL '18 days', 60, 'LOW',    'BJJ', 'Clase técnica: leg locks desde single leg X. Primer contacto con inside heel hook.', NOW(), NOW(), 0),
-(1, NOW() - INTERVAL '20 days', 75, 'HIGH',   'BJJ', 'Sparring libre. Foco en no perder posición. Aguanté bien desde bottom side control.', NOW(), NOW(), 0),
-(1, NOW() - INTERVAL '23 days', 90, 'MEDIUM', 'BJJ', 'Open mat. Experimenté con rubber guard. Muy difícil sin flexibilidad suficiente.', NOW(), NOW(), 0);
+(1, NOW() - INTERVAL '2 days',  90, 'HARD',        'BJJ', 'Sparring con cinturones azules. Trabajé guardia De La Riva. Conseguí 3 barridos exitosos.', NOW(), NOW(), 0),
+(1, NOW() - INTERVAL '4 days',  60, 'MODERATE',    'BJJ', 'Drill de cadenas desde half guard. 200 repeticiones cada lado. Muy cansado al final.', NOW(), NOW(), 0),
+(1, NOW() - INTERVAL '6 days',  75, 'HARD',        'BJJ', 'Open mat del sábado. 6 rounds de 6 minutos. Me costó mantener el juego de piernas.', NOW(), NOW(), 0),
+(1, NOW() - INTERVAL '9 days',  90, 'HARD',        'BJJ', 'Clase nocturna. Trabajé pasajes bajo presión. El torreando me está saliendo bien.', NOW(), NOW(), 0),
+(1, NOW() - INTERVAL '11 days', 60, 'LIGHT',       'BJJ', 'Clase técnica: sistema De La Riva completo. Muchos detalles nuevos sobre el berimbolo.', NOW(), NOW(), 0),
+(1, NOW() - INTERVAL '13 days', 75, 'HARD',        'BJJ', 'Sparring competitivo con visitantes. Perdí posición varias veces desde DLR.', NOW(), NOW(), 0),
+(1, NOW() - INTERVAL '16 days', 90, 'MODERATE',    'BJJ', 'Drill de camarones y movimientos de cadera. Fundamental para la defensa.', NOW(), NOW(), 0),
+(1, NOW() - INTERVAL '18 days', 60, 'LIGHT',       'BJJ', 'Clase técnica: leg locks desde single leg X. Primer contacto con inside heel hook.', NOW(), NOW(), 0),
+(1, NOW() - INTERVAL '20 days', 75, 'HARD',        'BJJ', 'Sparring libre. Foco en no perder posición. Aguanté bien desde bottom side control.', NOW(), NOW(), 0),
+(1, NOW() - INTERVAL '23 days', 90, 'MODERATE',    'BJJ', 'Open mat. Experimenté con rubber guard. Muy difícil sin flexibilidad suficiente.', NOW(), NOW(), 0);
 
 -- Técnicas trabajadas en sesiones
 INSERT INTO training_session_technique (training_session_id, technique_id, rep_count, notes_markdown)
