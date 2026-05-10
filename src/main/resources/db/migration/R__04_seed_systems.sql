@@ -55,4 +55,4 @@ VALUES
  (SELECT id FROM position WHERE name='X-Guard' AND owner_id=1),
  '{"nodes":[],"edges":[]}', 'v1', 'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0)
 
-ON CONFLICT DO NOTHING;
+ON CONFLICT (owner_id, name) WHERE deleted_at IS NULL DO NOTHING;

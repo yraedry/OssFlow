@@ -41,7 +41,7 @@ VALUES
 (1, 'Bicep Slicer',           'SUBMISSION', 'Compresión del bíceps: antebrazo o espinilla en el pliegue del codo. Ilegal hasta marrón en IBJJF.',                                           'BROWN',  'BOTH', (SELECT id FROM position WHERE name='Closed Guard'               AND owner_id=1), (SELECT id FROM position WHERE name='Submitted' AND owner_id=1), 'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
 (1, 'Estima Lock',            'SUBMISSION', 'Foot lock atrapando el pie en el pliegue del codo. Creado por Victor Estima. Desde guardia cerrada.',                                          'PURPLE', 'BOTH', (SELECT id FROM position WHERE name='Closed Guard'               AND owner_id=1), (SELECT id FROM position WHERE name='Submitted' AND owner_id=1), 'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
 (1, 'Electric Chair',         'SUBMISSION', 'Stretch desde lockdown half guard. Ataca ingle y aductores. Sistema 10th Planet de Eddie Bravo.',                                              'PURPLE', 'BOTH', (SELECT id FROM position WHERE name='Lockdown'                   AND owner_id=1), (SELECT id FROM position WHERE name='Submitted' AND owner_id=1), 'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0)
-ON CONFLICT DO NOTHING;
+ON CONFLICT (owner_id, name) WHERE deleted_at IS NULL DO NOTHING;
 
 -- =====================================================================
 -- SWEEPS (18)
@@ -66,7 +66,7 @@ VALUES
 (1, 'Tripod Sweep',            'SWEEP', 'Barrido desde open guard: un pie en la cadera, otro enganchando el tobillo, jalando la manga hacia abajo.',                                   'WHITE',  'GI',   (SELECT id FROM position WHERE name='Seated Guard'     AND owner_id=1), (SELECT id FROM position WHERE name='Side Control'  AND owner_id=1), 'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
 (1, 'Sickle Sweep',            'SWEEP', 'Variante del tripod sweep con el pie barriendo el tobillo del oponente en arco. Desde seated guard.',                                         'WHITE',  'BOTH', (SELECT id FROM position WHERE name='Seated Guard'     AND owner_id=1), (SELECT id FROM position WHERE name='Side Control'  AND owner_id=1), 'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
 (1, 'Knee Shield Sweep',       'SWEEP', 'Sweep desde Z-guard usando el escudo de rodilla para crear distancia y voltear con underhook.',                                                'BLUE',   'BOTH', (SELECT id FROM position WHERE name='Z-Guard'          AND owner_id=1), (SELECT id FROM position WHERE name='Side Control'  AND owner_id=1), 'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0)
-ON CONFLICT DO NOTHING;
+ON CONFLICT (owner_id, name) WHERE deleted_at IS NULL DO NOTHING;
 
 -- =====================================================================
 -- PASSES (18)
@@ -91,7 +91,7 @@ VALUES
 (1, 'Torreando to Mount',      'PASS', 'Variante del torreando que termina directamente en mount saltando la fase de side control.',                                                    'BLUE',   'BOTH', (SELECT id FROM position WHERE name='Seated Guard'     AND owner_id=1), (SELECT id FROM position WHERE name='Full Mount'   AND owner_id=1), 'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
 (1, 'Shin Slide Pass',         'PASS', 'Espinilla deslizando sobre el muslo del oponente para pasar. Variante del knee slice.',                                                        'BLUE',   'BOTH', (SELECT id FROM position WHERE name='Half Guard'        AND owner_id=1), (SELECT id FROM position WHERE name='Side Control' AND owner_id=1), 'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
 (1, 'Wilson Pass',             'PASS', 'Pase de presión usando el hombro en la cadera del oponente. Grinding y lento pero muy efectivo.',                                              'BLUE',   'BOTH', (SELECT id FROM position WHERE name='Half Guard'        AND owner_id=1), (SELECT id FROM position WHERE name='Side Control' AND owner_id=1), 'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0)
-ON CONFLICT DO NOTHING;
+ON CONFLICT (owner_id, name) WHERE deleted_at IS NULL DO NOTHING;
 
 -- =====================================================================
 -- TAKEDOWNS (12)
@@ -110,7 +110,7 @@ VALUES
 (1, 'Snap Down',              'TAKEDOWN', 'Snap del cuello hacia abajo para hacer turtle al oponente. Base para guillotina o anaconda.',                                          'WHITE', 'NOGI', (SELECT id FROM position WHERE name='Clinch'            AND owner_id=1), (SELECT id FROM position WHERE name='Turtle Top'   AND owner_id=1), 'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
 (1, 'Sacrifice Throw',        'TAKEDOWN', 'Proyección de sacrificio (Tomoe Nage): caer de espaldas y proyectar al oponente por encima. Gi. Alto riesgo/recompensa.',             'BLUE',  'GI',   (SELECT id FROM position WHERE name='Clinch'            AND owner_id=1), (SELECT id FROM position WHERE name='Full Mount'   AND owner_id=1), 'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
 (1, 'Guard Pull',             'TAKEDOWN', 'Sentarse a guardia intencionalmente. Técnica controvertida pero muy usada en competición de gi.',                                       'WHITE', 'GI',   (SELECT id FROM position WHERE name='Standing Neutral'  AND owner_id=1), (SELECT id FROM position WHERE name='Closed Guard' AND owner_id=1), 'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0)
-ON CONFLICT DO NOTHING;
+ON CONFLICT (owner_id, name) WHERE deleted_at IS NULL DO NOTHING;
 
 -- =====================================================================
 -- ESCAPES (12)
@@ -129,7 +129,7 @@ VALUES
 (1, 'Armbar Defense',             'ESCAPE', 'Defender el armbar: stacking, voltear, interlazar los dedos. Recuperar guardia o posición top.',                                      'WHITE',  'BOTH', (SELECT id FROM position WHERE name='Closed Guard'           AND owner_id=1), (SELECT id FROM position WHERE name='Side Control'      AND owner_id=1), 'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
 (1, 'Triangle Defense',           'ESCAPE', 'Defender el triángulo: stack + postura, voltear, salir hacia el pasador.',                                                            'WHITE',  'BOTH', (SELECT id FROM position WHERE name='Closed Guard'           AND owner_id=1), (SELECT id FROM position WHERE name='Side Control'      AND owner_id=1), 'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
 (1, 'Heel Hook Defense',          'ESCAPE', 'Defensa urgente de heel hook: no rotar, alinear rodilla, escape vine o back step.',                                                   'PURPLE', 'NOGI', (SELECT id FROM position WHERE name='Leg Entanglement'       AND owner_id=1), (SELECT id FROM position WHERE name='Standing Neutral'  AND owner_id=1), 'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0)
-ON CONFLICT DO NOTHING;
+ON CONFLICT (owner_id, name) WHERE deleted_at IS NULL DO NOTHING;
 
 -- =====================================================================
 -- TRANSITIONS (12)
@@ -148,4 +148,4 @@ VALUES
 (1, 'North-South to Kimura Trap',  'TRANSITION', 'Desde north-south entrar al kimura trap para controlar el brazo y avanzar a mount o back.',                                     'BLUE',   'BOTH', (SELECT id FROM position WHERE name='North South'        AND owner_id=1), (SELECT id FROM position WHERE name='Full Mount'      AND owner_id=1), 'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
 (1, 'Ashi Garami to 50/50',        'TRANSITION', 'Desde ashi garami básico el oponente gira para crear la posición 50/50 simétrica.',                                             'PURPLE', 'NOGI', (SELECT id FROM position WHERE name='Single Leg X'       AND owner_id=1), (SELECT id FROM position WHERE name='50/50'            AND owner_id=1), 'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
 (1, 'Turtle to Guard Recovery',    'TRANSITION', 'Desde turtle rodar hacia adelante para recuperar guardia antes de que el oponente tome la espalda.',                            'WHITE',  'BOTH', (SELECT id FROM position WHERE name='Turtle'             AND owner_id=1), (SELECT id FROM position WHERE name='Closed Guard'    AND owner_id=1), 'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0)
-ON CONFLICT DO NOTHING;
+ON CONFLICT (owner_id, name) WHERE deleted_at IS NULL DO NOTHING;

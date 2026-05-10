@@ -81,4 +81,4 @@ VALUES
 -- SUBMITTED
 (1, 'Submitted',                     'SUBMITTED',      'El luchador ha tapado. Fin del combate o round.',                                                                                                           'PUBLIC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0)
 
-ON CONFLICT DO NOTHING;
+ON CONFLICT (owner_id, name) WHERE deleted_at IS NULL DO NOTHING;
