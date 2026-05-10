@@ -18,5 +18,5 @@ public record UpdateTechniqueRequest(
         @NotNull Modality modality,
         @NotNull Long startPositionId,
         Long endPositionId,
-        @NotNull Visibility visibility
+        Visibility visibility
 ) {}

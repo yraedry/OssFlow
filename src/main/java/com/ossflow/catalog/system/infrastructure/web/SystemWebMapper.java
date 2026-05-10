@@ -1,5 +1,6 @@
 package com.ossflow.catalog.system.infrastructure.web;
 
+import com.ossflow.catalog.position.domain.Visibility;
 import com.ossflow.catalog.system.domain.OssSystem;
 import com.ossflow.catalog.system.infrastructure.web.dto.*;
 import org.mapstruct.Mapper;
@@ -16,6 +17,7 @@ public interface SystemWebMapper {
     @Mapping(target = "version", ignore = true)
     @Mapping(target = "deletedAt", ignore = true)
     @Mapping(target = "purgeAt", ignore = true)
+    @Mapping(target = "visibility", defaultExpression = "java(req.visibility() != null ? req.visibility() : Visibility.PRIVATE)")
     OssSystem fromCreate(CreateSystemRequest req);
 
     SystemResponse toResponse(OssSystem system);

@@ -11,5 +11,5 @@ public record CreatePositionRequest(
         @NotNull PositionType type,
         @Size(max = 10000) String description,
         @Size(max = 500) String youtubeUrl,
-        @NotNull Visibility visibility
+        Visibility visibility
 ) {}
