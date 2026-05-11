@@ -44,21 +44,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .csrf(csrf -> csrf
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .ignoringRequestMatchers(
-                    "/api/auth/login",
-                    "/api/auth/register",
-                    "/api/auth/refresh",
-                    "/api/auth/logout",
-                    "/api/auth/verify-email",
-                    "/api/auth/resend-verification",
-                    "/api/auth/forgot-password",
-                    "/api/auth/reset-password",
-                    "/oauth2/**",
-                    "/actuator/**"
-                )
-            )
+            .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterBefore(new RateLimitingFilter(), UsernamePasswordAuthenticationFilter.class)
             .addFilterBefore(new JwtAuthenticationFilter(jwtService, accountRepository),
