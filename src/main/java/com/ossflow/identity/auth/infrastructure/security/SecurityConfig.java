@@ -60,12 +60,13 @@ public class SecurityConfig {
                     "/api/auth/login",
                     "/api/auth/register",
                     "/api/auth/refresh",
+                    "/api/auth/logout",
                     "/api/auth/verify-email",
                     "/api/auth/resend-verification",
                     "/api/auth/forgot-password",
                     "/api/auth/reset-password"
                 ).permitAll()
-                .requestMatchers("/oauth2/**").permitAll()
+                .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
                 .requestMatchers("/actuator/health", "/actuator/info").permitAll()
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
                 .anyRequest().authenticated()

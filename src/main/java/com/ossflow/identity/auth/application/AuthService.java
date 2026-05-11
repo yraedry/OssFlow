@@ -9,7 +9,6 @@ import com.ossflow.identity.auth.infrastructure.web.dto.*;
 import com.ossflow.shared.exception.BadRequestException;
 import com.ossflow.shared.exception.NotFoundException;
 import com.ossflow.shared.exception.UnprocessableException;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +20,6 @@ import java.time.Instant;
 import java.util.Base64;
 import java.util.HexFormat;
 
-@Slf4j
 @Service
 public class AuthService {
 
@@ -33,7 +31,7 @@ public class AuthService {
     private final EmailVerificationTokenRepositoryPort emailVerificationTokenRepository;
     private final PasswordResetTokenRepositoryPort passwordResetTokenRepository;
     private final JwtService jwtService;
-    private final EmailService emailService;
+    private final EmailOutboxService emailOutbox;
     private final BCryptPasswordEncoder passwordEncoder;
 
     public AuthService(AccountRepositoryPort accountRepository,
@@ -41,13 +39,13 @@ public class AuthService {
                        EmailVerificationTokenRepositoryPort emailVerificationTokenRepository,
                        PasswordResetTokenRepositoryPort passwordResetTokenRepository,
                        JwtService jwtService,
-                       EmailService emailService) {
+                       EmailOutboxService emailOutbox) {
         this.accountRepository = accountRepository;
         this.refreshTokenRepository = refreshTokenRepository;
         this.emailVerificationTokenRepository = emailVerificationTokenRepository;
         this.passwordResetTokenRepository = passwordResetTokenRepository;
         this.jwtService = jwtService;
-        this.emailService = emailService;
+        this.emailOutbox = emailOutbox;
         this.passwordEncoder = new BCryptPasswordEncoder(BCRYPT_STRENGTH);
     }
 
@@ -68,7 +66,7 @@ public class AuthService {
                         null, account.id(), sha256(rawToken),
                         Instant.now().plusSeconds(86400), null
                 ));
-                trySendVerificationEmail(account.email(), rawToken);
+                emailOutbox.enqueueVerification(account.id(), account.email(), rawToken);
             }
             return;
         }
@@ -82,17 +80,7 @@ public class AuthService {
                 null, account.id(), sha256(rawToken),
                 Instant.now().plusSeconds(86400), null
         ));
-        trySendVerificationEmail(account.email(), rawToken);
-    }
-
-    // El envío puede fallar (proveedor caído, rate limit) sin tumbar el registro:
-    // el usuario verá la respuesta 201 igualmente y podrá pedir resend-verification.
-    private void trySendVerificationEmail(String email, String rawToken) {
-        try {
-            emailService.sendVerificationEmail(email, rawToken);
-        } catch (EmailDeliveryException e) {
-            log.warn("Verification email delivery failed for {} - user can request resend", email);
-        }
+        emailOutbox.enqueueVerification(account.id(), account.email(), rawToken);
     }
 
     @Transactional
@@ -116,10 +104,19 @@ public class AuthService {
 
     @Transactional
     public void logout(String rawRefreshToken) {
+        if (rawRefreshToken == null || rawRefreshToken.isBlank()) {
+            return;
+        }
         String hash = sha256(rawRefreshToken);
-        refreshTokenRepository.findByTokenHash(hash).ifPresent(rt ->
-                refreshTokenRepository.revokeByAccountId(rt.accountId())
-        );
+        refreshTokenRepository.findByTokenHash(hash).ifPresent(rt -> {
+            refreshTokenRepository.revokeByAccountId(rt.accountId());
+            // Bumpea tokenVersion para invalidar access tokens vivos (15min).
+            accountRepository.findById(rt.accountId()).ifPresent(account ->
+                    accountRepository.save(new Account(account.id(), account.email(), account.passwordHash(),
+                            account.provider(), account.providerId(), account.emailVerified(),
+                            account.tokenVersion() + 1, account.createdAt(), account.updatedAt()))
+            );
+        });
     }
 
     // Ventana de gracia: dentro de este margen tras revocar, asumimos que un reuse del
@@ -223,7 +220,7 @@ public class AuthService {
                             null, account.id(), sha256(rawToken),
                             Instant.now().plusSeconds(86400), null
                     ));
-                    trySendVerificationEmail(account.email(), rawToken);
+                    emailOutbox.enqueueVerification(account.id(), account.email(), rawToken);
                 });
     }
 
@@ -236,11 +233,7 @@ public class AuthService {
                     null, account.id(), sha256(rawToken),
                     Instant.now().plusSeconds(3600), null
             ));
-            try {
-                emailService.sendPasswordResetEmail(account.email(), rawToken);
-            } catch (EmailDeliveryException e) {
-                log.warn("Password reset email failed for {} - user can retry forgot-password", account.email());
-            }
+            emailOutbox.enqueuePasswordReset(account.id(), account.email(), rawToken);
         });
     }
 
