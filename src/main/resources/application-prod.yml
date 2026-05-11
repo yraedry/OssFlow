@@ -24,4 +24,4 @@ springdoc:
 management:
   health:
     mail:
-      enabled: ${RESEND_API_KEY:false}
+      enabled: false
