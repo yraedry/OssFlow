@@ -40,15 +40,19 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest request) {
-        authService.register(request);
+    public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest request,
+                                                     HttpServletRequest httpRequest) {
+        authService.register(request, httpRequest.getRemoteAddr(),
+                httpRequest.getHeader("User-Agent"));
         return ResponseEntity.status(201).body(new RegisterResponse("verification_sent"));
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request,
+                                              HttpServletRequest httpRequest,
                                               HttpServletResponse response) {
-        AuthService.LoginResult result = authService.login(request);
+        AuthService.LoginResult result = authService.login(request,
+                httpRequest.getRemoteAddr(), httpRequest.getHeader("User-Agent"));
         setRefreshCookie(response, result.rawRefreshToken(), refreshExpirySeconds);
         AuthResponse body = new AuthResponse(
                 result.accessToken(),
@@ -61,7 +65,7 @@ public class AuthController {
     public ResponseEntity<Void> logout(HttpServletRequest request, HttpServletResponse response) {
         String rawToken = extractRefreshCookie(request);
         if (rawToken != null) {
-            authService.logout(rawToken);
+            authService.logout(rawToken, request.getRemoteAddr(), request.getHeader("User-Agent"));
         }
         setRefreshCookie(response, "", 0);
         return ResponseEntity.noContent().build();
