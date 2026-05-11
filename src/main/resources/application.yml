@@ -62,8 +62,8 @@ management:
 
 auth:
   jwt:
-    private-key-path: classpath:certs/private.pem
-    public-key-path: classpath:certs/public.pem
+    # En runtime las keys se inyectan vía env vars b64 (prod). En dev/test, los perfiles
+    # correspondientes pueden definir private-key-path/public-key-path. Ver RsaKeyConfig.
     private-key-b64: ${AUTH_JWT_PRIVATE_KEY_B64:}
     public-key-b64: ${AUTH_JWT_PUBLIC_KEY_B64:}
     access-token-expiry: 900
