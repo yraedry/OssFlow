@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
@@ -32,6 +33,7 @@ public class AuthService {
     private final PasswordResetTokenRepositoryPort passwordResetTokenRepository;
     private final JwtService jwtService;
     private final EmailOutboxService emailOutbox;
+    private final AccountEventService accountEventService;
     private final BCryptPasswordEncoder passwordEncoder;
 
     public AuthService(AccountRepositoryPort accountRepository,
@@ -39,18 +41,25 @@ public class AuthService {
                        EmailVerificationTokenRepositoryPort emailVerificationTokenRepository,
                        PasswordResetTokenRepositoryPort passwordResetTokenRepository,
                        JwtService jwtService,
-                       EmailOutboxService emailOutbox) {
+                       EmailOutboxService emailOutbox,
+                       AccountEventService accountEventService) {
         this.accountRepository = accountRepository;
         this.refreshTokenRepository = refreshTokenRepository;
         this.emailVerificationTokenRepository = emailVerificationTokenRepository;
         this.passwordResetTokenRepository = passwordResetTokenRepository;
         this.jwtService = jwtService;
         this.emailOutbox = emailOutbox;
+        this.accountEventService = accountEventService;
         this.passwordEncoder = new BCryptPasswordEncoder(BCRYPT_STRENGTH);
     }
 
     @Transactional
     public void register(RegisterRequest request) {
+        register(request, null, null);
+    }
+
+    @Transactional
+    public void register(RegisterRequest request, String ip, String userAgent) {
         var existing = accountRepository.findByEmail(request.email());
         if (existing.isPresent()) {
             // Anti-enumeración: respuesta uniforme 201. Si la cuenta existe y NO está
@@ -81,15 +90,27 @@ public class AuthService {
                 Instant.now().plusSeconds(86400), null
         ));
         emailOutbox.enqueueVerification(account.id(), account.email(), rawToken);
+        accountEventService.record(account.id(), AccountEventType.REGISTER, ip, userAgent);
     }
 
     @Transactional
     public LoginResult login(LoginRequest request) {
+        return login(request, null, null);
+    }
+
+    @Transactional
+    public LoginResult login(LoginRequest request, String ip, String userAgent) {
         Account account = accountRepository.findByEmail(request.email())
                 .filter(a -> a.passwordHash() != null && passwordEncoder.matches(request.password(), a.passwordHash()))
-                .orElseThrow(() -> new UnprocessableException("INVALID_CREDENTIALS", "Credenciales inválidas"));
+                .orElseThrow(() -> {
+                    // LOGIN_FAILED: intentamos registrar el evento si el email existe.
+                    accountRepository.findByEmail(request.email()).ifPresent(a ->
+                            accountEventService.record(a.id(), AccountEventType.LOGIN_FAILED, ip, userAgent));
+                    return new UnprocessableException("INVALID_CREDENTIALS", "Credenciales inválidas");
+                });
 
         if (!account.emailVerified()) {
+            accountEventService.record(account.id(), AccountEventType.LOGIN_FAILED, ip, userAgent);
             throw new UnprocessableException("EMAIL_NOT_VERIFIED", "Debes verificar tu correo antes de iniciar sesión");
         }
 
@@ -99,11 +120,17 @@ public class AuthService {
                 null, account.id(), sha256(rawRefreshToken), account.tokenVersion(),
                 Instant.now().plusSeconds(604800), Instant.now(), null
         ));
+        accountEventService.record(account.id(), AccountEventType.LOGIN, ip, userAgent);
         return new LoginResult(accessToken, rawRefreshToken, account);
     }
 
     @Transactional
     public void logout(String rawRefreshToken) {
+        logout(rawRefreshToken, null, null);
+    }
+
+    @Transactional
+    public void logout(String rawRefreshToken, String ip, String userAgent) {
         if (rawRefreshToken == null || rawRefreshToken.isBlank()) {
             return;
         }
@@ -116,6 +143,7 @@ public class AuthService {
                             account.provider(), account.providerId(), account.emailVerified(),
                             account.tokenVersion() + 1, account.createdAt(), account.updatedAt()))
             );
+            accountEventService.record(rt.accountId(), AccountEventType.LOGOUT, ip, userAgent);
         });
     }
 
@@ -166,6 +194,7 @@ public class AuthService {
         accountRepository.save(new Account(account.id(), account.email(), account.passwordHash(),
                 account.provider(), account.providerId(), account.emailVerified(),
                 account.tokenVersion() + 1, account.createdAt(), account.updatedAt()));
+        accountEventService.record(account.id(), AccountEventType.TOKEN_REUSE_DETECTED, null, null);
         throw new UnprocessableException("INVALID_REFRESH_TOKEN", "Token reuse detectado: sesión invalidada");
     }
 
@@ -264,6 +293,7 @@ public class AuthService {
 
         // Revoke all refresh tokens (token_version bump invalidates them)
         refreshTokenRepository.revokeByAccountId(account.id());
+        accountEventService.record(account.id(), AccountEventType.PASSWORD_RESET, null, null);
     }
 
     private String generateToken() {
