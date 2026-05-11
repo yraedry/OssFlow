@@ -26,6 +26,7 @@ public class RefreshTokenPersistenceAdapter implements RefreshTokenRepositoryPor
                 .expiresAt(token.expiresAt())
                 .createdAt(token.createdAt())
                 .revokedAt(token.revokedAt())
+                .replacedById(token.replacedById())
                 .build();
         RefreshTokenEntity saved = jpaRepository.save(entity);
         return toDomain(saved);
@@ -41,8 +42,14 @@ public class RefreshTokenPersistenceAdapter implements RefreshTokenRepositoryPor
         jpaRepository.revokeAllByAccountId(accountId, Instant.now());
     }
 
+    @Override
+    public Optional<RefreshToken> findById(Long id) {
+        return jpaRepository.findById(id).map(this::toDomain);
+    }
+
     private RefreshToken toDomain(RefreshTokenEntity e) {
         return new RefreshToken(e.getId(), e.getAccountId(), e.getTokenHash(),
-                e.getTokenVersion(), e.getExpiresAt(), e.getCreatedAt(), e.getRevokedAt());
+                e.getTokenVersion(), e.getExpiresAt(), e.getCreatedAt(), e.getRevokedAt(),
+                e.getReplacedById());
     }
 }

@@ -36,6 +36,9 @@ public class RefreshTokenEntity {
     @Column(name = "revoked_at")
     private Instant revokedAt;
 
+    @Column(name = "replaced_by_id")
+    private Long replacedById;
+
     @PrePersist
     void prePersist() {
         if (createdAt == null) createdAt = Instant.now();

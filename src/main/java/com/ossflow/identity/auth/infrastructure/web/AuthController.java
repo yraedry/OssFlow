@@ -75,7 +75,10 @@ public class AuthController {
             return ResponseEntity.status(401).build();
         }
         AuthService.RefreshResult result = authService.refresh(rawToken);
-        setRefreshCookie(response, result.rawRefreshToken(), refreshExpirySeconds);
+        // En la ventana de gracia (double-click) reusa la cookie existente y solo emite access nuevo.
+        if (result.rawRefreshToken() != null) {
+            setRefreshCookie(response, result.rawRefreshToken(), refreshExpirySeconds);
+        }
         return ResponseEntity.ok(new RefreshResponse(result.accessToken()));
     }
 
