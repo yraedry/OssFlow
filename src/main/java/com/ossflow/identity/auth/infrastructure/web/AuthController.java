@@ -16,7 +16,7 @@ import java.util.Arrays;
 public class AuthController {
 
     private static final String REFRESH_COOKIE_NAME = "refresh_token";
-    private static final int REFRESH_TTL = 604800;
+    private static final int REFRESH_TTL = 2592000; // 30 días
 
     private final AuthService authService;
 
@@ -91,8 +91,8 @@ public class AuthController {
     private void setRefreshCookie(HttpServletResponse response, String value, int maxAge) {
         Cookie cookie = new Cookie(REFRESH_COOKIE_NAME, value);
         cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        cookie.setPath("/api/auth/refresh");
+        cookie.setSecure(false); // HTTP en desarrollo; cambiar a true cuando haya HTTPS
+        cookie.setPath("/api/auth");
         cookie.setMaxAge(maxAge);
         response.addCookie(cookie);
     }
