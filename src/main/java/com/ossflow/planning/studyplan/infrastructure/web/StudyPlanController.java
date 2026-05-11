@@ -1,5 +1,6 @@
 package com.ossflow.planning.studyplan.infrastructure.web;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import com.ossflow.planning.studyplan.application.StudyPlanService;
 import com.ossflow.planning.studyplan.domain.StudyPlan;
 import com.ossflow.planning.studyplan.infrastructure.web.dto.CreateStudyPlanRequest;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
+@PreAuthorize("isAuthenticated()")
 @RestController
 @RequestMapping("/api/v1/planning/study-plans")
 @Validated

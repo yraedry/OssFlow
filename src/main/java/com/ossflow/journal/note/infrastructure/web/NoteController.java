@@ -1,5 +1,6 @@
 package com.ossflow.journal.note.infrastructure.web;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import com.ossflow.journal.note.application.NoteService;
 import com.ossflow.journal.note.domain.Note;
 import com.ossflow.journal.note.infrastructure.web.dto.CreateNoteRequest;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
+@PreAuthorize("isAuthenticated()")
 @RestController
 @RequestMapping("/api/v1/journal/notes")
 @Validated

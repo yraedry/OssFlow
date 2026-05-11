@@ -1,5 +1,6 @@
 package com.ossflow.dashboard.infrastructure.web;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import com.ossflow.dashboard.infrastructure.web.dto.WeeklyStatsResponse;
 import com.ossflow.journal.physicalsession.application.PhysicalSessionService;
 import com.ossflow.journal.trainingsession.application.TrainingSessionService;
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 import java.time.temporal.IsoFields;
 import java.time.temporal.TemporalAdjusters;
 
+@PreAuthorize("isAuthenticated()")
 @RestController
 @RequestMapping("/api/v1/dashboard")
 @RequiredArgsConstructor

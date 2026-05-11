@@ -1,5 +1,6 @@
 package com.ossflow.catalog.web;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import com.ossflow.catalog.position.application.PositionService;
 import com.ossflow.catalog.position.infrastructure.web.PositionWebMapper;
 import com.ossflow.catalog.position.infrastructure.web.dto.PositionResponse;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@PreAuthorize("isAuthenticated()")
 @RestController
 @RequestMapping("/api/v1/catalog/trash")
 @Validated

@@ -1,5 +1,6 @@
 package com.ossflow.catalog.system.infrastructure.web;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import com.ossflow.catalog.system.application.SystemService;
 import com.ossflow.catalog.system.domain.OssSystem;
 import com.ossflow.catalog.system.infrastructure.web.dto.*;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
+@PreAuthorize("isAuthenticated()")
 @RestController
 @RequestMapping("/api/v1/catalog/systems")
 @Validated
