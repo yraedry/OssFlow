@@ -7,9 +7,9 @@ spring:
     hikari:
       maximum-pool-size: 10
       minimum-idle: 2
-      connection-timeout: 30000   # 30 s — falla rápido si la BD no responde
-      idle-timeout: 600000        # 10 min — cierra conexiones ociosas
-      max-lifetime: 1800000       # 30 min — rota conexiones antes del timeout del servidor
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
       pool-name: OssFlowHikari
   jpa:
     open-in-view: false
@@ -17,31 +17,9 @@ spring:
       hibernate:
         physical_naming_strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
         jdbc:
-          batch_size: 25          # inserts/updates en lote para operaciones masivas
+          batch_size: 25
         order_inserts: true
         order_updates: true
-server:
-  port: 8080
-  error:
-    include-message: never
-    include-stacktrace: never
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info
-  endpoint:
-    health:
-      show-details: never
-
-auth:
-  jwt:
-    private-key-path: classpath:certs/private.pem
-    public-key-path: classpath:certs/public.pem
-    access-token-expiry: 900
-    refresh-token-expiry: 604800
-
-spring:
   mail:
     host: smtp.resend.com
     port: 587
@@ -65,3 +43,25 @@ spring:
             token-uri: https://oauth2.googleapis.com/token
             user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
             user-name-attribute: sub
+
+server:
+  port: 8080
+  error:
+    include-message: never
+    include-stacktrace: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+
+auth:
+  jwt:
+    private-key-path: classpath:certs/private.pem
+    public-key-path: classpath:certs/public.pem
+    access-token-expiry: 900
+    refresh-token-expiry: 604800

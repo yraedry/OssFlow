@@ -9,18 +9,6 @@ spring:
     show-sql: false
   flyway:
     enabled: false
-auth:
-  jwt:
-    private-key-path: classpath:certs/private.pem
-    public-key-path: classpath:certs/public.pem
-    access-token-expiry: 900
-    refresh-token-expiry: 604800
-  mail:
-    host: localhost
-    port: 25
-    username: test
-    password: test
-spring:
   mail:
     host: localhost
     port: 25
@@ -41,6 +29,14 @@ spring:
             token-uri: https://oauth2.googleapis.com/token
             user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
             user-name-attribute: sub
+
+auth:
+  jwt:
+    private-key-path: classpath:certs/private.pem
+    public-key-path: classpath:certs/public.pem
+    access-token-expiry: 900
+    refresh-token-expiry: 604800
+
 logging:
   level:
     com.ossflow: INFO
