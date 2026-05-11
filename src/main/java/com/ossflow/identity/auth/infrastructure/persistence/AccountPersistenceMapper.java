@@ -12,7 +12,7 @@ public class AccountPersistenceMapper {
                 entity.getId(),
                 entity.getEmail(),
                 entity.getPasswordHash(),
-                AccountProvider.valueOf(entity.getProvider()),
+                entity.getProvider(),
                 entity.getProviderId(),
                 entity.isEmailVerified(),
                 entity.getTokenVersion(),
@@ -26,7 +26,7 @@ public class AccountPersistenceMapper {
                 .id(domain.id())
                 .email(domain.email())
                 .passwordHash(domain.passwordHash())
-                .provider(domain.provider().name())
+                .provider(domain.provider())
                 .providerId(domain.providerId())
                 .emailVerified(domain.emailVerified())
                 .tokenVersion(domain.tokenVersion())
