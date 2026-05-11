@@ -28,8 +28,12 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
     @Transactional
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oauthUser = super.loadUser(userRequest);
-        Map<String, Object> attributes = oauthUser.getAttributes();
+        return processAttributes(oauthUser.getAttributes());
+    }
 
+    // Extraído para testabilidad: la lógica de validación + linking se puede
+    // ejecutar sin pasar por la llamada HTTP a Google que hace super.loadUser().
+    OAuth2User processAttributes(Map<String, Object> attributes) {
         String providerId = (String) attributes.get("sub");
         String email = (String) attributes.get("email");
         Object emailVerifiedRaw = attributes.get("email_verified");
@@ -39,8 +43,6 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
                     new OAuth2Error("EMAIL_NOT_VERIFIED", "Email no verificado por el proveedor", null));
         }
 
-        // Linking silencioso prohibido: si hay cuenta local con ese email, exigir login local primero.
-        // Linking explícito con confirmación es feature futura.
         var byProvider = accountRepository.findByProviderAndProviderId(AccountProvider.GOOGLE, providerId);
         Account account;
         if (byProvider.isPresent()) {

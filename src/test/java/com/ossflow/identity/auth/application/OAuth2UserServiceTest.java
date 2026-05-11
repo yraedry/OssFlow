@@ -5,7 +5,6 @@ import com.ossflow.identity.auth.domain.Account;
 import com.ossflow.identity.auth.domain.AccountProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
@@ -26,54 +25,7 @@ class OAuth2UserServiceTest {
     @BeforeEach
     void setUp() {
         accountRepository = mock(AccountRepositoryPort.class);
-        // Subclase para evitar la llamada HTTP real a Google que hace super.loadUser()
-        service = new OAuth2UserService(accountRepository) {
-            @Override
-            public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-                // Truco: reusa el mismo método pero saltando super.loadUser
-                Map<String, Object> attrs = (Map<String, Object>) userRequest.getAdditionalParameters();
-                return loadFromAttributes(attrs);
-            }
-
-            OAuth2User loadFromAttributes(Map<String, Object> attrs) {
-                String providerId = (String) attrs.get("sub");
-                String email = (String) attrs.get("email");
-                Object emailVerified = attrs.get("email_verified");
-
-                if (!Boolean.TRUE.equals(emailVerified)) {
-                    throw new OAuth2AuthenticationException(
-                            new org.springframework.security.oauth2.core.OAuth2Error(
-                                    "EMAIL_NOT_VERIFIED", "Email no verificado por el proveedor", null));
-                }
-
-                var byProvider = accountRepository.findByProviderAndProviderId(AccountProvider.GOOGLE, providerId);
-                Account account;
-                if (byProvider.isPresent()) {
-                    account = byProvider.get();
-                } else {
-                    var byEmail = accountRepository.findByEmail(email);
-                    if (byEmail.isPresent() && byEmail.get().provider() != AccountProvider.GOOGLE) {
-                        throw new OAuth2AuthenticationException(
-                                new org.springframework.security.oauth2.core.OAuth2Error(
-                                        "ACCOUNT_EXISTS_DIFFERENT_PROVIDER",
-                                        "Cuenta existe con otro provider", null));
-                    }
-                    account = byEmail.orElseGet(() -> accountRepository.save(new Account(
-                            null, email, null, AccountProvider.GOOGLE, providerId,
-                            true, 0, null, null)));
-                }
-                return new org.springframework.security.oauth2.core.user.DefaultOAuth2User(
-                        new com.ossflow.identity.auth.infrastructure.security.AccountPrincipal(account.id(), account.email()).getAuthorities(),
-                        Map.of("sub", providerId, "email", email, "accountId", account.id()),
-                        "sub");
-            }
-        };
-    }
-
-    private OAuth2UserRequest userRequestWith(Map<String, Object> attrs) {
-        OAuth2UserRequest req = mock(OAuth2UserRequest.class);
-        given(req.getAdditionalParameters()).willReturn(attrs);
-        return req;
+        service = new OAuth2UserService(accountRepository);
     }
 
     @Test
@@ -83,9 +35,19 @@ class OAuth2UserServiceTest {
                 "email", "user@example.com",
                 "email_verified", false);
 
-        assertThatThrownBy(() -> service.loadUser(userRequestWith(attrs)))
+        assertThatThrownBy(() -> service.processAttributes(attrs))
                 .isInstanceOfSatisfying(OAuth2AuthenticationException.class,
                         oae -> assertThat(oae.getError().getErrorCode()).isEqualTo("EMAIL_NOT_VERIFIED"));
+    }
+
+    @Test
+    void rejects_when_email_verified_missing() {
+        var attrs = Map.<String, Object>of(
+                "sub", "google-123",
+                "email", "user@example.com");
+        // Sin la clave email_verified, también se rechaza.
+        assertThatThrownBy(() -> service.processAttributes(attrs))
+                .isInstanceOf(OAuth2AuthenticationException.class);
     }
 
     @Test
@@ -102,7 +64,7 @@ class OAuth2UserServiceTest {
                 "email", "user@example.com",
                 "email_verified", true);
 
-        assertThatThrownBy(() -> service.loadUser(userRequestWith(attrs)))
+        assertThatThrownBy(() -> service.processAttributes(attrs))
                 .isInstanceOfSatisfying(OAuth2AuthenticationException.class,
                         oae -> assertThat(oae.getError().getErrorCode()).isEqualTo("ACCOUNT_EXISTS_DIFFERENT_PROVIDER"));
     }
@@ -121,7 +83,23 @@ class OAuth2UserServiceTest {
                 "email", "new@example.com",
                 "email_verified", true);
 
-        OAuth2User user = service.loadUser(userRequestWith(attrs));
+        OAuth2User user = service.processAttributes(attrs);
         assertThat(user.getAttributes().get("accountId")).isEqualTo(99L);
+    }
+
+    @Test
+    void returns_existing_account_when_found_by_provider_id() {
+        Account existing = new Account(77L, "linked@example.com", null,
+                AccountProvider.GOOGLE, "google-789", true, 0, null, null);
+        given(accountRepository.findByProviderAndProviderId(AccountProvider.GOOGLE, "google-789"))
+                .willReturn(Optional.of(existing));
+
+        var attrs = Map.<String, Object>of(
+                "sub", "google-789",
+                "email", "linked@example.com",
+                "email_verified", true);
+
+        OAuth2User user = service.processAttributes(attrs);
+        assertThat(user.getAttributes().get("accountId")).isEqualTo(77L);
     }
 }
