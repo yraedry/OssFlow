@@ -1,6 +1,7 @@
 package com.ossflow.identity.auth.infrastructure.web;
 
 import com.ossflow.identity.auth.application.AuthService;
+import com.ossflow.identity.auth.infrastructure.security.AccountPrincipal;
 import com.ossflow.identity.auth.infrastructure.web.dto.*;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
@@ -108,6 +110,21 @@ public class AuthController {
     public ResponseEntity<Void> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
         authService.resetPassword(request.token(), request.newPassword());
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<Void> changePassword(@Valid @RequestBody ChangePasswordRequest request,
+                                               Authentication authentication) {
+        AccountPrincipal principal = (AccountPrincipal) authentication.getPrincipal();
+        authService.changePassword(principal.id(), request.currentPassword(), request.newPassword());
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<MeResponse> me(Authentication authentication) {
+        AccountPrincipal principal = (AccountPrincipal) authentication.getPrincipal();
+        var account = authService.findAccountById(principal.id());
+        return ResponseEntity.ok(new MeResponse(account.id(), account.email(), account.provider().name()));
     }
 
     // ResponseCookie permite SameSite; jakarta.servlet.http.Cookie no.

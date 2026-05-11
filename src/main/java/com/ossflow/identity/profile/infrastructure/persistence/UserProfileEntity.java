@@ -24,6 +24,15 @@ public class UserProfileEntity extends BaseEntity {
     @Column(name = "display_name", nullable = false, length = 120)
     private String displayName;
 
+    @Column(name = "first_name", length = 80)
+    private String firstName;
+
+    @Column(name = "last_name", length = 80)
+    private String lastName;
+
+    @Column(name = "alias", length = 60, unique = true)
+    private String alias;
+
     @Column(name = "current_belt", nullable = false, length = 15)
     private String currentBelt;
 
