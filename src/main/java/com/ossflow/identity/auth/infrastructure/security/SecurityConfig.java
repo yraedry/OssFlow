@@ -1,6 +1,7 @@
 package com.ossflow.identity.auth.infrastructure.security;
 
 import com.ossflow.identity.auth.application.JwtService;
+import com.ossflow.identity.auth.application.OAuth2FailureHandler;
 import com.ossflow.identity.auth.application.OAuth2SuccessHandler;
 import com.ossflow.identity.auth.application.OAuth2UserService;
 import com.ossflow.identity.auth.application.port.AccountRepositoryPort;
@@ -29,15 +30,18 @@ public class SecurityConfig {
     private final AccountRepositoryPort accountRepository;
     private final OAuth2UserService oAuth2UserService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
+    private final OAuth2FailureHandler oAuth2FailureHandler;
 
     public SecurityConfig(JwtService jwtService,
                           AccountRepositoryPort accountRepository,
                           OAuth2UserService oAuth2UserService,
-                          OAuth2SuccessHandler oAuth2SuccessHandler) {
+                          OAuth2SuccessHandler oAuth2SuccessHandler,
+                          OAuth2FailureHandler oAuth2FailureHandler) {
         this.jwtService = jwtService;
         this.accountRepository = accountRepository;
         this.oAuth2UserService = oAuth2UserService;
         this.oAuth2SuccessHandler = oAuth2SuccessHandler;
+        this.oAuth2FailureHandler = oAuth2FailureHandler;
     }
 
     @Bean
@@ -67,6 +71,7 @@ public class SecurityConfig {
             .oauth2Login(oauth2 -> oauth2
                 .userInfoEndpoint(info -> info.userService(oAuth2UserService))
                 .successHandler(oAuth2SuccessHandler)
+                .failureHandler(oAuth2FailureHandler)
             )
             .exceptionHandling(ex -> ex
                 .authenticationEntryPoint(restAuthenticationEntryPoint())
