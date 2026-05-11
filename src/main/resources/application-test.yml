@@ -30,6 +30,11 @@ spring:
             user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
             user-name-attribute: sub
 
+management:
+  health:
+    mail:
+      enabled: false
+
 auth:
   jwt:
     private-key-path: classpath:certs/private.pem
