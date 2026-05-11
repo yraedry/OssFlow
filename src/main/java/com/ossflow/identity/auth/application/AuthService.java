@@ -68,7 +68,7 @@ public class AuthService {
                         null, account.id(), sha256(rawToken),
                         Instant.now().plusSeconds(86400), null
                 ));
-                emailService.sendVerificationEmail(account.email(), rawToken);
+                trySendVerificationEmail(account.email(), rawToken);
             }
             return;
         }
@@ -82,7 +82,17 @@ public class AuthService {
                 null, account.id(), sha256(rawToken),
                 Instant.now().plusSeconds(86400), null
         ));
-        emailService.sendVerificationEmail(account.email(), rawToken);
+        trySendVerificationEmail(account.email(), rawToken);
+    }
+
+    // El envío puede fallar (proveedor caído, rate limit) sin tumbar el registro:
+    // el usuario verá la respuesta 201 igualmente y podrá pedir resend-verification.
+    private void trySendVerificationEmail(String email, String rawToken) {
+        try {
+            emailService.sendVerificationEmail(email, rawToken);
+        } catch (EmailDeliveryException e) {
+            log.warn("Verification email delivery failed for {} - user can request resend", email);
+        }
     }
 
     @Transactional
@@ -213,7 +223,7 @@ public class AuthService {
                             null, account.id(), sha256(rawToken),
                             Instant.now().plusSeconds(86400), null
                     ));
-                    emailService.sendVerificationEmail(account.email(), rawToken);
+                    trySendVerificationEmail(account.email(), rawToken);
                 });
     }
 
@@ -226,7 +236,11 @@ public class AuthService {
                     null, account.id(), sha256(rawToken),
                     Instant.now().plusSeconds(3600), null
             ));
-            emailService.sendPasswordResetEmail(account.email(), rawToken);
+            try {
+                emailService.sendPasswordResetEmail(account.email(), rawToken);
+            } catch (EmailDeliveryException e) {
+                log.warn("Password reset email failed for {} - user can retry forgot-password", account.email());
+            }
         });
     }
 

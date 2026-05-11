@@ -59,7 +59,11 @@ public class EmailService {
             helper.setText(html, true);
             mailSender.send(message);
         } catch (Exception e) {
-            log.error("Failed to send email to {}: {}", to, e.getMessage());
+            // Plan B3: log + propagar como runtime. El caller (register/forgot) puede
+            // capturarla para decidir si devolver 201 igualmente (anti-enumeración) y
+            // dejar al usuario reintentar manualmente via resend-verification.
+            log.error("Failed to send email to {}: {}", to, e.getMessage(), e);
+            throw new EmailDeliveryException("Email delivery failed", e);
         }
     }
 }
