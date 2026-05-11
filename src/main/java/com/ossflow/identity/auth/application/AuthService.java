@@ -96,29 +96,66 @@ public class AuthService {
         );
     }
 
+    // Ventana de gracia: dentro de este margen tras revocar, asumimos que un reuse del
+    // mismo token revocado es double-click/retry de red del usuario legítimo y devolvemos
+    // el token de reemplazo en lugar de invalidar la familia.
+    private static final long GRACE_WINDOW_SECONDS = 5;
+
     @Transactional
     public RefreshResult refresh(String rawRefreshToken) {
         String hash = sha256(rawRefreshToken);
         RefreshToken stored = refreshTokenRepository.findByTokenHash(hash)
                 .orElseThrow(() -> new UnprocessableException("INVALID_REFRESH_TOKEN", "Token inválido"));
 
-        if (stored.revokedAt() != null || stored.expiresAt().isBefore(Instant.now())) {
-            throw new UnprocessableException("INVALID_REFRESH_TOKEN", "Token expirado o revocado");
+        if (stored.expiresAt().isBefore(Instant.now())) {
+            throw new UnprocessableException("INVALID_REFRESH_TOKEN", "Token expirado");
         }
 
         Account account = accountRepository.findById(stored.accountId())
                 .orElseThrow(() -> new NotFoundException("ACCOUNT_NOT_FOUND", "Cuenta no encontrada"));
 
+        if (stored.revokedAt() != null) {
+            return handleRevokedToken(stored, account);
+        }
+
         if (stored.tokenVersion() != account.tokenVersion()) {
             throw new UnprocessableException("INVALID_REFRESH_TOKEN", "Token invalidado");
         }
 
-        // Rotate: revoke old, issue new
+        return rotateToken(stored, account);
+    }
+
+    private RefreshResult handleRevokedToken(RefreshToken stored, Account account) {
+        Instant now = Instant.now();
+        boolean withinGrace = stored.revokedAt() != null
+                && stored.revokedAt().isAfter(now.minusSeconds(GRACE_WINDOW_SECONDS));
+        if (withinGrace && stored.replacedById() != null) {
+            RefreshToken replacement = refreshTokenRepository.findById(stored.replacedById()).orElse(null);
+            if (replacement != null && replacement.revokedAt() == null) {
+                // Idempotente: re-emitimos un access token nuevo sobre la misma cadena;
+                // el caller no recibe un raw refresh nuevo, debe usar el que ya tiene en cookie.
+                String accessToken = jwtService.issueAccessToken(account);
+                return new RefreshResult(accessToken, null);
+            }
+        }
+        // Reuse detectado: invalida toda la familia + bumpea tokenVersion para tumbar access tokens vivos
         refreshTokenRepository.revokeByAccountId(account.id());
+        accountRepository.save(new Account(account.id(), account.email(), account.passwordHash(),
+                account.provider(), account.providerId(), account.emailVerified(),
+                account.tokenVersion() + 1, account.createdAt(), account.updatedAt()));
+        throw new UnprocessableException("INVALID_REFRESH_TOKEN", "Token reuse detectado: sesión invalidada");
+    }
+
+    private RefreshResult rotateToken(RefreshToken stored, Account account) {
         String newRawToken = generateToken();
-        refreshTokenRepository.save(new RefreshToken(
+        RefreshToken newToken = refreshTokenRepository.save(new RefreshToken(
                 null, account.id(), sha256(newRawToken), account.tokenVersion(),
-                Instant.now().plusSeconds(604800), Instant.now(), null
+                Instant.now().plusSeconds(604800), Instant.now(), null, null
+        ));
+        // Marcamos el viejo como revocado y apuntando al nuevo (chain para grace window)
+        refreshTokenRepository.save(new RefreshToken(
+                stored.id(), stored.accountId(), stored.tokenHash(), stored.tokenVersion(),
+                stored.expiresAt(), stored.createdAt(), Instant.now(), newToken.id()
         ));
 
         String accessToken = jwtService.issueAccessToken(account);

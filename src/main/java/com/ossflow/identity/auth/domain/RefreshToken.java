@@ -9,5 +9,11 @@ public record RefreshToken(
         int tokenVersion,
         Instant expiresAt,
         Instant createdAt,
-        Instant revokedAt
-) {}
+        Instant revokedAt,
+        Long replacedById
+) {
+    public RefreshToken(Long id, Long accountId, String tokenHash, int tokenVersion,
+                        Instant expiresAt, Instant createdAt, Instant revokedAt) {
+        this(id, accountId, tokenHash, tokenVersion, expiresAt, createdAt, revokedAt, null);
+    }
+}
