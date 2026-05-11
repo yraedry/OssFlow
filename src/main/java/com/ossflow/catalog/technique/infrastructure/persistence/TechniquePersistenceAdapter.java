@@ -45,7 +45,7 @@ public class TechniquePersistenceAdapter implements TechniqueRepositoryPort {
 
     @Override
     public Optional<Technique> findById(Long id, Long ownerId) {
-        return repository.findByIdAndOwnerId(id, ownerId).map(mapper::toDomain);
+        return repository.findByIdReadable(id, ownerId).map(mapper::toDomain);
     }
 
     @Override

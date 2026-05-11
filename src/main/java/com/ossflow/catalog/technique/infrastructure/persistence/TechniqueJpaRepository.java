@@ -16,6 +16,10 @@ public interface TechniqueJpaRepository extends JpaRepository<TechniqueEntity, L
 
     Optional<TechniqueEntity> findByIdAndOwnerId(Long id, Long ownerId);
 
+    @Query("SELECT t FROM TechniqueEntity t WHERE t.id = :id AND (t.ownerId = :ownerId OR t.visibility = com.ossflow.catalog.position.domain.Visibility.PUBLIC)")
+    Optional<TechniqueEntity> findByIdReadable(Long id, Long ownerId);
+
+    @Query("SELECT t FROM TechniqueEntity t WHERE t.ownerId = :ownerId OR t.visibility = com.ossflow.catalog.position.domain.Visibility.PUBLIC")
     Page<TechniqueEntity> findByOwnerId(Long ownerId, Pageable pageable);
 
     boolean existsByOwnerIdAndName(Long ownerId, String name);
@@ -24,7 +28,7 @@ public interface TechniqueJpaRepository extends JpaRepository<TechniqueEntity, L
 
     @Query("""
             SELECT t FROM TechniqueEntity t
-            WHERE (t.ownerId = :ownerId OR t.ownerId = 1)
+            WHERE (t.ownerId = :ownerId OR t.visibility = com.ossflow.catalog.position.domain.Visibility.PUBLIC)
             AND (:category IS NULL OR t.category = :category)
             AND (:belt IS NULL OR t.minimumBelt = :belt)
             AND (:modality IS NULL OR t.modality = :modality)
