@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface RefreshTokenJpaRepository extends JpaRepository<RefreshTokenEntity, Long> {
     Optional<RefreshTokenEntity> findByTokenHash(String tokenHash);
 
-    @Modifying
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Transactional
     @Query("UPDATE RefreshTokenEntity r SET r.revokedAt = :now WHERE r.accountId = :accountId AND r.revokedAt IS NULL")
     void revokeAllByAccountId(@Param("accountId") Long accountId, @Param("now") Instant now);
