@@ -9,7 +9,7 @@ public class CurrentOwner {
     public Long id() {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !(auth.getPrincipal() instanceof AccountPrincipal principal)) {
-            return 1L; // fallback for tests and dev without auth
+            throw new IllegalStateException("ownerId requerido: ningún AccountPrincipal en el contexto de seguridad");
         }
         return principal.id();
     }

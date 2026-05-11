@@ -1,6 +1,8 @@
 package com.ossflow.integration;
 
 import com.ossflow.shared.web.RequestTracingFilter;
+import com.ossflow.testsupport.TestSecurityContext;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,11 @@ class TraceIdPropagationIntegrationTest {
         mvc = MockMvcBuilders.webAppContextSetup(wac)
                 .addFilters(requestTracingFilter)
                 .build();
+        TestSecurityContext.setOwner(1L);
     }
+
+    @AfterEach
+    void tearDownAuth() { TestSecurityContext.clear(); }
 
     @Test
     void should_echo_trace_id_in_response_header() throws Exception {

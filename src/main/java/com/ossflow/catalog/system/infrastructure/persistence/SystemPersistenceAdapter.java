@@ -40,7 +40,7 @@ public class SystemPersistenceAdapter implements SystemRepositoryPort {
 
     @Override
     public Optional<OssSystem> findById(Long id, Long ownerId) {
-        return repository.findByIdAndOwnerId(id, ownerId).map(mapper::toDomain);
+        return repository.findByIdReadable(id, ownerId).map(mapper::toDomain);
     }
 
     @Override

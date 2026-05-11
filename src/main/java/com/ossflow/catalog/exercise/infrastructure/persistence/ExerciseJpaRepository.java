@@ -16,11 +16,14 @@ public interface ExerciseJpaRepository extends JpaRepository<ExerciseEntity, Lon
 
     Optional<ExerciseEntity> findByIdAndOwnerId(Long id, Long ownerId);
 
+    @Query("SELECT e FROM ExerciseEntity e WHERE e.id = :id AND (e.ownerId = :ownerId OR e.visibility = com.ossflow.catalog.position.domain.Visibility.PUBLIC)")
+    Optional<ExerciseEntity> findByIdReadable(Long id, Long ownerId);
+
     boolean existsByOwnerIdAndName(Long ownerId, String name);
 
     @Query("""
             SELECT e FROM ExerciseEntity e
-            WHERE (e.ownerId = :ownerId OR e.ownerId = 1)
+            WHERE (e.ownerId = :ownerId OR e.visibility = com.ossflow.catalog.position.domain.Visibility.PUBLIC)
             AND (:category IS NULL OR e.category = :category)
             AND (:equipment IS NULL OR e.equipment = :equipment)
             AND (:visibility IS NULL OR e.visibility = :visibility)

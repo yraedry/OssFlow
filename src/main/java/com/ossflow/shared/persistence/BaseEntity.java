@@ -24,7 +24,7 @@ public abstract class BaseEntity {
     private Long id;
 
     @Column(name = "owner_id", nullable = false)
-    private Long ownerId = 1L;
+    private Long ownerId;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
