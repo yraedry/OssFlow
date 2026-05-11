@@ -55,7 +55,7 @@ public class EmailService {
             var helper = new MimeMessageHelper(message, false, "UTF-8");
             helper.setTo(to);
             helper.setSubject(subject);
-            helper.setFrom("noreply@ossflow.app");
+            helper.setFrom("onboarding@resend.dev");
             helper.setText(html, true);
             mailSender.send(message);
         } catch (Exception e) {
