@@ -9,7 +9,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public record UpdateExerciseRequest(
-        @NotBlank @Size(max = 200) String name,
+        @NotBlank @Size(max = 200) @Pattern(regexp = "^[^<>]*$", message = "No se permiten caracteres HTML") String name,
         @Size(max = 10000) String description,
         @NotNull ExerciseCategory category,
         @NotNull EquipmentType equipment,
