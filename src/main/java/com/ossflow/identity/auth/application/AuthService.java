@@ -53,8 +53,24 @@ public class AuthService {
 
     @Transactional
     public void register(RegisterRequest request) {
-        if (accountRepository.findByEmail(request.email()).isPresent()) {
-            throw new BadRequestException("EMAIL_ALREADY_REGISTERED", "El correo ya está registrado");
+        var existing = accountRepository.findByEmail(request.email());
+        if (existing.isPresent()) {
+            // Anti-enumeración: respuesta uniforme 201. Si la cuenta existe y NO está
+            // verificada, reenvía verificación; si está verificada, no hace nada
+            // (el usuario verá su email/login normal). Ejecutamos el hash bcrypt
+            // igualmente para evitar timing attack basado en latencia.
+            passwordEncoder.encode(request.password());
+            Account account = existing.get();
+            if (!account.emailVerified()) {
+                emailVerificationTokenRepository.deleteByAccountId(account.id());
+                String rawToken = generateToken();
+                emailVerificationTokenRepository.save(new EmailVerificationToken(
+                        null, account.id(), sha256(rawToken),
+                        Instant.now().plusSeconds(86400), null
+                ));
+                emailService.sendVerificationEmail(account.email(), rawToken);
+            }
+            return;
         }
         String hash = passwordEncoder.encode(request.password());
         Account account = accountRepository.save(new Account(

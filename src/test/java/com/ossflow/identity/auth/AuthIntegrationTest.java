@@ -42,7 +42,7 @@ class AuthIntegrationTest {
         mvc().perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                                {"email":"test@example.com","password":"Test1234","displayName":"Tester"}
+                                {"email":"test@example.com","password":"Test1234"}
                                 """))
                 .andExpect(status().isCreated());
     }
