@@ -60,7 +60,7 @@ public class SecurityConfig {
                     "/api/auth/reset-password"
                 ).permitAll()
                 .requestMatchers("/oauth2/**").permitAll()
-                .requestMatchers("/actuator/**").permitAll()
+                .requestMatchers("/actuator/health", "/actuator/info").permitAll()
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
                 .anyRequest().authenticated()
             )
