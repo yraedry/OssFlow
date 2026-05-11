@@ -65,3 +65,11 @@ auth:
     public-key-path: classpath:certs/public.pem
     access-token-expiry: 900
     refresh-token-expiry: 604800
+
+app:
+  cookie:
+    secure: ${APP_COOKIE_SECURE:true}
+    same-site: ${APP_COOKIE_SAME_SITE:Lax}
+    path: /api/auth
+  refresh-token:
+    expiry: ${APP_REFRESH_EXPIRY:2592000}
