@@ -42,6 +42,14 @@ auth:
     access-token-expiry: 900
     refresh-token-expiry: 604800
 
+app:
+  cookie:
+    secure: false
+    same-site: Lax
+    path: /api/auth
+  refresh-token:
+    expiry: 2592000
+
 logging:
   level:
     com.ossflow: INFO

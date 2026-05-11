@@ -25,6 +25,14 @@ management:
     mail:
       enabled: false
 
+app:
+  cookie:
+    secure: ${APP_COOKIE_SECURE:false}
+    same-site: ${APP_COOKIE_SAME_SITE:Lax}
+    path: /api/auth
+  refresh-token:
+    expiry: ${APP_REFRESH_EXPIRY:2592000}
+
 logging:
   level:
     com.ossflow: DEBUG
