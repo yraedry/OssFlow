@@ -63,6 +63,8 @@ auth:
   jwt:
     private-key-path: classpath:certs/private.pem
     public-key-path: classpath:certs/public.pem
+    private-key-b64: ${AUTH_JWT_PRIVATE_KEY_B64:}
+    public-key-b64: ${AUTH_JWT_PUBLIC_KEY_B64:}
     access-token-expiry: 900
     refresh-token-expiry: 604800
 
