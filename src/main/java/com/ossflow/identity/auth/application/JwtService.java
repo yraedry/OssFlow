@@ -4,6 +4,8 @@ import com.ossflow.identity.auth.domain.Account;
 import com.ossflow.identity.auth.infrastructure.security.RsaKeyConfig;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.security.interfaces.RSAPrivateKey;
@@ -15,6 +17,7 @@ import java.util.Optional;
 @Service
 public class JwtService {
 
+    private static final Logger log = LoggerFactory.getLogger(JwtService.class);
     private final RSAPrivateKey privateKey;
     private final RSAPublicKey publicKey;
     private final long accessTokenExpirySeconds;
@@ -46,6 +49,7 @@ public class JwtService {
                     .getPayload();
             return Optional.of(claims);
         } catch (Exception e) {
+            log.warn("JWT validation error: {} - {}", e.getClass().getSimpleName(), e.getMessage());
             return Optional.empty();
         }
     }
