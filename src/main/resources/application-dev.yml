@@ -25,6 +25,13 @@ management:
     mail:
       enabled: false
 
+auth:
+  jwt:
+    # Para dev local: si no se define AUTH_JWT_PRIVATE_KEY_B64, se intenta leer de filesystem.
+    # El archivo está gitignored (src/main/resources/certs/private.pem) — generar localmente.
+    private-key-path: file:src/main/resources/certs/private.pem
+    public-key-path: file:src/main/resources/certs/public.pem
+
 app:
   cookie:
     secure: ${APP_COOKIE_SECURE:false}

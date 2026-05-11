@@ -20,22 +20,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 class OAuth2SuccessHandlerTest {
 
     private AccountRepositoryPort accountRepository;
     private RefreshTokenRepositoryPort refreshTokenRepository;
-    private JwtService jwtService;
     private OAuth2SuccessHandler handler;
 
     @BeforeEach
     void setUp() {
         accountRepository = mock(AccountRepositoryPort.class);
         refreshTokenRepository = mock(RefreshTokenRepositoryPort.class);
-        jwtService = mock(JwtService.class);
         handler = new OAuth2SuccessHandler(
-                accountRepository, refreshTokenRepository, jwtService,
+                accountRepository, refreshTokenRepository,
                 "http://localhost:5173", 2592000L, false, "Lax", "/api/auth");
     }
 
@@ -44,7 +41,6 @@ class OAuth2SuccessHandlerTest {
         Account account = new Account(42L, "user@example.com", null,
                 AccountProvider.GOOGLE, "google-id", true, 0, null, null);
         given(accountRepository.findById(42L)).willReturn(Optional.of(account));
-        given(jwtService.issueAccessToken(account)).willReturn("access-token-xyz");
         given(refreshTokenRepository.save(any(RefreshToken.class)))
                 .willAnswer(inv -> inv.getArgument(0));
 

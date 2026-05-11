@@ -27,7 +27,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     private final AccountRepositoryPort accountRepository;
     private final RefreshTokenRepositoryPort refreshTokenRepository;
-    private final JwtService jwtService;
     private final String frontendUrl;
     private final long refreshTokenExpirySeconds;
     private final boolean cookieSecure;
@@ -36,7 +35,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     public OAuth2SuccessHandler(AccountRepositoryPort accountRepository,
                                 RefreshTokenRepositoryPort refreshTokenRepository,
-                                JwtService jwtService,
                                 @Value("${app.frontend-url:http://localhost:5173}") String frontendUrl,
                                 @Value("${app.refresh-token.expiry:2592000}") long refreshTokenExpirySeconds,
                                 @Value("${app.cookie.secure:true}") boolean cookieSecure,
@@ -44,7 +42,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                                 @Value("${app.cookie.path:/api/auth}") String cookiePath) {
         this.accountRepository = accountRepository;
         this.refreshTokenRepository = refreshTokenRepository;
-        this.jwtService = jwtService;
         this.frontendUrl = frontendUrl;
         this.refreshTokenExpirySeconds = refreshTokenExpirySeconds;
         this.cookieSecure = cookieSecure;
@@ -61,7 +58,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new IllegalStateException("Account not found after OAuth2 login"));
 
-        jwtService.issueAccessToken(account);
+        // El access token NO se emite aquí: el frontend lo obtendrá vía silent refresh
+        // sobre la cookie httpOnly. Ver A11 en plan de hardening.
         String rawRefreshToken = generateToken();
         refreshTokenRepository.save(new RefreshToken(
                 null, account.id(), AuthService.sha256(rawRefreshToken), account.tokenVersion(),
