@@ -6,6 +6,9 @@ import java.time.LocalDate;
 
 public record UpdateUserProfileRequest(
         @Size(max = 120) String displayName,
+        @Size(max = 80) String firstName,
+        @Size(max = 80) String lastName,
+        @Size(max = 60) String alias,
         @Size(max = 15) String currentBelt,
         LocalDate beltSince,
         @Size(max = 200) String academy,

@@ -296,6 +296,24 @@ public class AuthService {
         accountEventService.record(account.id(), AccountEventType.PASSWORD_RESET, null, null);
     }
 
+    @Transactional
+    public void changePassword(Long accountId, String currentPassword, String newPassword) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new NotFoundException("ACCOUNT_NOT_FOUND", "Cuenta no encontrada"));
+        if (account.passwordHash() == null || !passwordEncoder.matches(currentPassword, account.passwordHash())) {
+            throw new BadRequestException("WRONG_PASSWORD", "Contraseña actual incorrecta");
+        }
+        String newHash = passwordEncoder.encode(newPassword);
+        accountRepository.save(new Account(account.id(), account.email(), newHash,
+                account.provider(), account.providerId(), account.emailVerified(),
+                account.tokenVersion(), account.createdAt(), account.updatedAt()));
+    }
+
+    public Account findAccountById(Long id) {
+        return accountRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("ACCOUNT_NOT_FOUND", "Cuenta no encontrada"));
+    }
+
     private String generateToken() {
         byte[] bytes = new byte[32];
         SECURE_RANDOM.nextBytes(bytes);
