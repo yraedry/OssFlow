@@ -1,5 +1,6 @@
 package com.ossflow.catalog.federation.infrastructure.web;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import com.ossflow.catalog.federation.application.FederationService;
 import com.ossflow.catalog.federation.infrastructure.web.dto.FederationResponse;
 import jakarta.validation.constraints.Positive;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@PreAuthorize("isAuthenticated()")
 @RestController
 @RequestMapping("/api/v1/catalog/federations")
 @Validated

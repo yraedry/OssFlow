@@ -1,5 +1,6 @@
 package com.ossflow.dashboard.infrastructure.web;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import com.ossflow.catalog.technique.domain.TechniqueFamily;
 import com.ossflow.dashboard.infrastructure.web.dto.RadarDataPoint;
 import com.ossflow.shared.web.CurrentOwner;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@PreAuthorize("isAuthenticated()")
 @RestController
 @RequestMapping("/api/v1/analisis")
 @RequiredArgsConstructor

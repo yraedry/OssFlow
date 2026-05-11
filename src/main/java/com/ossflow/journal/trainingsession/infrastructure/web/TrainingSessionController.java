@@ -1,5 +1,6 @@
 package com.ossflow.journal.trainingsession.infrastructure.web;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import com.ossflow.journal.trainingsession.application.TrainingSessionService;
 import com.ossflow.journal.trainingsession.domain.TrainingSession;
 import com.ossflow.journal.trainingsession.domain.WorkedTechnique;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
+@PreAuthorize("isAuthenticated()")
 @RestController
 @RequestMapping("/api/v1/journal/training-sessions")
 @Validated

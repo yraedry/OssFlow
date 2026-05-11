@@ -1,5 +1,6 @@
 package com.ossflow.planning.weeklytemplate.infrastructure.web;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import com.ossflow.planning.weeklytemplate.application.WeeklyTemplateService;
 import com.ossflow.planning.weeklytemplate.infrastructure.web.dto.SaveWeeklyTemplateRequest;
 import com.ossflow.planning.weeklytemplate.infrastructure.web.dto.WeeklyTemplateResponse;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+@PreAuthorize("isAuthenticated()")
 @RestController
 @RequestMapping("/api/v1/planning/weekly-template")
 @Validated

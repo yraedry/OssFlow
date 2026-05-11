@@ -1,5 +1,6 @@
 package com.ossflow.journal.tag.infrastructure.web;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import com.ossflow.journal.tag.application.TagService;
 import com.ossflow.journal.tag.infrastructure.web.dto.CreateTagRequest;
 import com.ossflow.journal.tag.infrastructure.web.dto.TagResponse;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.List;
 
+@PreAuthorize("isAuthenticated()")
 @RestController
 @RequestMapping("/api/v1/journal/tags")
 @Validated

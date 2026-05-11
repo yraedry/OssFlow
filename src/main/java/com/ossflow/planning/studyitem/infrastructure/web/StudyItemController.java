@@ -1,5 +1,6 @@
 package com.ossflow.planning.studyitem.infrastructure.web;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import com.ossflow.planning.studyitem.application.StudyItemService;
 import com.ossflow.planning.studyitem.domain.StudyItem;
 import com.ossflow.planning.studyitem.infrastructure.web.dto.CreateStudyItemRequest;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.List;
 
+@PreAuthorize("isAuthenticated()")
 @RestController
 @RequestMapping("/api/v1/planning/study-plans/{pid}/blocks/{bid}/items")
 @Validated

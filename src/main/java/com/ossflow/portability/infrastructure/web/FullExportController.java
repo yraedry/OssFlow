@@ -1,5 +1,6 @@
 package com.ossflow.portability.infrastructure.web;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import com.ossflow.catalog.portability.CatalogExporter;
 import com.ossflow.identity.portability.IdentityExporter;
 import com.ossflow.journal.portability.JournalExporter;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
+@PreAuthorize("isAuthenticated()")
 @RestController
 @RequestMapping("/api/v1/export")
 @RequiredArgsConstructor

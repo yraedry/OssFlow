@@ -1,5 +1,6 @@
 package com.ossflow.journal.physicalsession.infrastructure.web;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import com.ossflow.journal.physicalsession.application.PhysicalSessionService;
 import com.ossflow.journal.physicalsession.domain.PhysicalSession;
 import com.ossflow.journal.physicalsession.infrastructure.web.dto.CreatePhysicalSessionRequest;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
+@PreAuthorize("isAuthenticated()")
 @RestController
 @RequestMapping("/api/v1/journal/physical-sessions")
 @Validated
