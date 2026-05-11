@@ -9,7 +9,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public record PatchTechniqueRequest(
-        @Size(max = 120) String name,
+        @Size(max = 120) @Pattern(regexp = "^[^<>]*$", message = "No se permiten caracteres HTML") String name,
         TechniqueCategory category,
         TechniqueFamily family,
         @Size(max = 10000) String description,

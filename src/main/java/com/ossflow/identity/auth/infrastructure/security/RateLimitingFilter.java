@@ -23,6 +23,9 @@ public class RateLimitingFilter extends OncePerRequestFilter {
     private final Cache<String, Bucket> forgotPasswordBuckets;
     // S1.4: caché por userId para endpoints generales /api/** — 200 req/min por usuario autenticado.
     private final Cache<Long, Bucket> userApiBuckets;
+    // Límite específico para change-password por userId: 5 intentos / 15 min para evitar
+    // brute-force de contraseña actual con JWT válido (el token dura 15 min).
+    private final Cache<Long, Bucket> changePasswordBuckets;
 
     public RateLimitingFilter() {
         this.loginBuckets = newCache();
@@ -30,6 +33,10 @@ public class RateLimitingFilter extends OncePerRequestFilter {
         this.forgotPasswordBuckets = newCache();
         this.userApiBuckets = Caffeine.newBuilder()
                 .expireAfterAccess(Duration.ofMinutes(5))
+                .maximumSize(50_000)
+                .build();
+        this.changePasswordBuckets = Caffeine.newBuilder()
+                .expireAfterAccess(Duration.ofMinutes(15))
                 .maximumSize(50_000)
                 .build();
     }
@@ -49,19 +56,34 @@ public class RateLimitingFilter extends OncePerRequestFilter {
         String ip = getClientIp(request);
 
         if ("POST".equals(method)) {
-            Bucket bucket = null;
+            Bucket ipBucket = null;
             if (uri.endsWith("/api/auth/login")) {
-                bucket = loginBuckets.get(ip, k -> newBucket(10, Duration.ofMinutes(5)));
+                ipBucket = loginBuckets.get(ip, k -> newBucket(10, Duration.ofMinutes(5)));
             } else if (uri.endsWith("/api/auth/register")) {
-                bucket = registerBuckets.get(ip, k -> newBucket(5, Duration.ofMinutes(10)));
+                ipBucket = registerBuckets.get(ip, k -> newBucket(5, Duration.ofMinutes(10)));
             } else if (uri.endsWith("/api/auth/forgot-password") || uri.endsWith("/api/auth/resend-verification")) {
-                bucket = forgotPasswordBuckets.get(ip, k -> newBucket(3, Duration.ofHours(1)));
+                ipBucket = forgotPasswordBuckets.get(ip, k -> newBucket(3, Duration.ofHours(1)));
             }
 
-            if (bucket != null && !bucket.tryConsume(1)) {
+            if (ipBucket != null && !ipBucket.tryConsume(1)) {
                 response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
                 response.getWriter().write("{\"error\":\"RATE_LIMIT_EXCEEDED\",\"message\":\"Demasiados intentos. Por favor espera.\"}");
                 return;
+            }
+
+            // Rate limit change-password por userId para prevenir brute-force de contraseña actual.
+            // Se aplica después del JwtAuthenticationFilter, que ya validó el JWT.
+            if (uri.endsWith("/api/auth/change-password")) {
+                Long userId = resolveUserId();
+                if (userId != null) {
+                    Bucket changePwdBucket = changePasswordBuckets.get(userId,
+                            k -> newBucket(5, Duration.ofMinutes(15)));
+                    if (!changePwdBucket.tryConsume(1)) {
+                        response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
+                        response.getWriter().write("{\"error\":\"RATE_LIMIT_EXCEEDED\",\"message\":\"Demasiados intentos de cambio de contraseña. Por favor espera.\"}");
+                        return;
+                    }
+                }
             }
         }
 

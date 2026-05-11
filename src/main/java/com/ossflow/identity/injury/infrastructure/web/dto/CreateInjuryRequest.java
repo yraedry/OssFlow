@@ -4,12 +4,13 @@ import com.ossflow.identity.injury.domain.InjurySeverity;
 import com.ossflow.identity.injury.domain.InjuryStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 
 public record CreateInjuryRequest(
-        @NotBlank @Size(max = 100) String bodyPart,
+        @NotBlank @Size(max = 100) @Pattern(regexp = "^[^<>]*$", message = "No se permiten caracteres HTML") String bodyPart,
         @Size(max = 10000) String description,
         @NotNull InjurySeverity severity,
         @NotNull InjuryStatus status,

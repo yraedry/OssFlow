@@ -98,13 +98,29 @@ public class AuthService {
         return login(request, null, null);
     }
 
+    // Dummy hash usada en timing-safe comparisons para cuentas inexistentes.
+    // Calculada una sola vez con BCrypt strength 12. Evita que un atacante
+    // distinga "email no existe" de "contraseña incorrecta" por latencia.
+    private static final String DUMMY_HASH =
+            "$2a$12$vI8aWBnW3fID.ZQ4/zo1G.q1lRps.9cGLcZEiGDMVr5yUP1KUjF0e";
+
     @Transactional
     public LoginResult login(LoginRequest request, String ip, String userAgent) {
-        Account account = accountRepository.findByEmail(request.email())
-                .filter(a -> a.passwordHash() != null && passwordEncoder.matches(request.password(), a.passwordHash()))
+        var accountOpt = accountRepository.findByEmail(request.email());
+
+        // Anti-timing: siempre ejecutamos BCrypt, exista o no la cuenta.
+        // Si no existe, comparamos contra un hash dummy para tener latencia uniforme.
+        String hashToCheck = accountOpt
+                .map(Account::passwordHash)
+                .filter(h -> h != null)
+                .orElse(DUMMY_HASH);
+        boolean passwordMatches = passwordEncoder.matches(request.password(), hashToCheck);
+
+        Account account = accountOpt
+                .filter(a -> a.passwordHash() != null && passwordMatches)
                 .orElseThrow(() -> {
                     // LOGIN_FAILED: intentamos registrar el evento si el email existe.
-                    accountRepository.findByEmail(request.email()).ifPresent(a ->
+                    accountOpt.ifPresent(a ->
                             accountEventService.record(a.id(), AccountEventType.LOGIN_FAILED, ip, userAgent));
                     return new UnprocessableException("INVALID_CREDENTIALS", "Credenciales inválidas");
                 });
