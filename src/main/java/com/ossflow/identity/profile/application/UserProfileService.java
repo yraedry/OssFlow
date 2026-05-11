@@ -42,6 +42,9 @@ public class UserProfileService {
     public UserProfile updateProfile(Long ownerId, UserProfile patch) {
         UserProfile existing = getProfileByOwner(ownerId);
         UserProfile toSave = existing.toBuilder()
+                .firstName(patch.firstName() != null ? patch.firstName() : existing.firstName())
+                .lastName(patch.lastName() != null ? patch.lastName() : existing.lastName())
+                .alias(patch.alias() != null ? patch.alias() : existing.alias())
                 .displayName(patch.displayName() != null ? patch.displayName() : existing.displayName())
                 .currentBelt(patch.currentBelt() != null ? patch.currentBelt() : existing.currentBelt())
                 .beltSince(patch.beltSince() != null ? patch.beltSince() : existing.beltSince())
