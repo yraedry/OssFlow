@@ -52,9 +52,11 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .addFilterBefore(new RateLimitingFilter(), UsernamePasswordAuthenticationFilter.class)
             .addFilterBefore(new JwtAuthenticationFilter(jwtService, accountRepository),
                     UsernamePasswordAuthenticationFilter.class)
+            // RateLimitingFilter despues del JwtAuthenticationFilter para que pueda
+            // leer el accountId del SecurityContext en endpoints autenticados.
+            .addFilterAfter(new RateLimitingFilter(), JwtAuthenticationFilter.class)
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                     "/api/auth/login",

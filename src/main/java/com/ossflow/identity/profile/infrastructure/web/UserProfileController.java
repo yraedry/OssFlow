@@ -50,7 +50,7 @@ public class UserProfileController {
     }
 
     @PatchMapping
-    public UserProfileResponse patchProfile(@RequestBody UpdateUserProfileRequest req) {
+    public UserProfileResponse patchProfile(@Valid @RequestBody UpdateUserProfileRequest req) {
         UserProfile patch = mapper.fromUpdate(req);
         return mapper.toResponse(service.updateProfile(currentOwner.id(), patch));
     }

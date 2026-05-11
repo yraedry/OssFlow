@@ -1,6 +1,7 @@
 package com.ossflow.shared.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -32,6 +33,19 @@ public class GlobalExceptionHandler {
                 .map(fe -> new ApiError.FieldError(fe.getField(), fe.getRejectedValue(), fe.getDefaultMessage()))
                 .toList();
         log.warn("Validation failed at {}: {} field errors", req.getRequestURI(), fields.size());
+        return build(HttpStatus.BAD_REQUEST, "VALIDATION_FAILED", "La petición contiene errores de validación", req, fields, null);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    ResponseEntity<ApiError> handleConstraintViolation(ConstraintViolationException ex, HttpServletRequest req) {
+        List<ApiError.FieldError> fields = ex.getConstraintViolations().stream()
+                .map(cv -> {
+                    String path = cv.getPropertyPath().toString();
+                    String fieldName = path.contains(".") ? path.substring(path.lastIndexOf('.') + 1) : path;
+                    return new ApiError.FieldError(fieldName, String.valueOf(cv.getInvalidValue()), cv.getMessage());
+                })
+                .toList();
+        log.warn("Constraint violation at {}: {}", req.getRequestURI(), ex.getMessage());
         return build(HttpStatus.BAD_REQUEST, "VALIDATION_FAILED", "La petición contiene errores de validación", req, fields, null);
     }
 
