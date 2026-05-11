@@ -24,7 +24,7 @@ public interface TechniqueJpaRepository extends JpaRepository<TechniqueEntity, L
 
     @Query("""
             SELECT t FROM TechniqueEntity t
-            WHERE t.ownerId = :ownerId
+            WHERE (t.ownerId = :ownerId OR t.ownerId = 1)
             AND (:category IS NULL OR t.category = :category)
             AND (:belt IS NULL OR t.minimumBelt = :belt)
             AND (:modality IS NULL OR t.modality = :modality)

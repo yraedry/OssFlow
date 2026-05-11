@@ -20,7 +20,7 @@ public interface ExerciseJpaRepository extends JpaRepository<ExerciseEntity, Lon
 
     @Query("""
             SELECT e FROM ExerciseEntity e
-            WHERE e.ownerId = :ownerId
+            WHERE (e.ownerId = :ownerId OR e.ownerId = 1)
             AND (:category IS NULL OR e.category = :category)
             AND (:equipment IS NULL OR e.equipment = :equipment)
             AND (:visibility IS NULL OR e.visibility = :visibility)

@@ -13,9 +13,10 @@ public interface PositionJpaRepository extends JpaRepository<PositionEntity, Lon
 
     Optional<PositionEntity> findByIdAndOwnerId(Long id, Long ownerId);
 
+    @Query("SELECT p FROM PositionEntity p WHERE (p.ownerId = :ownerId OR p.ownerId = 1)")
     Page<PositionEntity> findByOwnerId(Long ownerId, Pageable pageable);
 
-    @Query("SELECT p FROM PositionEntity p WHERE p.ownerId = :ownerId AND LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))")
+    @Query("SELECT p FROM PositionEntity p WHERE (p.ownerId = :ownerId OR p.ownerId = 1) AND LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))")
     Page<PositionEntity> findByOwnerIdAndNameContainingIgnoreCase(Long ownerId, String name, Pageable pageable);
 
     boolean existsByOwnerIdAndName(Long ownerId, String name);
