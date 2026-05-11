@@ -1,5 +1,6 @@
 package com.ossflow.identity.auth.infrastructure.persistence;
 
+import com.ossflow.identity.auth.domain.AccountProvider;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,8 +25,9 @@ public class AccountEntity {
     @Column(name = "password_hash", length = 72)
     private String passwordHash;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "provider", nullable = false, length = 20)
-    private String provider;
+    private AccountProvider provider;
 
     @Column(name = "provider_id", length = 255)
     private String providerId;

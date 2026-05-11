@@ -30,7 +30,7 @@ public class AccountPersistenceAdapter implements AccountRepositoryPort {
 
     @Override
     public Optional<Account> findByProviderAndProviderId(AccountProvider provider, String providerId) {
-        return jpaRepository.findByProviderAndProviderId(provider.name(), providerId).map(mapper::toDomain);
+        return jpaRepository.findByProviderAndProviderId(provider, providerId).map(mapper::toDomain);
     }
 
     @Override
