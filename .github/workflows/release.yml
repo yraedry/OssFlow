@@ -9,7 +9,23 @@ permissions:
   packages: write
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+
+      - name: Run tests with coverage
+        run: mvn -B verify -Dspring.profiles.active=test
+
   build-and-push:
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -39,6 +55,13 @@ jobs:
 
       - name: Build JAR
         run: mvn -B package -DskipTests
+
+      - name: Verify no private key leaked in JAR
+        run: |
+          if unzip -l target/*.jar | grep -q "private.pem"; then
+            echo "PRIVATE KEY LEAKED IN JAR — aborting release"
+            exit 1
+          fi
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
