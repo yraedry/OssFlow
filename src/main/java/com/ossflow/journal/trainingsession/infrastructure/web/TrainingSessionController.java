@@ -59,7 +59,7 @@ public class TrainingSessionController {
                 .body(mapper.toResponse(created));
     }
 
-    @RequestMapping(value = "/{id}", method = {RequestMethod.PUT, RequestMethod.PATCH})
+    @PutMapping("/{id}")
     public TrainingSessionResponse replace(@PathVariable @Positive Long id,
                                            @Valid @RequestBody CreateTrainingSessionRequest req) {
         TrainingSession replacement = mapper.fromCreate(req);
