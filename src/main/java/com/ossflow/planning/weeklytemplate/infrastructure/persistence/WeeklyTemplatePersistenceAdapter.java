@@ -27,6 +27,15 @@ public class WeeklyTemplatePersistenceAdapter implements WeeklyTemplateRepositor
 
     @Transactional
     @Override
+    public void deleteByOwnerId(Long ownerId) {
+        jpa.findByOwnerId(ownerId).ifPresent(entity -> {
+            sessionJpa.deleteByTemplateId(entity.getId());
+            jpa.delete(entity);
+        });
+    }
+
+    @Transactional
+    @Override
     public WeeklyTemplate save(WeeklyTemplate template) {
         WeeklyTemplateEntity entity = jpa.findByOwnerId(template.ownerId())
                 .orElse(mapper.toEntity(template));

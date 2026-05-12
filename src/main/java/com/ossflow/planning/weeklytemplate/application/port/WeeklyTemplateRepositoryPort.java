@@ -7,4 +7,5 @@ public interface WeeklyTemplateRepositoryPort {
     /** Each owner has at most one template. Returns empty if not yet configured. */
     Optional<WeeklyTemplate> findByOwnerId(Long ownerId);
     WeeklyTemplate save(WeeklyTemplate template);
+    void deleteByOwnerId(Long ownerId);
 }
