@@ -87,7 +87,18 @@ public class TechniqueController {
     public TechniqueResponse patch(@PathVariable @Positive Long id,
                                    @Valid @RequestBody PatchTechniqueRequest req) {
         Technique existing = service.findById(id, currentOwner.id());
-        Technique patched = mapper.applyPatch(req, existing);
+        Technique patched = existing.toBuilder()
+                .name(req.name() != null ? req.name() : existing.name())
+                .category(req.category() != null ? req.category() : existing.category())
+                .family(req.family() != null ? req.family() : existing.family())
+                .description(req.description() != null ? req.description() : existing.description())
+                .youtubeUrl(req.youtubeUrl() != null ? req.youtubeUrl() : existing.youtubeUrl())
+                .minimumBelt(req.minimumBelt() != null ? req.minimumBelt() : existing.minimumBelt())
+                .modality(req.modality() != null ? req.modality() : existing.modality())
+                .startPositionId(req.startPositionId() != null ? req.startPositionId() : existing.startPositionId())
+                .endPositionId(req.endPositionId() != null ? req.endPositionId() : existing.endPositionId())
+                .visibility(req.visibility() != null ? req.visibility() : existing.visibility())
+                .build();
         return mapper.toResponse(service.patch(id, currentOwner.id(), patched));
     }
 
