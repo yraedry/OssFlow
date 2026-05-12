@@ -14,7 +14,7 @@ public class WeeklyTemplateWebMapper {
 
     public WeeklyTemplateResponse toResponse(WeeklyTemplate t) {
         List<DayEntryDto> days = t.days().stream()
-                .map(d -> new DayEntryDto(d.dayOfWeek(), d.bjj(), d.strength(), d.cardio()))
+                .map(d -> new DayEntryDto(d.dayOfWeek(), d.bjj(), d.strength(), d.cardio(), d.mobility(), d.flexibility()))
                 .toList();
         return new WeeklyTemplateResponse(t.id(), days, t.updatedAt());
     }
@@ -26,6 +26,8 @@ public class WeeklyTemplateWebMapper {
                         .bjj(d.bjj())
                         .strength(d.strength())
                         .cardio(d.cardio())
+                        .mobility(d.mobility())
+                        .flexibility(d.flexibility())
                         .build())
                 .toList();
         return WeeklyTemplate.builder().days(days).build();

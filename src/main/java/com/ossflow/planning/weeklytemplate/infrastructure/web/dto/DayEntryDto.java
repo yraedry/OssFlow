@@ -7,5 +7,7 @@ public record DayEntryDto(
         @NotNull DayOfWeek dayOfWeek,
         boolean bjj,
         boolean strength,
-        boolean cardio
+        boolean cardio,
+        boolean mobility,
+        boolean flexibility
 ) {}
