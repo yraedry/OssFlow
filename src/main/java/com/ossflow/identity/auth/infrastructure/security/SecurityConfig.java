@@ -74,6 +74,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
             .oauth2Login(oauth2 -> oauth2
+                .redirectionEndpoint(redir -> redir.baseUri("/oauth2/callback/*"))
                 .userInfoEndpoint(info -> info.userService(oAuth2UserService))
                 .successHandler(oAuth2SuccessHandler)
                 .failureHandler(oAuth2FailureHandler)
@@ -101,7 +102,9 @@ public class SecurityConfig {
             "http://localhost:5173",
             "http://localhost:3000",
             "http://127.0.0.1:5173",
-            "http://10.10.100.15:5173"
+            "http://10.10.100.15:5173",
+            "https://ossflow.es",
+            "https://www.ossflow.es"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
