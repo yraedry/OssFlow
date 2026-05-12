@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -13,22 +14,28 @@ import java.util.Optional;
 public class WeeklyTemplatePersistenceAdapter implements WeeklyTemplateRepositoryPort {
 
     private final WeeklyTemplateJpaRepository jpa;
+    private final WeeklyTemplateSessionJpaRepository sessionJpa;
     private final WeeklyTemplatePersistenceMapper mapper;
 
     @Override
     public Optional<WeeklyTemplate> findByOwnerId(Long ownerId) {
-        return jpa.findByOwnerId(ownerId).map(mapper::toDomain);
+        return jpa.findByOwnerId(ownerId).map(entity -> {
+            List<WeeklyTemplateSessionEntity> sessions = sessionJpa.findByTemplateId(entity.getId());
+            return mapper.toDomain(entity, sessions);
+        });
     }
 
     @Transactional
     @Override
     public WeeklyTemplate save(WeeklyTemplate template) {
         WeeklyTemplateEntity entity = jpa.findByOwnerId(template.ownerId())
-                .map(existing -> {
-                    existing.setDays(template.days());
-                    return existing;
-                })
                 .orElse(mapper.toEntity(template));
-        return mapper.toDomain(jpa.save(entity));
+        WeeklyTemplateEntity saved = jpa.save(entity);
+
+        sessionJpa.deleteByTemplateId(saved.getId());
+        List<WeeklyTemplateSessionEntity> sessions = mapper.toSessionEntities(saved.getId(), template.days());
+        sessionJpa.saveAll(sessions);
+
+        return mapper.toDomain(saved, sessions);
     }
 }
