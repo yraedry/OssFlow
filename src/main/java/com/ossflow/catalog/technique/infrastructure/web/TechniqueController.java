@@ -1,5 +1,6 @@
 package com.ossflow.catalog.technique.infrastructure.web;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import com.ossflow.catalog.ruleset.application.RulesetService;
 import com.ossflow.catalog.ruleset.domain.RulesetTechnique;
 import com.ossflow.catalog.ruleset.infrastructure.web.RulesetWebMapper;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.List;
 
+@PreAuthorize("isAuthenticated()")
 @RestController
 @RequestMapping("/api/v1/catalog/techniques")
 @Validated
@@ -45,12 +47,13 @@ public class TechniqueController {
             @RequestParam(required = false) Modality modality,
             @RequestParam(required = false) Long startPositionId,
             @RequestParam(required = false) Long endPositionId,
+            @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "0") @Min(0) int page,
             @RequestParam(defaultValue = "20") @Min(1) int size,
             @RequestParam(defaultValue = "name,asc") String sort) {
         Pageable pageable = PageRequest.of(page, Math.min(size, 100), parseSort(sort));
         return service.list(currentOwner.id(), category, belt, modality,
-                startPositionId, endPositionId, pageable).map(mapper::toResponse);
+                startPositionId, endPositionId, search, pageable).map(mapper::toResponse);
     }
 
     @GetMapping("/{id}")

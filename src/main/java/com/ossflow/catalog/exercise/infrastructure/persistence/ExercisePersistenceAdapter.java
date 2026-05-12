@@ -43,7 +43,7 @@ public class ExercisePersistenceAdapter implements ExerciseRepositoryPort {
 
     @Override
     public Optional<Exercise> findById(Long id, Long ownerId) {
-        return repository.findByIdAndOwnerId(id, ownerId).map(mapper::toDomain);
+        return repository.findByIdReadable(id, ownerId).map(mapper::toDomain);
     }
 
     @Override

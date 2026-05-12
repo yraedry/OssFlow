@@ -52,6 +52,7 @@ public class StudyPlanService {
         StudyPlan toSave = replacement.toBuilder()
                 .id(existing.id())
                 .ownerId(existing.ownerId())
+                .status(replacement.status() != null ? replacement.status() : existing.status())
                 .createdAt(existing.createdAt())
                 .version(existing.version())
                 .build();

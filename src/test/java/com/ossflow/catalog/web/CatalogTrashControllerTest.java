@@ -10,6 +10,8 @@ import com.ossflow.catalog.technique.domain.Technique;
 import com.ossflow.catalog.technique.infrastructure.web.TechniqueWebMapperImpl;
 import com.ossflow.shared.exception.GlobalExceptionHandler;
 import com.ossflow.shared.web.CurrentOwner;
+import com.ossflow.testsupport.TestSecurityContext;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,7 +49,11 @@ class CatalogTrashControllerTest {
         mvc = MockMvcBuilders.standaloneSetup(controller)
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
+        TestSecurityContext.setOwner(1L);
     }
+
+    @AfterEach
+    void tearDownAuth() { TestSecurityContext.clear(); }
 
     @Test
     void should_return_paged_trash_positions_when_called() throws Exception {

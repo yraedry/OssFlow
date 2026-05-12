@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ossflow.catalog.portability.application.CatalogImporter;
 import com.ossflow.catalog.portability.application.ImportMode;
 import com.ossflow.catalog.portability.application.ImportReport;
+import com.ossflow.testsupport.TestSecurityContext;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +22,12 @@ class CatalogImporterIntegrationTest {
 
     @Autowired CatalogImporter catalogImporter;
     @Autowired ObjectMapper objectMapper;
+
+    @BeforeEach
+    void setUpAuth() { TestSecurityContext.setOwner(1L); }
+
+    @AfterEach
+    void tearDownAuth() { TestSecurityContext.clear(); }
 
     private static final String VALID_CATALOG = """
             {

@@ -48,8 +48,8 @@ public class TechniqueService {
 
     public Page<Technique> list(Long ownerId, TechniqueCategory category, Belt belt,
                                  Modality modality, Long startPositionId, Long endPositionId,
-                                 Pageable pageable) {
-        return repository.findAll(ownerId, category, belt, modality, startPositionId, endPositionId, pageable);
+                                 String search, Pageable pageable) {
+        return repository.findAll(ownerId, category, belt, modality, startPositionId, endPositionId, search, pageable);
     }
 
     public Technique replace(Long id, Long ownerId, Technique replacement) {

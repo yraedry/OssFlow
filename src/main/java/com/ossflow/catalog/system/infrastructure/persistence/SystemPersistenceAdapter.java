@@ -40,12 +40,13 @@ public class SystemPersistenceAdapter implements SystemRepositoryPort {
 
     @Override
     public Optional<OssSystem> findById(Long id, Long ownerId) {
-        return repository.findByIdAndOwnerId(id, ownerId).map(mapper::toDomain);
+        return repository.findByIdReadable(id, ownerId).map(mapper::toDomain);
     }
 
     @Override
-    public Page<OssSystem> findAll(Long ownerId, Pageable pageable) {
-        return repository.findByOwnerId(ownerId, pageable).map(mapper::toDomain);
+    public Page<OssSystem> findAll(Long ownerId, String search, Pageable pageable) {
+        String searchParam = (search != null && !search.isBlank()) ? search.trim() : null;
+        return repository.findBySearch(ownerId, searchParam, pageable).map(mapper::toDomain);
     }
 
     @Override

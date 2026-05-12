@@ -33,6 +33,9 @@ public class UserProfilePersistenceAdapter implements UserProfileRepositoryPort 
                         e.setOwnerId(profile.ownerId());
                         return e;
                     });
+            entity.setFirstName(profile.firstName());
+            entity.setLastName(profile.lastName());
+            entity.setAlias(profile.alias());
             entity.setDisplayName(profile.displayName());
             entity.setCurrentBelt(profile.currentBelt());
             entity.setBeltSince(profile.beltSince());
@@ -74,5 +77,11 @@ public class UserProfilePersistenceAdapter implements UserProfileRepositoryPort 
     @Transactional(readOnly = true)
     public boolean existsByOwnerId(Long ownerId) {
         return repository.existsByOwnerId(ownerId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean existsByAliasAndOwnerIdNot(String alias, Long ownerId) {
+        return repository.existsByAliasAndOwnerIdNot(alias, ownerId);
     }
 }

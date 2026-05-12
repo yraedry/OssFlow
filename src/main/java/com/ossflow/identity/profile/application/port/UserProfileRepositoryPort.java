@@ -8,4 +8,6 @@ public interface UserProfileRepositoryPort {
     UserProfile save(UserProfile profile);
     Optional<UserProfile> findByOwnerId(Long ownerId);
     boolean existsByOwnerId(Long ownerId);
+
+    boolean existsByAliasAndOwnerIdNot(String alias, Long ownerId);
 }

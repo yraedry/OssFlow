@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface SystemRepositoryPort {
     OssSystem save(OssSystem system);
     Optional<OssSystem> findById(Long id, Long ownerId);
-    Page<OssSystem> findAll(Long ownerId, Pageable pageable);
+    Page<OssSystem> findAll(Long ownerId, String search, Pageable pageable);
     boolean existsByName(Long ownerId, String name);
     void softDelete(Long id, Long ownerId);
     OssSystem restore(Long id, Long ownerId);

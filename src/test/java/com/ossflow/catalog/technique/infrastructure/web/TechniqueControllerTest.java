@@ -13,6 +13,8 @@ import com.ossflow.catalog.technique.infrastructure.web.dto.CreateTechniqueReque
 import com.ossflow.shared.exception.DuplicateNameException;
 import com.ossflow.shared.exception.GlobalExceptionHandler;
 import com.ossflow.shared.web.CurrentOwner;
+import com.ossflow.testsupport.TestSecurityContext;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,7 +47,11 @@ class TechniqueControllerTest {
         mvc = MockMvcBuilders.standaloneSetup(controller)
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
+        TestSecurityContext.setOwner(1L);
     }
+
+    @AfterEach
+    void tearDownAuth() { TestSecurityContext.clear(); }
 
     @Test
     void post_should_return_201_with_location_header() throws Exception {
