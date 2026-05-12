@@ -5,6 +5,7 @@ import com.ossflow.catalog.portability.CatalogExporter;
 import com.ossflow.identity.portability.IdentityExporter;
 import com.ossflow.journal.portability.JournalExporter;
 import com.ossflow.planning.portability.PlanningExporter;
+import com.ossflow.shared.web.CurrentOwner;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,10 +25,11 @@ public class FullExportController {
     private final JournalExporter journalExporter;
     private final PlanningExporter planningExporter;
     private final IdentityExporter identityExporter;
+    private final CurrentOwner currentOwner;
 
     @GetMapping(value = "/full", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, Object>> exportFull() {
-        Long ownerId = 1L; // hardcoded como en el resto del proyecto
+        Long ownerId = currentOwner.id();
         var dump = new java.util.LinkedHashMap<String, Object>();
         dump.put("schemaVersion", "v1");
         dump.put("exportedAt", java.time.Instant.now().toString());
