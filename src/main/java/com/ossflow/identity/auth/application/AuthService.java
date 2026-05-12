@@ -320,9 +320,15 @@ public class AuthService {
             throw new BadRequestException("WRONG_PASSWORD", "Contraseña actual incorrecta");
         }
         String newHash = passwordEncoder.encode(newPassword);
+        // Bump tokenVersion para invalidar todas las sesiones activas (access + refresh tokens).
+        // Escenario clave: el usuario cambia contraseña porque fue comprometido — todas las
+        // sesiones deben quedar inválidas inmediatamente, no solo tras que expiren los JWT.
+        int newTokenVersion = account.tokenVersion() + 1;
         accountRepository.save(new Account(account.id(), account.email(), newHash,
                 account.provider(), account.providerId(), account.emailVerified(),
-                account.tokenVersion(), account.createdAt(), account.updatedAt()));
+                newTokenVersion, account.createdAt(), account.updatedAt()));
+        refreshTokenRepository.revokeByAccountId(account.id());
+        accountEventService.record(accountId, AccountEventType.PASSWORD_CHANGED, null, null);
     }
 
     public Account findAccountById(Long id) {
