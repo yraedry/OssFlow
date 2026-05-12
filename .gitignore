@@ -88,3 +88,8 @@ docs/memoria/diagramas/placeholder-tech-*.png
 ### Screenshots temporales de desarrollo ###
 *.png
 !docs/**/*.png
+
+src/main/resources/certs/private.pem
+
+# superpowers/brainstorm scratch
+.superpowers/

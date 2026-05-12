@@ -1,5 +1,6 @@
 package com.ossflow.identity.profile.infrastructure.web;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import com.ossflow.identity.profile.application.UserProfileService;
 import com.ossflow.identity.profile.domain.UserProfile;
 import com.ossflow.identity.profile.domain.UserProfileFederation;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.List;
 
+@PreAuthorize("isAuthenticated()")
 @RestController
 @RequestMapping("/api/v1/identity/profile")
 @Validated
@@ -48,7 +50,7 @@ public class UserProfileController {
     }
 
     @PatchMapping
-    public UserProfileResponse patchProfile(@RequestBody UpdateUserProfileRequest req) {
+    public UserProfileResponse patchProfile(@Valid @RequestBody UpdateUserProfileRequest req) {
         UserProfile patch = mapper.fromUpdate(req);
         return mapper.toResponse(service.updateProfile(currentOwner.id(), patch));
     }

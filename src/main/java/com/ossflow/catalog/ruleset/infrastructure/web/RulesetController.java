@@ -1,5 +1,6 @@
 package com.ossflow.catalog.ruleset.infrastructure.web;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import com.ossflow.catalog.ruleset.application.RulesetService;
 import com.ossflow.catalog.ruleset.domain.Ruleset;
 import com.ossflow.catalog.ruleset.domain.RulesetTechnique;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.List;
 
+@PreAuthorize("isAuthenticated()")
 @RestController
 @RequestMapping("/api/v1/catalog/rulesets")
 @Validated

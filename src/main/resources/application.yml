@@ -7,9 +7,9 @@ spring:
     hikari:
       maximum-pool-size: 10
       minimum-idle: 2
-      connection-timeout: 30000   # 30 s — falla rápido si la BD no responde
-      idle-timeout: 600000        # 10 min — cierra conexiones ociosas
-      max-lifetime: 1800000       # 30 min — rota conexiones antes del timeout del servidor
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
       pool-name: OssFlowHikari
   jpa:
     open-in-view: false
@@ -17,14 +17,40 @@ spring:
       hibernate:
         physical_naming_strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
         jdbc:
-          batch_size: 25          # inserts/updates en lote para operaciones masivas
+          batch_size: 25
         order_inserts: true
         order_updates: true
+  mail:
+    host: smtp.resend.com
+    port: 587
+    username: resend
+    password: ${RESEND_API_KEY:re_placeholder}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID:placeholder}
+            client-secret: ${GOOGLE_CLIENT_SECRET:placeholder}
+            scope: email,profile
+            redirect-uri: "${APP_OAUTH2_REDIRECT_URI:{baseUrl}/oauth2/callback/{registrationId}}"
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            user-name-attribute: sub
+
 server:
   port: 8080
+  forward-headers-strategy: framework
   error:
     include-message: never
     include-stacktrace: never
+
 management:
   endpoints:
     web:
@@ -33,3 +59,20 @@ management:
   endpoint:
     health:
       show-details: never
+
+auth:
+  jwt:
+    # En runtime las keys se inyectan vía env vars b64 (prod). En dev/test, los perfiles
+    # correspondientes pueden definir private-key-path/public-key-path. Ver RsaKeyConfig.
+    private-key-b64: ${AUTH_JWT_PRIVATE_KEY_B64:}
+    public-key-b64: ${AUTH_JWT_PUBLIC_KEY_B64:}
+    access-token-expiry: 900
+    refresh-token-expiry: 604800
+
+app:
+  cookie:
+    secure: ${APP_COOKIE_SECURE:true}
+    same-site: ${APP_COOKIE_SAME_SITE:Lax}
+    path: /api/auth
+  refresh-token:
+    expiry: ${APP_REFRESH_EXPIRY:2592000}

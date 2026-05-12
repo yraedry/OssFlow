@@ -1,13 +1,16 @@
 package com.ossflow.shared.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -35,10 +38,31 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.BAD_REQUEST, "VALIDATION_FAILED", "La petición contiene errores de validación", req, fields, null);
     }
 
-    @ExceptionHandler({HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class})
+    @ExceptionHandler(ConstraintViolationException.class)
+    ResponseEntity<ApiError> handleConstraintViolation(ConstraintViolationException ex, HttpServletRequest req) {
+        List<ApiError.FieldError> fields = ex.getConstraintViolations().stream()
+                .map(cv -> {
+                    String path = cv.getPropertyPath().toString();
+                    String fieldName = path.contains(".") ? path.substring(path.lastIndexOf('.') + 1) : path;
+                    return new ApiError.FieldError(fieldName, String.valueOf(cv.getInvalidValue()), cv.getMessage());
+                })
+                .toList();
+        log.warn("Constraint violation at {}: {}", req.getRequestURI(), ex.getMessage());
+        return build(HttpStatus.BAD_REQUEST, "VALIDATION_FAILED", "La petición contiene errores de validación", req, fields, null);
+    }
+
+    @ExceptionHandler({HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class,
+            MissingServletRequestParameterException.class})
     ResponseEntity<ApiError> handleBadRequest(Exception ex, HttpServletRequest req) {
         log.warn("Bad request at {}: {}", req.getRequestURI(), ex.getMessage());
         return build(HttpStatus.BAD_REQUEST, "BAD_REQUEST", "Petición malformada", req, null, null);
+    }
+
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    ResponseEntity<ApiError> handleUnsupportedMediaType(HttpMediaTypeNotSupportedException ex, HttpServletRequest req) {
+        log.warn("Unsupported media type at {}: {}", req.getRequestURI(), ex.getMessage());
+        return build(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "UNSUPPORTED_MEDIA_TYPE",
+                "Content-Type no soportado. Use application/json", req, null, null);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)

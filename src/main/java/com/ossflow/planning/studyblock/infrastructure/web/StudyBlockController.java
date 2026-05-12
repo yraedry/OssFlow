@@ -1,5 +1,6 @@
 package com.ossflow.planning.studyblock.infrastructure.web;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import com.ossflow.planning.studyblock.application.StudyBlockService;
 import com.ossflow.planning.studyblock.domain.StudyBlock;
 import com.ossflow.planning.studyblock.infrastructure.web.dto.CreateStudyBlockRequest;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.List;
 
+@PreAuthorize("isAuthenticated()")
 @RestController
 @RequestMapping("/api/v1/planning/study-plans/{pid}/blocks")
 @Validated

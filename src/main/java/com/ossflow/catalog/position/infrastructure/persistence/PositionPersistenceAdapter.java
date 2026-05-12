@@ -41,7 +41,7 @@ public class PositionPersistenceAdapter implements PositionRepositoryPort {
 
     @Override
     public Optional<Position> findById(Long id, Long ownerId) {
-        return repository.findByIdAndOwnerId(id, ownerId).map(mapper::toDomain);
+        return repository.findByIdReadable(id, ownerId).map(mapper::toDomain);
     }
 
     @Override

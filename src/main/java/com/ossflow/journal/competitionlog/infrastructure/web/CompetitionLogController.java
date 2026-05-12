@@ -1,5 +1,6 @@
 package com.ossflow.journal.competitionlog.infrastructure.web;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import com.ossflow.journal.competitionlog.application.CompetitionLogService;
 import com.ossflow.journal.competitionlog.domain.CompetitionLog;
 import com.ossflow.journal.competitionlog.domain.CompetitionMatch;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.List;
 
+@PreAuthorize("isAuthenticated()")
 @RestController
 @RequestMapping("/api/v1/journal/competition-logs")
 @Validated

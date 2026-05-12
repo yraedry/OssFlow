@@ -1,5 +1,6 @@
 package com.ossflow.catalog.exercise.infrastructure.web;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import com.ossflow.catalog.exercise.application.ExerciseService;
 import com.ossflow.catalog.exercise.domain.EquipmentType;
 import com.ossflow.catalog.exercise.domain.Exercise;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
+@PreAuthorize("isAuthenticated()")
 @RestController
 @RequestMapping("/api/v1/catalog/exercises")
 @Validated

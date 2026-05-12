@@ -1,5 +1,6 @@
 package com.ossflow.identity.injury.infrastructure.web;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import com.ossflow.identity.injury.application.InjuryService;
 import com.ossflow.identity.injury.domain.Injury;
 import com.ossflow.identity.injury.infrastructure.web.dto.CreateInjuryRequest;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.List;
 
+@PreAuthorize("isAuthenticated()")
 @RestController
 @RequestMapping("/api/v1/identity/injuries")
 @Validated

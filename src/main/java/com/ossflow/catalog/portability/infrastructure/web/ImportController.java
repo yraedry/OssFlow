@@ -1,10 +1,12 @@
 package com.ossflow.catalog.portability.infrastructure.web;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.ossflow.catalog.portability.application.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+@PreAuthorize("isAuthenticated()")
 @RestController
 @RequestMapping("/api/v1/catalog/import")
 @RequiredArgsConstructor

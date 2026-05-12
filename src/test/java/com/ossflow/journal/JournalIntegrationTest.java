@@ -1,6 +1,8 @@
 package com.ossflow.journal;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ossflow.testsupport.TestSecurityContext;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,11 @@ class JournalIntegrationTest {
     @BeforeEach
     void setUp() {
         mvc = MockMvcBuilders.webAppContextSetup(wac).build();
+        TestSecurityContext.setOwner(1L);
     }
+
+    @AfterEach
+    void tearDownAuth() { TestSecurityContext.clear(); }
 
     @Test
     void should_create_note_with_two_new_tags() throws Exception {

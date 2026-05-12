@@ -1,6 +1,8 @@
 package com.ossflow.identity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ossflow.testsupport.TestSecurityContext;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +31,11 @@ class IdentityIntegrationTest {
     @BeforeEach
     void setUp() {
         mvc = MockMvcBuilders.webAppContextSetup(wac).build();
+        TestSecurityContext.setOwner(1L);
     }
+
+    @AfterEach
+    void tearDownAuth() { TestSecurityContext.clear(); }
 
     private static final String CREATE_BODY = """
             {

@@ -11,7 +11,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public record CreateTechniqueRequest(
-        @NotBlank @Size(max = 120) String name,
+        @NotBlank @Size(max = 120) @Pattern(regexp = "^[^<>]*$", message = "No se permiten caracteres HTML") String name,
         @NotNull TechniqueCategory category,
         TechniqueFamily family,
         @Size(max = 10000) String description,

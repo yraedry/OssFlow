@@ -1,5 +1,6 @@
 package com.ossflow.catalog.position.infrastructure.web;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import com.ossflow.catalog.position.application.PositionService;
 import com.ossflow.catalog.position.domain.Position;
 import com.ossflow.catalog.position.infrastructure.web.dto.*;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
+@PreAuthorize("isAuthenticated()")
 @RestController
 @RequestMapping("/api/v1/catalog/positions")
 @Validated

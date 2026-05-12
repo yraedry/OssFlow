@@ -1,4 +1,8 @@
 spring:
+  servlet:
+    multipart:
+      max-request-size: 2MB
+      max-file-size: 2MB
   datasource:
     url: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/${POSTGRES_DB:ossflow}
     username: ${POSTGRES_USER:ossflow}
@@ -20,3 +24,8 @@ springdoc:
     enabled: false
   api-docs:
     enabled: false
+
+management:
+  health:
+    mail:
+      enabled: false

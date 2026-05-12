@@ -101,6 +101,51 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>0.12.6</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.12.6</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>0.12.6</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.bucket4j</groupId>
+            <artifactId>bucket4j-core</artifactId>
+            <version>8.10.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <version>3.2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -150,13 +195,13 @@
                 <version>${jacoco.version}</version>
                 <configuration>
                     <excludes>
-                        <!-- MapStruct generated implementations -->
+                        <!-- MapStruct generated impls -->
                         <exclude>**/*MapperImpl.class</exclude>
-                        <!-- Toda la capa infrastructure (persistence + web): glue code sin lógica de negocio -->
-                        <exclude>**/infrastructure/**</exclude>
-                        <!-- Spring Boot main -->
+                        <!-- JPA entities y repositorios (glue) -->
+                        <exclude>**/infrastructure/persistence/*Entity.class</exclude>
+                        <exclude>**/infrastructure/persistence/*JpaRepository.class</exclude>
+                        <!-- Spring Boot main / configs -->
                         <exclude>**/OssflowApplication.class</exclude>
-                        <!-- Spring configs -->
                         <exclude>**/config/*.class</exclude>
                         <!-- Portability exporters (delegación trivial) -->
                         <exclude>**/portability/**</exclude>
@@ -186,7 +231,21 @@
                                         <limit>
                                             <counter>LINE</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>0.50</minimum>
+                                            <minimum>0.55</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                                <rule>
+                                    <element>PACKAGE</element>
+                                    <includes>
+                                        <include>com.ossflow.identity.auth.application</include>
+                                        <include>com.ossflow.identity.auth.infrastructure.security</include>
+                                    </includes>
+                                    <limits>
+                                        <limit>
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.70</minimum>
                                         </limit>
                                     </limits>
                                 </rule>

@@ -1,5 +1,7 @@
 package com.ossflow.integration;
 
+import com.ossflow.testsupport.TestSecurityContext;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -23,8 +26,12 @@ class FullExportIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        mvc = MockMvcBuilders.webAppContextSetup(wac).build();
+        mvc = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
+        TestSecurityContext.setOwner(1L);
     }
+
+    @AfterEach
+    void tearDownAuth() { TestSecurityContext.clear(); }
 
     @Test
     void should_return_full_export_with_all_sections() throws Exception {

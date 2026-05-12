@@ -79,7 +79,7 @@ public class RulesetImporter extends AbstractImporter<RulesetImporter.Payload> {
 
                 if (dto.techniques() != null) {
                     for (TechniqueEntryDto te : dto.techniques()) {
-                        var page = techniqueService.list(ownerId, null, null, null, null, null, PageRequest.of(0, 200));
+                        var page = techniqueService.list(ownerId, null, null, null, null, null, null, PageRequest.of(0, 200));
                         page.stream().filter(t -> t.name().equals(te.techniqueName())).findFirst().ifPresentOrElse(
                                 t -> rulesetService.upsertTechnique(saved.id(),
                                         RulesetTechnique.builder().rulesetId(saved.id()).techniqueId(t.id())

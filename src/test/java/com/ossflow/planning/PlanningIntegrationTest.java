@@ -1,6 +1,8 @@
 package com.ossflow.planning;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ossflow.testsupport.TestSecurityContext;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,11 @@ class PlanningIntegrationTest {
     @BeforeEach
     void setUp() {
         mvc = MockMvcBuilders.webAppContextSetup(wac).build();
+        TestSecurityContext.setOwner(1L);
     }
+
+    @AfterEach
+    void tearDownAuth() { TestSecurityContext.clear(); }
 
     @Test
     void should_create_study_plan_with_blocks_and_items() throws Exception {
