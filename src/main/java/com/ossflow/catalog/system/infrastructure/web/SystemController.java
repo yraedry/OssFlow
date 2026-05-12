@@ -1,9 +1,9 @@
 package com.ossflow.catalog.system.infrastructure.web;
 
-import org.springframework.security.access.prepost.PreAuthorize;
 import com.ossflow.catalog.system.application.SystemService;
 import com.ossflow.catalog.system.domain.OssSystem;
-import com.ossflow.catalog.system.infrastructure.web.dto.*;
+import com.ossflow.catalog.system.infrastructure.web.dto.CreateSystemRequest;
+import com.ossflow.catalog.system.infrastructure.web.dto.SystemResponse;
 import com.ossflow.shared.web.CurrentOwner;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,9 +31,10 @@ public class SystemController {
 
     @GetMapping
     public Page<SystemResponse> list(
+            @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "0") @Min(0) int page,
             @RequestParam(defaultValue = "20") @Min(1) int size) {
-        return service.list(currentOwner.id(), PageRequest.of(page, Math.min(size, 100)))
+        return service.list(currentOwner.id(), search, PageRequest.of(page, Math.min(size, 100)))
                 .map(mapper::toResponse);
     }
 

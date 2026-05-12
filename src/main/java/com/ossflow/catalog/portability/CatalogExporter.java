@@ -19,7 +19,7 @@ public class CatalogExporter {
     public Map<String, Object> exportFor(Long ownerId) {
         Pageable all = PageRequest.of(0, Integer.MAX_VALUE);
         var positions = positionService.list(ownerId, null, all).getContent();
-        var techniques = techniqueService.list(ownerId, null, null, null, null, null, all).getContent();
+        var techniques = techniqueService.list(ownerId, null, null, null, null, null, null, all).getContent();
         return Map.of(
                 "positions", positions,
                 "techniques", techniques

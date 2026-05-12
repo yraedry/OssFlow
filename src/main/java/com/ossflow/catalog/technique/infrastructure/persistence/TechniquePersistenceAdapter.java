@@ -51,9 +51,13 @@ public class TechniquePersistenceAdapter implements TechniqueRepositoryPort {
     @Override
     public Page<Technique> findAll(Long ownerId, TechniqueCategory category, Belt belt,
                                     Modality modality, Long startPositionId, Long endPositionId,
-                                    Pageable pageable) {
-        return repository.findByFilters(ownerId, category, belt, modality,
-                startPositionId, endPositionId, pageable).map(mapper::toDomain);
+                                    String search, Pageable pageable) {
+        String categoryStr = category != null ? category.name() : null;
+        String beltStr = belt != null ? belt.name() : null;
+        String modalityStr = modality != null ? modality.name() : null;
+        String searchParam = (search != null && !search.isBlank()) ? search.trim() : null;
+        return repository.findByFilters(ownerId, categoryStr, beltStr, modalityStr,
+                startPositionId, endPositionId, searchParam, pageable).map(mapper::toDomain);
     }
 
     @Override
