@@ -12,4 +12,6 @@ public interface UserProfileJpaRepository extends JpaRepository<UserProfileEntit
     Optional<UserProfileEntity> findByOwnerId(@Param("ownerId") Long ownerId);
 
     boolean existsByOwnerId(Long ownerId);
+
+    boolean existsByAliasAndOwnerIdNot(String alias, Long ownerId);
 }

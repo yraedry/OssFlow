@@ -41,6 +41,12 @@ public class UserProfileService {
 
     public UserProfile updateProfile(Long ownerId, UserProfile patch) {
         UserProfile existing = getProfileByOwner(ownerId);
+        if (patch.alias() != null && !patch.alias().equals(existing.alias())
+                && repository.existsByAliasAndOwnerIdNot(patch.alias(), ownerId)) {
+            throw new ConflictException("ALIAS_ALREADY_TAKEN",
+                    "El alias '%s' ya está en uso".formatted(patch.alias()),
+                    Map.of("alias", patch.alias()));
+        }
         UserProfile toSave = existing.toBuilder()
                 .firstName(patch.firstName() != null ? patch.firstName() : existing.firstName())
                 .lastName(patch.lastName() != null ? patch.lastName() : existing.lastName())

@@ -6,5 +6,6 @@ public enum AccountEventType {
     LOGIN_FAILED,
     LOGOUT,
     PASSWORD_RESET,
+    PASSWORD_CHANGED,
     TOKEN_REUSE_DETECTED
 }
