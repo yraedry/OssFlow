@@ -19,4 +19,21 @@ public interface SystemJpaRepository extends JpaRepository<SystemEntity, Long> {
     Page<SystemEntity> findByOwnerId(Long ownerId, Pageable pageable);
 
     boolean existsByOwnerIdAndName(Long ownerId, String name);
+
+    @Query(value = """
+            SELECT s.* FROM system s
+            WHERE (s.owner_id = :ownerId OR s.visibility = 'PUBLIC')
+            AND s.deleted_at IS NULL
+            AND (:search IS NULL OR unaccent(lower(s.name)) LIKE unaccent(lower(CONCAT('%', :search, '%')))
+                                 OR unaccent(lower(COALESCE(s.description, ''))) LIKE unaccent(lower(CONCAT('%', :search, '%'))))
+            """,
+            countQuery = """
+            SELECT COUNT(*) FROM system s
+            WHERE (s.owner_id = :ownerId OR s.visibility = 'PUBLIC')
+            AND s.deleted_at IS NULL
+            AND (:search IS NULL OR unaccent(lower(s.name)) LIKE unaccent(lower(CONCAT('%', :search, '%')))
+                                 OR unaccent(lower(COALESCE(s.description, ''))) LIKE unaccent(lower(CONCAT('%', :search, '%'))))
+            """,
+            nativeQuery = true)
+    Page<SystemEntity> findBySearch(Long ownerId, String search, Pageable pageable);
 }

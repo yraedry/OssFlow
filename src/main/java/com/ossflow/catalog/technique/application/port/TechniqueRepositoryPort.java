@@ -14,7 +14,7 @@ public interface TechniqueRepositoryPort {
     Optional<Technique> findById(Long id, Long ownerId);
     Page<Technique> findAll(Long ownerId, TechniqueCategory category, Belt belt,
                             Modality modality, Long startPositionId, Long endPositionId,
-                            Pageable pageable);
+                            String search, Pageable pageable);
     boolean existsByName(Long ownerId, String name);
     void softDelete(Long id, Long ownerId);
     Optional<Technique> findInTrashById(Long id, Long ownerId);

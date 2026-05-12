@@ -48,8 +48,8 @@ public class SystemService {
                         Map.of("systemId", id)));
     }
 
-    public Page<OssSystem> list(Long ownerId, Pageable pageable) {
-        return repository.findAll(ownerId, pageable);
+    public Page<OssSystem> list(Long ownerId, String search, Pageable pageable) {
+        return repository.findAll(ownerId, search, pageable);
     }
 
     public OssSystem replace(Long id, Long ownerId, OssSystem replacement) {

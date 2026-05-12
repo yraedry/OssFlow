@@ -36,7 +36,7 @@ spring:
             client-id: ${GOOGLE_CLIENT_ID:placeholder}
             client-secret: ${GOOGLE_CLIENT_SECRET:placeholder}
             scope: email,profile
-            redirect-uri: "{baseUrl}/oauth2/callback/{registrationId}"
+            redirect-uri: "${APP_OAUTH2_REDIRECT_URI:{baseUrl}/oauth2/callback/{registrationId}}"
         provider:
           google:
             authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
