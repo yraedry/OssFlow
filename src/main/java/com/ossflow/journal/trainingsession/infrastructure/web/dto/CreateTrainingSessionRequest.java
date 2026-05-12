@@ -12,7 +12,7 @@ import java.time.LocalDate;
 
 public record CreateTrainingSessionRequest(
         @NotNull @PastOrPresent LocalDate sessionDate,
-        @Min(1) int durationMinutes,
+        @Min(1) Integer durationMinutes,
         @Size(max = 200) @Pattern(regexp = "^[^<>]*$", message = "No se permiten caracteres HTML") String location,
         @NotNull Intensity intensity,
         @NotNull SessionType sessionType,
