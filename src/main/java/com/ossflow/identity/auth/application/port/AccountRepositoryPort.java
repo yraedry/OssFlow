@@ -10,4 +10,5 @@ public interface AccountRepositoryPort {
     Optional<Account> findById(Long id);
     Optional<Account> findByProviderAndProviderId(AccountProvider provider, String providerId);
     Account save(Account account);
+    void deleteById(Long id);
 }

@@ -38,4 +38,9 @@ public class AccountPersistenceAdapter implements AccountRepositoryPort {
         AccountEntity entity = mapper.toEntity(account);
         return mapper.toDomain(jpaRepository.save(entity));
     }
+
+    @Override
+    public void deleteById(Long id) {
+        jpaRepository.deleteById(id);
+    }
 }
