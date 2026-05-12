@@ -2,6 +2,8 @@ package com.ossflow.planning.weeklytemplate.application;
 
 import com.ossflow.planning.weeklytemplate.application.port.WeeklyTemplateRepositoryPort;
 import com.ossflow.planning.weeklytemplate.domain.DayEntry;
+import com.ossflow.planning.weeklytemplate.domain.SessionSlot;
+import com.ossflow.planning.weeklytemplate.domain.SessionType;
 import com.ossflow.planning.weeklytemplate.domain.WeeklyTemplate;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,7 +33,13 @@ class WeeklyTemplateServiceTest {
         return WeeklyTemplate.builder()
                 .ownerId(ownerId)
                 .days(List.of(
-                        DayEntry.builder().dayOfWeek(DayOfWeek.MONDAY).bjj(true).strength(true).cardio(true).build()
+                        DayEntry.builder()
+                                .dayOfWeek(DayOfWeek.MONDAY)
+                                .sessions(List.of(
+                                        SessionSlot.builder().type(SessionType.BJJ).build(),
+                                        SessionSlot.builder().type(SessionType.STRENGTH).time("09:00").build()
+                                ))
+                                .build()
                 ))
                 .build();
     }
@@ -45,6 +53,7 @@ class WeeklyTemplateServiceTest {
         verify(repository).save(any());
         assertThat(result.ownerId()).isEqualTo(1L);
         assertThat(result.days()).hasSize(1);
+        assertThat(result.days().getFirst().sessions()).hasSize(2);
     }
 
     @Test
@@ -67,5 +76,29 @@ class WeeklyTemplateServiceTest {
         assertThat(result.id()).isEqualTo(10L);
         assertThat(result.ownerId()).isEqualTo(3L);
         assertThat(result.days()).hasSize(1);
+    }
+
+    @Test
+    void should_support_multiple_sessions_per_day() {
+        WeeklyTemplate template = WeeklyTemplate.builder()
+                .ownerId(4L)
+                .days(List.of(
+                        DayEntry.builder()
+                                .dayOfWeek(DayOfWeek.TUESDAY)
+                                .sessions(List.of(
+                                        SessionSlot.builder().type(SessionType.BJJ).time("07:00").build(),
+                                        SessionSlot.builder().type(SessionType.BJJ).time("19:00").build(),
+                                        SessionSlot.builder().type(SessionType.CARDIO).build()
+                                ))
+                                .build()
+                ))
+                .build();
+        when(repository.save(any())).thenAnswer(inv -> inv.getArgument(0));
+
+        WeeklyTemplate result = service.upsert(4L, template);
+
+        assertThat(result.days().getFirst().sessions()).hasSize(3);
+        assertThat(result.days().getFirst().sessions().stream()
+                .filter(s -> s.type() == SessionType.BJJ).count()).isEqualTo(2);
     }
 }
