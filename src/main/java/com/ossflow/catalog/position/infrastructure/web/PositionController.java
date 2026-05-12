@@ -69,7 +69,13 @@ public class PositionController {
     public PositionResponse patch(@PathVariable @Positive Long id,
                                   @Valid @RequestBody PatchPositionRequest req) {
         Position existing = service.findById(id, currentOwner.id());
-        Position patched = mapper.applyPatch(req, existing);
+        Position patched = existing.toBuilder()
+                .name(req.name() != null ? req.name() : existing.name())
+                .type(req.type() != null ? req.type() : existing.type())
+                .description(req.description() != null ? req.description() : existing.description())
+                .youtubeUrl(req.youtubeUrl() != null ? req.youtubeUrl() : existing.youtubeUrl())
+                .visibility(req.visibility() != null ? req.visibility() : existing.visibility())
+                .build();
         return mapper.toResponse(service.patch(id, currentOwner.id(), patched));
     }
 
