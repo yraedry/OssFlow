@@ -15,6 +15,12 @@ public final class TestSecurityContext {
         SecurityContextHolder.getContext().setAuthentication(auth);
     }
 
+    public static void setCoach(long ownerId) {
+        AccountPrincipal principal = new AccountPrincipal(ownerId, "coach-" + ownerId + "@example.com", AccountRole.ATHLETE_COACH);
+        var auth = new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+    }
+
     public static void clear() {
         SecurityContextHolder.clearContext();
     }

@@ -26,6 +26,9 @@ public class RateLimitingFilter extends OncePerRequestFilter {
     // Límite específico para change-password por userId: 5 intentos / 15 min para evitar
     // brute-force de contraseña actual con JWT válido (el token dura 15 min).
     private final Cache<Long, Bucket> changePasswordBuckets;
+    // Rate limit por IP para redención de código de invitación: 10 intentos / hora.
+    // Previene brute-force de códigos de 6 caracteres alfanuméricos.
+    private final Cache<String, Bucket> redeemCodeBuckets;
 
     public RateLimitingFilter() {
         this.loginBuckets = newCache();
@@ -38,6 +41,10 @@ public class RateLimitingFilter extends OncePerRequestFilter {
         this.changePasswordBuckets = Caffeine.newBuilder()
                 .expireAfterAccess(Duration.ofMinutes(15))
                 .maximumSize(50_000)
+                .build();
+        this.redeemCodeBuckets = Caffeine.newBuilder()
+                .expireAfterAccess(Duration.ofHours(1))
+                .maximumSize(10_000)
                 .build();
     }
 
@@ -63,6 +70,8 @@ public class RateLimitingFilter extends OncePerRequestFilter {
                 ipBucket = registerBuckets.get(ip, k -> newBucket(5, Duration.ofMinutes(10)));
             } else if (uri.endsWith("/api/auth/forgot-password") || uri.endsWith("/api/auth/resend-verification")) {
                 ipBucket = forgotPasswordBuckets.get(ip, k -> newBucket(3, Duration.ofHours(1)));
+            } else if (uri.endsWith("/api/v1/coaching/memberships/redeem")) {
+                ipBucket = redeemCodeBuckets.get(ip, k -> newBucket(10, Duration.ofHours(1)));
             }
 
             if (ipBucket != null && !ipBucket.tryConsume(1)) {

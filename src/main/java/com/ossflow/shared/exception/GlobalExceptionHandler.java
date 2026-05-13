@@ -14,6 +14,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 import java.util.List;
@@ -22,6 +23,14 @@ import java.util.Map;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(ResponseStatusException.class)
+    ResponseEntity<ApiError> handleResponseStatus(ResponseStatusException ex, HttpServletRequest req) {
+        HttpStatus status = HttpStatus.resolve(ex.getStatusCode().value());
+        if (status == null) status = HttpStatus.INTERNAL_SERVER_ERROR;
+        log.warn("ResponseStatus [{}] at {}: {}", status, req.getRequestURI(), ex.getReason());
+        return build(status, status.getReasonPhrase(), ex.getReason() != null ? ex.getReason() : ex.getMessage(), req, null, null);
+    }
 
     @ExceptionHandler(OssFlowException.class)
     ResponseEntity<ApiError> handleDomain(OssFlowException ex, HttpServletRequest req) {
