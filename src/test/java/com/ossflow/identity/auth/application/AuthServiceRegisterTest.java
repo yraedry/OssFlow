@@ -12,8 +12,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ossflow.shared.exception.ConflictException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ActiveProfiles("test")
@@ -33,28 +36,26 @@ class AuthServiceRegisterTest {
     }
 
     @Test
-    void register_does_not_throw_when_email_already_registered() {
-        // A7: anti-enumeración → no debe revelar que el correo ya existe.
+    void register_throws_conflict_when_email_already_verified() {
         accountRepository.save(new Account(
                 null, "existing@example.com",
                 new BCryptPasswordEncoder(12).encode("Pass1234"),
                 AccountProvider.LOCAL, null, true, 0, AccountRole.ATHLETE, null, null));
 
-        assertThatCode(() -> authService.register(new RegisterRequest("existing@example.com", "Pass1234", null)))
-                .doesNotThrowAnyException();
+        assertThatThrownBy(() -> authService.register(new RegisterRequest("existing@example.com", "Pass1234", null)))
+                .isInstanceOf(ConflictException.class)
+                .satisfies(ex -> assertThat(((ConflictException) ex).getErrorCode()).isEqualTo("EMAIL_ALREADY_EXISTS"));
     }
 
     @Test
-    void register_returns_same_response_for_existing_unverified_and_new() {
-        // Unverified existente: debe reenviar verificación silenciosamente (no excepción).
+    void register_throws_conflict_and_resends_verification_when_email_unverified() {
         accountRepository.save(new Account(
                 null, "unverified@example.com",
                 new BCryptPasswordEncoder(12).encode("Pass1234"),
                 AccountProvider.LOCAL, null, false, 0, AccountRole.ATHLETE, null, null));
 
-        assertThatCode(() -> authService.register(new RegisterRequest("unverified@example.com", "Pass1234", null)))
-                .doesNotThrowAnyException();
-        assertThatCode(() -> authService.register(new RegisterRequest("brand-new@example.com", "Pass1234", null)))
-                .doesNotThrowAnyException();
+        assertThatThrownBy(() -> authService.register(new RegisterRequest("unverified@example.com", "Pass1234", null)))
+                .isInstanceOf(ConflictException.class)
+                .satisfies(ex -> assertThat(((ConflictException) ex).getErrorCode()).isEqualTo("EMAIL_UNVERIFIED"));
     }
 }

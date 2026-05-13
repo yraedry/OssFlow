@@ -159,7 +159,6 @@ public class EmailService {
                     body { background-color: #0f0f0f; color: #f0ebe3; font-family: 'Inter', sans-serif; }
                     .wrapper { max-width: 560px; margin: 0 auto; padding: 40px 20px; }
                     .logo { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 28px; color: #f0ebe3; letter-spacing: -0.5px; margin-bottom: 32px; }
-                    .logo span { color: #a78bfa; }
                     .card { background: #1a1a1a; border: 1px solid #3a3a3a; border-radius: 12px; padding: 36px 32px; }
                     .card-title { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 22px; color: #f0ebe3; margin-bottom: 16px; line-height: 1.3; }
                     .card-body { font-size: 15px; color: #a0a0a0; line-height: 1.6; margin-bottom: 28px; }
@@ -171,7 +170,7 @@ public class EmailService {
                 </head>
                 <body>
                   <div class="wrapper">
-                    <div class="logo">Oss<span>Flow</span></div>
+                    <div class="logo">OssFlow</div>
                     <div class="card">
                       %s
                     </div>

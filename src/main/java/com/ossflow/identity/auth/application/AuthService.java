@@ -7,6 +7,7 @@ import com.ossflow.identity.auth.application.port.RefreshTokenRepositoryPort;
 import com.ossflow.identity.auth.domain.*;
 import com.ossflow.identity.auth.infrastructure.web.dto.*;
 import com.ossflow.shared.exception.BadRequestException;
+import com.ossflow.shared.exception.ConflictException;
 import com.ossflow.shared.exception.NotFoundException;
 import com.ossflow.shared.exception.UnprocessableException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -62,13 +63,10 @@ public class AuthService {
     public void register(RegisterRequest request, String ip, String userAgent) {
         var existing = accountRepository.findByEmail(request.email());
         if (existing.isPresent()) {
-            // Anti-enumeración: respuesta uniforme 201. Si la cuenta existe y NO está
-            // verificada, reenvía verificación; si está verificada, no hace nada
-            // (el usuario verá su email/login normal). Ejecutamos el hash bcrypt
-            // igualmente para evitar timing attack basado en latencia.
-            passwordEncoder.encode(request.password());
             Account account = existing.get();
             if (!account.emailVerified()) {
+                // Reenvía email de verificación y devuelve 409 para que el usuario sepa
+                // que ya tiene una cuenta pendiente de verificar.
                 emailVerificationTokenRepository.deleteByAccountId(account.id());
                 String rawToken = generateToken();
                 emailVerificationTokenRepository.save(new EmailVerificationToken(
@@ -76,8 +74,11 @@ public class AuthService {
                         Instant.now().plusSeconds(86400), null
                 ));
                 emailOutbox.enqueueVerification(account.id(), account.email(), rawToken);
+                throw new ConflictException("EMAIL_UNVERIFIED",
+                        "Ya existe una cuenta con este email pendiente de verificación. Te hemos reenviado el correo de verificación.");
             }
-            return;
+            throw new ConflictException("EMAIL_ALREADY_EXISTS",
+                    "Ya existe una cuenta con este email. Inicia sesión o usa ¿Olvidaste tu contraseña?");
         }
         AccountRole resolvedRole = (request.role() == AccountRole.ATHLETE_COACH)
                 ? AccountRole.ATHLETE_COACH
