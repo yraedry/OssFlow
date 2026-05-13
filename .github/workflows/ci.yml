@@ -57,7 +57,9 @@ jobs:
           else
             SLUG="${REF#feature/}"
             SLUG="${SLUG//\//-}"
-            echo "value=${SLUG}-dev" >> "$GITHUB_OUTPUT"
+            SLUG="$(echo "$SLUG" | tr '[:upper:]' '[:lower:]')"
+            SLUG="${SLUG:0:121}-dev"
+            echo "value=${SLUG}" >> "$GITHUB_OUTPUT"
           fi
 
       - uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
@@ -82,6 +84,7 @@ jobs:
         with:
           context: .
           push: true
+          provenance: false
           tags: ghcr.io/${{ github.repository_owner }}/ossflow-backend:${{ steps.tag.outputs.value }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
