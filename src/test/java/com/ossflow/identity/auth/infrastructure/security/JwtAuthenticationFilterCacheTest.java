@@ -4,6 +4,7 @@ import com.ossflow.identity.auth.application.JwtService;
 import com.ossflow.identity.auth.application.port.AccountRepositoryPort;
 import com.ossflow.identity.auth.domain.Account;
 import com.ossflow.identity.auth.domain.AccountProvider;
+import com.ossflow.identity.auth.domain.AccountRole;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import org.junit.jupiter.api.AfterEach;
@@ -58,7 +59,7 @@ class JwtAuthenticationFilterCacheTest {
         given(jwtService.validateToken("fake-token")).willReturn(Optional.of(claims));
 
         Account account = new Account(42L, "user@example.com", null,
-                AccountProvider.LOCAL, null, true, 0, null, null);
+                AccountProvider.LOCAL, null, true, 0, AccountRole.ATHLETE, null, null);
         given(accountRepository.findById(42L)).willReturn(Optional.of(account));
 
         FilterChain chain = mock(FilterChain.class);
@@ -80,7 +81,7 @@ class JwtAuthenticationFilterCacheTest {
 
         // Cuenta tiene tokenVersion=10 → mismatch
         Account account = new Account(99L, "x@example.com", null,
-                AccountProvider.LOCAL, null, true, 10, null, null);
+                AccountProvider.LOCAL, null, true, 10, AccountRole.ATHLETE, null, null);
         given(accountRepository.findById(99L)).willReturn(Optional.of(account));
 
         FilterChain chain = mock(FilterChain.class);

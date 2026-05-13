@@ -3,6 +3,7 @@ package com.ossflow.identity.auth.application;
 import com.ossflow.identity.auth.application.port.AccountRepositoryPort;
 import com.ossflow.identity.auth.domain.Account;
 import com.ossflow.identity.auth.domain.AccountProvider;
+import com.ossflow.identity.auth.domain.AccountRole;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -53,7 +54,7 @@ class OAuth2UserServiceTest {
     @Test
     void rejects_when_local_account_with_same_email_exists() {
         Account localAccount = new Account(5L, "user@example.com", "hash",
-                AccountProvider.LOCAL, null, true, 0, null, null);
+                AccountProvider.LOCAL, null, true, 0, AccountRole.ATHLETE, null, null);
         given(accountRepository.findByProviderAndProviderId(AccountProvider.GOOGLE, "google-123"))
                 .willReturn(Optional.empty());
         given(accountRepository.findByEmail("user@example.com"))
@@ -75,7 +76,7 @@ class OAuth2UserServiceTest {
                 .willReturn(Optional.empty());
         given(accountRepository.findByEmail("new@example.com")).willReturn(Optional.empty());
         Account saved = new Account(99L, "new@example.com", null,
-                AccountProvider.GOOGLE, "google-456", true, 0, null, null);
+                AccountProvider.GOOGLE, "google-456", true, 0, AccountRole.ATHLETE, null, null);
         given(accountRepository.save(any(Account.class))).willReturn(saved);
 
         var attrs = Map.<String, Object>of(
@@ -90,7 +91,7 @@ class OAuth2UserServiceTest {
     @Test
     void returns_existing_account_when_found_by_provider_id() {
         Account existing = new Account(77L, "linked@example.com", null,
-                AccountProvider.GOOGLE, "google-789", true, 0, null, null);
+                AccountProvider.GOOGLE, "google-789", true, 0, AccountRole.ATHLETE, null, null);
         given(accountRepository.findByProviderAndProviderId(AccountProvider.GOOGLE, "google-789"))
                 .willReturn(Optional.of(existing));
 

@@ -4,6 +4,7 @@ import com.ossflow.identity.auth.application.port.AccountRepositoryPort;
 import com.ossflow.identity.auth.application.port.RefreshTokenRepositoryPort;
 import com.ossflow.identity.auth.domain.Account;
 import com.ossflow.identity.auth.domain.AccountProvider;
+import com.ossflow.identity.auth.domain.AccountRole;
 import com.ossflow.identity.auth.domain.RefreshToken;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,7 +40,7 @@ class OAuth2SuccessHandlerTest {
     @Test
     void sets_refresh_cookie_and_redirects_without_token_in_url() throws Exception {
         Account account = new Account(42L, "user@example.com", null,
-                AccountProvider.GOOGLE, "google-id", true, 0, null, null);
+                AccountProvider.GOOGLE, "google-id", true, 0, AccountRole.ATHLETE, null, null);
         given(accountRepository.findById(42L)).willReturn(Optional.of(account));
         given(refreshTokenRepository.save(any(RefreshToken.class)))
                 .willAnswer(inv -> inv.getArgument(0));

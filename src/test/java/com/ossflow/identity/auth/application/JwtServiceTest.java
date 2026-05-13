@@ -2,6 +2,7 @@ package com.ossflow.identity.auth.application;
 
 import com.ossflow.identity.auth.domain.Account;
 import com.ossflow.identity.auth.domain.AccountProvider;
+import com.ossflow.identity.auth.domain.AccountRole;
 import com.ossflow.identity.auth.infrastructure.security.RsaKeyConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,7 +33,7 @@ class JwtServiceTest {
     @Test
     void issues_token_that_round_trips() {
         Account account = new Account(42L, "user@example.com", null,
-                AccountProvider.LOCAL, null, true, 7, null, null);
+                AccountProvider.LOCAL, null, true, 7, AccountRole.ATHLETE, null, null);
 
         String token = jwtService.issueAccessToken(account);
         var claims = jwtService.validateToken(token);

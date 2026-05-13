@@ -6,6 +6,7 @@ import com.ossflow.identity.auth.application.port.PasswordResetTokenRepositoryPo
 import com.ossflow.identity.auth.application.port.RefreshTokenRepositoryPort;
 import com.ossflow.identity.auth.domain.Account;
 import com.ossflow.identity.auth.domain.AccountProvider;
+import com.ossflow.identity.auth.domain.AccountRole;
 import com.ossflow.identity.auth.domain.EmailVerificationToken;
 import com.ossflow.identity.auth.domain.PasswordResetToken;
 import com.ossflow.identity.auth.infrastructure.web.dto.LoginRequest;
@@ -43,7 +44,7 @@ class AuthServiceLifecycleTest {
         account = accountRepository.save(new Account(
                 null, "lifecycle@example.com",
                 new BCryptPasswordEncoder(12).encode("Pass1234"),
-                AccountProvider.LOCAL, null, true, 0, null, null));
+                AccountProvider.LOCAL, null, true, 0, AccountRole.ATHLETE, null, null));
     }
 
     @Test
@@ -51,7 +52,7 @@ class AuthServiceLifecycleTest {
         Account unv = accountRepository.save(new Account(
                 null, "unverified@example.com",
                 new BCryptPasswordEncoder(12).encode("Pass1234"),
-                AccountProvider.LOCAL, null, false, 0, null, null));
+                AccountProvider.LOCAL, null, false, 0, AccountRole.ATHLETE, null, null));
 
         assertThatThrownBy(() -> authService.login(new LoginRequest("unverified@example.com", "Pass1234")))
                 .isInstanceOf(UnprocessableException.class);
@@ -79,7 +80,7 @@ class AuthServiceLifecycleTest {
         Account unv = accountRepository.save(new Account(
                 null, "verify-me@example.com",
                 new BCryptPasswordEncoder(12).encode("Pass1234"),
-                AccountProvider.LOCAL, null, false, 0, null, null));
+                AccountProvider.LOCAL, null, false, 0, AccountRole.ATHLETE, null, null));
 
         String raw = "raw-verification-token";
         emailVerificationRepository.save(new EmailVerificationToken(
