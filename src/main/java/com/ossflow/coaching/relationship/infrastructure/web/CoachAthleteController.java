@@ -4,7 +4,6 @@ import com.ossflow.coaching.relationship.application.AthleteProfileComposer;
 import com.ossflow.coaching.relationship.application.CoachAthleteService;
 import com.ossflow.coaching.relationship.infrastructure.web.dto.*;
 import com.ossflow.identity.auth.infrastructure.security.AccountPrincipal;
-import com.ossflow.identity.profile.application.port.UserProfileRepositoryPort;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,7 +20,6 @@ public class CoachAthleteController {
 
     private final CoachAthleteService coachAthleteService;
     private final AthleteProfileComposer composer;
-    private final UserProfileRepositoryPort profileRepo;
 
     @PostMapping("/memberships/redeem")
     @PreAuthorize("isAuthenticated()")
@@ -50,11 +48,7 @@ public class CoachAthleteController {
     @GetMapping("/athletes")
     @PreAuthorize("hasRole('COACH')")
     public List<AthleteListItemResponse> getAthletes(@AuthenticationPrincipal AccountPrincipal principal) {
-        return coachAthleteService.getAthletes(principal.id()).stream()
-                .map(r -> {
-                    var profile = profileRepo.findByOwnerId(r.athleteId()).orElse(null);
-                    return AthleteListItemResponse.from(r, profile);
-                }).toList();
+        return coachAthleteService.getAthletesWithProfile(principal.id());
     }
 
     @GetMapping("/athletes/{athleteId}/summary")
@@ -68,10 +62,6 @@ public class CoachAthleteController {
     @GetMapping("/coaches")
     @PreAuthorize("isAuthenticated()")
     public List<CoachListItemResponse> getCoaches(@AuthenticationPrincipal AccountPrincipal principal) {
-        return coachAthleteService.getCoaches(principal.id()).stream()
-                .map(r -> {
-                    var profile = profileRepo.findByOwnerId(r.coachId()).orElse(null);
-                    return CoachListItemResponse.from(r, profile);
-                }).toList();
+        return coachAthleteService.getCoachesWithProfile(principal.id());
     }
 }

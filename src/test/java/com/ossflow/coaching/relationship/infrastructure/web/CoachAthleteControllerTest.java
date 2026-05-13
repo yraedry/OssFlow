@@ -6,7 +6,8 @@ import com.ossflow.coaching.relationship.application.CoachAthleteService;
 import com.ossflow.coaching.relationship.domain.CoachAthleteRelationship;
 import com.ossflow.coaching.relationship.infrastructure.web.dto.AthleteSummaryResponse;
 import com.ossflow.coaching.relationship.infrastructure.web.dto.RedeemInvitationRequest;
-import com.ossflow.identity.profile.application.port.UserProfileRepositoryPort;
+import com.ossflow.coaching.relationship.infrastructure.web.dto.AthleteListItemResponse;
+import com.ossflow.coaching.relationship.infrastructure.web.dto.CoachListItemResponse;
 import com.ossflow.shared.exception.ConflictException;
 import com.ossflow.shared.exception.GlobalExceptionHandler;
 import com.ossflow.shared.exception.UnprocessableException;
@@ -24,7 +25,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
@@ -37,7 +37,6 @@ class CoachAthleteControllerTest {
 
     @Mock CoachAthleteService coachAthleteService;
     @Mock AthleteProfileComposer composer;
-    @Mock UserProfileRepositoryPort profileRepo;
 
     MockMvc mvc;
     ObjectMapper json = new ObjectMapper().findAndRegisterModules();
@@ -50,7 +49,7 @@ class CoachAthleteControllerTest {
         TestSecurityContext.setOwner(ATHLETE_ID);
         mvc = MockMvcBuilders
                 .standaloneSetup(new CoachAthleteController(
-                        coachAthleteService, composer, profileRepo))
+                        coachAthleteService, composer))
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .setCustomArgumentResolvers(new AuthenticationPrincipalArgumentResolver())
                 .build();
@@ -137,8 +136,8 @@ class CoachAthleteControllerTest {
     @Test
     void get_athletes_returns_200_list() throws Exception {
         TestSecurityContext.setCoach(COACH_ID);
-        given(coachAthleteService.getAthletes(COACH_ID)).willReturn(List.of(sampleRelationship()));
-        given(profileRepo.findByOwnerId(ATHLETE_ID)).willReturn(Optional.empty());
+        given(coachAthleteService.getAthletesWithProfile(COACH_ID))
+                .willReturn(List.of(new AthleteListItemResponse(ATHLETE_ID, "—", "—", sampleRelationship().linkedAt().toString())));
 
         mvc.perform(get("/api/v1/coaching/athletes"))
                 .andExpect(status().isOk())
@@ -165,8 +164,8 @@ class CoachAthleteControllerTest {
 
     @Test
     void get_coaches_returns_200_list() throws Exception {
-        given(coachAthleteService.getCoaches(ATHLETE_ID)).willReturn(List.of(sampleRelationship()));
-        given(profileRepo.findByOwnerId(COACH_ID)).willReturn(Optional.empty());
+        given(coachAthleteService.getCoachesWithProfile(ATHLETE_ID))
+                .willReturn(List.of(new CoachListItemResponse(COACH_ID, "—", null)));
 
         mvc.perform(get("/api/v1/coaching/coaches"))
                 .andExpect(status().isOk())

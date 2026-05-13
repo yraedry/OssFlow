@@ -4,6 +4,8 @@ import com.ossflow.coaching.invitation.application.CoachInvitationService;
 import com.ossflow.coaching.notification.application.CoachingNotificationService;
 import com.ossflow.coaching.relationship.application.port.CoachAthleteRepositoryPort;
 import com.ossflow.coaching.relationship.domain.CoachAthleteRelationship;
+import com.ossflow.coaching.relationship.infrastructure.web.dto.AthleteListItemResponse;
+import com.ossflow.coaching.relationship.infrastructure.web.dto.CoachListItemResponse;
 import com.ossflow.identity.auth.application.EmailOutboxService;
 import com.ossflow.identity.auth.application.EmailService;
 import com.ossflow.identity.auth.application.port.AccountRepositoryPort;
@@ -112,6 +114,22 @@ public class CoachAthleteService {
 
     public List<CoachAthleteRelationship> getCoaches(Long athleteId) {
         return repo.findAllByAthleteId(athleteId);
+    }
+
+    public List<AthleteListItemResponse> getAthletesWithProfile(Long coachId) {
+        return repo.findAllByCoachId(coachId).stream()
+            .map(r -> {
+                var profile = profileRepo.findByOwnerId(r.athleteId()).orElse(null);
+                return AthleteListItemResponse.from(r, profile);
+            }).toList();
+    }
+
+    public List<CoachListItemResponse> getCoachesWithProfile(Long athleteId) {
+        return repo.findAllByAthleteId(athleteId).stream()
+            .map(r -> {
+                var profile = profileRepo.findByOwnerId(r.coachId()).orElse(null);
+                return CoachListItemResponse.from(r, profile);
+            }).toList();
     }
 
     public boolean isLinked(Long coachId, Long athleteId) {
