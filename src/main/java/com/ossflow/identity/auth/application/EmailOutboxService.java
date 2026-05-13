@@ -6,6 +6,8 @@ import com.ossflow.identity.auth.domain.EmailOutboxStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+
 @Service
 public class EmailOutboxService {
 
@@ -38,6 +40,18 @@ public class EmailOutboxService {
                 null,
                 EmailOutboxStatus.PENDING,
                 0, null, null, null, null
+        ));
+    }
+
+    @Transactional
+    public EmailOutboxEntry enqueueCoachingEmail(Long accountId, String recipient, String subject, String bodyHtml) {
+        return outboxRepository.save(new EmailOutboxEntry(
+                null, accountId, recipient,
+                subject,
+                bodyHtml,
+                null,
+                EmailOutboxStatus.PENDING,
+                0, null, null, Instant.now(), null
         ));
     }
 }
