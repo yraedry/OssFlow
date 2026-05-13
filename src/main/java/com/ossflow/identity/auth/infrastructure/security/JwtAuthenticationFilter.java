@@ -60,7 +60,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if (account != null) {
                 if (account.tokenVersion() == tokenVersion) {
-                    AccountPrincipal principal = new AccountPrincipal(account.id(), account.email());
+                    var principal = new AccountPrincipal(account.id(), account.email(), account.role());
                     UsernamePasswordAuthenticationToken auth =
                             new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
                     SecurityContextHolder.getContext().setAuthentication(auth);
