@@ -51,6 +51,12 @@ public class RulesetService {
         return repository.upsertTechnique(rulesetId, technique);
     }
 
+    public void delete(Long id) {
+        findById(id);
+        repository.delete(id);
+        log.info("Reglamento eliminado id={}", id);
+    }
+
     public void removeTechnique(Long rulesetId, Long techniqueId) {
         repository.removeTechnique(rulesetId, techniqueId);
     }

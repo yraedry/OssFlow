@@ -48,7 +48,7 @@ public class RulesetPersistenceAdapter implements RulesetRepositoryPort {
     @Override
     @Transactional(readOnly = true)
     public Optional<Ruleset> findById(Long id) {
-        return repository.findById(id).map(mapper::toDomain);
+        return repository.findWithFederationById(id).map(mapper::toDomain);
     }
 
     @Override
@@ -61,6 +61,17 @@ public class RulesetPersistenceAdapter implements RulesetRepositoryPort {
     public boolean existsByUniqueKey(Long federationId, Belt belt, Modality modality, LocalDate effectiveFrom) {
         return repository.existsByFederationIdAndBeltAndModalityAndEffectiveFrom(
                 federationId, belt, modality, effectiveFrom);
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long id) {
+        if (!repository.existsById(id)) {
+            throw new NotFoundException("RULESET_NOT_FOUND",
+                    "No existe el reglamento con id %d".formatted(id),
+                    Map.of("rulesetId", id));
+        }
+        repository.deleteById(id);
     }
 
     @Override

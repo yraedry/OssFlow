@@ -11,8 +11,10 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 public interface RulesetPersistenceMapper {
 
     @Mapping(target = "techniques", source = "techniques")
+    @Mapping(target = "federationName", expression = "java(entity.getFederation() != null ? entity.getFederation().getName() : null)")
     Ruleset toDomain(RulesetEntity entity);
 
     @Mapping(target = "techniques", ignore = true)
+    @Mapping(target = "federation", ignore = true)
     RulesetEntity toEntity(Ruleset domain);
 }

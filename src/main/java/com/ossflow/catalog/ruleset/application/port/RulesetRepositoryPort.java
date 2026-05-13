@@ -15,6 +15,7 @@ public interface RulesetRepositoryPort {
     Optional<Ruleset> findById(Long id);
     Page<Ruleset> findByFilters(Long federationId, Belt belt, Modality modality, Pageable pageable);
     boolean existsByUniqueKey(Long federationId, Belt belt, Modality modality, java.time.LocalDate effectiveFrom);
+    void delete(Long id);
     RulesetTechnique upsertTechnique(Long rulesetId, RulesetTechnique technique);
     void removeTechnique(Long rulesetId, Long techniqueId);
     List<RulesetTechnique> findTechniquesByTechniqueId(Long techniqueId);

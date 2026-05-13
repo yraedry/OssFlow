@@ -10,6 +10,7 @@ import org.mapstruct.Mapping;
 public interface RulesetWebMapper {
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "federationName", ignore = true)
     @Mapping(target = "techniques", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)

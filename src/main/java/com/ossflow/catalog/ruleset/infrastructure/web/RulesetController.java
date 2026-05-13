@@ -63,6 +63,12 @@ public class RulesetController {
         return mapper.toResponse(service.upsertTechnique(id, technique));
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable @Positive Long id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @DeleteMapping("/{id}/techniques/{tid}")
     public ResponseEntity<Void> removeTechnique(
             @PathVariable @Positive Long id,
