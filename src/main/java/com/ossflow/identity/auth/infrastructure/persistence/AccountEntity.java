@@ -1,6 +1,7 @@
 package com.ossflow.identity.auth.infrastructure.persistence;
 
 import com.ossflow.identity.auth.domain.AccountProvider;
+import com.ossflow.identity.auth.domain.AccountRole;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -37,6 +38,10 @@ public class AccountEntity {
 
     @Column(name = "token_version", nullable = false)
     private int tokenVersion;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false, length = 20)
+    private AccountRole role;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
