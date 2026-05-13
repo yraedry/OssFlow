@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.Instant;
+import java.util.Optional;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
@@ -67,7 +68,7 @@ class CoachInvitationControllerTest {
 
     @Test
     void get_active_returns_200_when_active_invitation_exists() throws Exception {
-        given(invitationService.getActive(COACH_ID)).willReturn(sampleInvitation());
+        given(invitationService.getActive(COACH_ID)).willReturn(Optional.of(sampleInvitation()));
 
         mvc.perform(get("/api/v1/coaching/invitations/active"))
                 .andExpect(status().isOk())
@@ -76,7 +77,7 @@ class CoachInvitationControllerTest {
 
     @Test
     void get_active_returns_204_when_no_active_invitation() throws Exception {
-        given(invitationService.getActive(COACH_ID)).willReturn(null);
+        given(invitationService.getActive(COACH_ID)).willReturn(Optional.empty());
 
         mvc.perform(get("/api/v1/coaching/invitations/active"))
                 .andExpect(status().isNoContent());

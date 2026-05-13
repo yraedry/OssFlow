@@ -1,7 +1,6 @@
 package com.ossflow.coaching.invitation.infrastructure.web;
 
 import com.ossflow.coaching.invitation.application.CoachInvitationService;
-import com.ossflow.coaching.invitation.domain.CoachInvitation;
 import com.ossflow.coaching.invitation.infrastructure.web.dto.InvitationCodeResponse;
 import com.ossflow.identity.auth.infrastructure.security.AccountPrincipal;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +21,7 @@ public class CoachInvitationController {
     @PreAuthorize("hasRole('COACH')")
     public ResponseEntity<InvitationCodeResponse> generate(
             @AuthenticationPrincipal AccountPrincipal principal) {
-        CoachInvitation inv = invitationService.generate(principal.id());
+        var inv = invitationService.generate(principal.id());
         return ResponseEntity.ok(InvitationCodeResponse.from(inv));
     }
 
@@ -30,9 +29,10 @@ public class CoachInvitationController {
     @PreAuthorize("hasRole('COACH')")
     public ResponseEntity<InvitationCodeResponse> getActive(
             @AuthenticationPrincipal AccountPrincipal principal) {
-        CoachInvitation inv = invitationService.getActive(principal.id());
-        if (inv == null) return ResponseEntity.noContent().build();
-        return ResponseEntity.ok(InvitationCodeResponse.from(inv));
+        return invitationService.getActive(principal.id())
+                .map(InvitationCodeResponse::from)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.noContent().build());
     }
 
     @DeleteMapping("/active")

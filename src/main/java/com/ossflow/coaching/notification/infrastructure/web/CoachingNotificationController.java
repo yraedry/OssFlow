@@ -5,6 +5,7 @@ import com.ossflow.coaching.notification.infrastructure.web.dto.NotificationResp
 import com.ossflow.identity.auth.infrastructure.security.AccountPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -17,12 +18,14 @@ public class CoachingNotificationController {
     private final CoachingNotificationService notificationService;
 
     @GetMapping
+    @PreAuthorize("isAuthenticated()")
     public List<NotificationResponse> getUnread(@AuthenticationPrincipal AccountPrincipal principal) {
         return notificationService.getUnread(principal.id())
                 .stream().map(NotificationResponse::from).toList();
     }
 
     @PatchMapping("/read")
+    @PreAuthorize("isAuthenticated()")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void markAllRead(@AuthenticationPrincipal AccountPrincipal principal) {
         notificationService.markAllRead(principal.id());

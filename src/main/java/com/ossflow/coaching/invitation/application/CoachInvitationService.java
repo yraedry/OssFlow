@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.time.Instant;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,10 +34,9 @@ public class CoachInvitationService {
                 .build());
     }
 
-    public CoachInvitation getActive(Long coachId) {
+    public Optional<CoachInvitation> getActive(Long coachId) {
         return repo.findActiveByCoachId(coachId)
-                .filter(inv -> inv.expiresAt().isAfter(Instant.now()))
-                .orElse(null);
+                .filter(inv -> inv.expiresAt().isAfter(Instant.now()));
     }
 
     public void revoke(Long coachId) {

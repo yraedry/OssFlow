@@ -1,7 +1,14 @@
 package com.ossflow.coaching.relationship.application;
 
+import com.ossflow.coaching.invitation.application.CoachInvitationService;
+import com.ossflow.coaching.notification.application.CoachingNotificationService;
 import com.ossflow.coaching.relationship.application.port.CoachAthleteRepositoryPort;
 import com.ossflow.coaching.relationship.domain.CoachAthleteRelationship;
+import com.ossflow.identity.auth.application.EmailOutboxService;
+import com.ossflow.identity.auth.application.EmailService;
+import com.ossflow.identity.auth.application.port.AccountRepositoryPort;
+import com.ossflow.identity.profile.application.port.UserProfileRepositoryPort;
+import com.ossflow.shared.exception.ConflictException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,6 +29,12 @@ import static org.mockito.Mockito.*;
 class CoachAthleteServiceTest {
 
     @Mock CoachAthleteRepositoryPort repo;
+    @Mock CoachInvitationService invitationService;
+    @Mock CoachingNotificationService notificationService;
+    @Mock EmailOutboxService emailOutboxService;
+    @Mock EmailService emailService;
+    @Mock UserProfileRepositoryPort profileRepo;
+    @Mock AccountRepositoryPort accountRepo;
     @InjectMocks CoachAthleteService service;
 
     @Test
@@ -31,8 +44,8 @@ class CoachAthleteServiceTest {
                         .id(1L).coachId(1L).athleteId(2L).linkedAt(Instant.now()).build()));
 
         assertThatThrownBy(() -> service.link(1L, 2L, null))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("ALREADY_LINKED");
+                .isInstanceOf(ConflictException.class)
+                .satisfies(ex -> assertThat(((ConflictException) ex).getErrorCode()).isEqualTo("ALREADY_LINKED"));
     }
 
     @Test
