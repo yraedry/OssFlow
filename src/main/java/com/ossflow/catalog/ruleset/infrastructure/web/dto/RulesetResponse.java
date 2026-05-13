@@ -10,6 +10,7 @@ import java.util.List;
 public record RulesetResponse(
         Long id,
         Long federationId,
+        String federationName,
         Belt belt,
         Modality modality,
         LocalDate effectiveFrom,

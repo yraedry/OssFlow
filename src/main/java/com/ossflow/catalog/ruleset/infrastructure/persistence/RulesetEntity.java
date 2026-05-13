@@ -1,5 +1,6 @@
 package com.ossflow.catalog.ruleset.infrastructure.persistence;
 
+import com.ossflow.catalog.federation.infrastructure.persistence.FederationEntity;
 import com.ossflow.catalog.technique.domain.Belt;
 import com.ossflow.catalog.technique.domain.Modality;
 import jakarta.persistence.*;
@@ -30,6 +31,10 @@ public class RulesetEntity {
 
     @Column(name = "federation_id", nullable = false)
     private Long federationId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "federation_id", insertable = false, updatable = false)
+    private FederationEntity federation;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 15)
