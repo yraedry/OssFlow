@@ -31,7 +31,15 @@ public class UserProfileController {
 
     @GetMapping
     public UserProfileResponse getProfile() {
-        return mapper.toResponse(service.getProfileByOwner(currentOwner.id()));
+        UserProfileResponse base = mapper.toResponse(service.getProfileByOwner(currentOwner.id()));
+        return new UserProfileResponse(
+                base.id(), base.ownerId(), base.displayName(),
+                base.firstName(), base.lastName(), base.alias(),
+                base.currentBelt(), base.beltSince(), base.academy(),
+                base.preferredModality(), base.onboardingCompleted(),
+                base.federations(), currentOwner.role(),
+                base.createdAt(), base.updatedAt(), base.version()
+        );
     }
 
     @PostMapping
@@ -40,19 +48,19 @@ public class UserProfileController {
         UserProfile created = service.createProfile(toCreate);
         return ResponseEntity
                 .created(URI.create("/api/v1/identity/profile"))
-                .body(mapper.toResponse(created));
+                .body(withRole(mapper.toResponse(created)));
     }
 
     @PutMapping
     public UserProfileResponse updateProfile(@Valid @RequestBody UpdateUserProfileRequest req) {
         UserProfile patch = mapper.fromUpdate(req);
-        return mapper.toResponse(service.updateProfile(currentOwner.id(), patch));
+        return withRole(mapper.toResponse(service.updateProfile(currentOwner.id(), patch)));
     }
 
     @PatchMapping
     public UserProfileResponse patchProfile(@Valid @RequestBody UpdateUserProfileRequest req) {
         UserProfile patch = mapper.fromUpdate(req);
-        return mapper.toResponse(service.updateProfile(currentOwner.id(), patch));
+        return withRole(mapper.toResponse(service.updateProfile(currentOwner.id(), patch)));
     }
 
     @PutMapping("/federations")
@@ -60,6 +68,17 @@ public class UserProfileController {
         List<UserProfileFederation> federations = reqs.stream()
                 .map(mapper::fromFederationRequest)
                 .toList();
-        return mapper.toResponse(service.replaceFederations(currentOwner.id(), federations));
+        return withRole(mapper.toResponse(service.replaceFederations(currentOwner.id(), federations)));
+    }
+
+    private UserProfileResponse withRole(UserProfileResponse base) {
+        return new UserProfileResponse(
+                base.id(), base.ownerId(), base.displayName(),
+                base.firstName(), base.lastName(), base.alias(),
+                base.currentBelt(), base.beltSince(), base.academy(),
+                base.preferredModality(), base.onboardingCompleted(),
+                base.federations(), currentOwner.role(),
+                base.createdAt(), base.updatedAt(), base.version()
+        );
     }
 }
