@@ -357,9 +357,11 @@ public class AuthService {
     public void changeRole(Long accountId, AccountRole newRole) {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new NotFoundException("ACCOUNT_NOT_FOUND", "Cuenta no encontrada"));
+        // No bumpeamos tokenVersion: el rol nuevo se incluirá en el siguiente access token
+        // que se emita. El bump solo es necesario cuando hay que invalidar sesiones activas
+        // (cambio de contraseña, cuenta comprometida), no para un cambio de rol voluntario.
         Account updated = account.toBuilder()
                 .role(newRole)
-                .tokenVersion(account.tokenVersion() + 1)
                 .updatedAt(Instant.now())
                 .build();
         accountRepository.save(updated);
