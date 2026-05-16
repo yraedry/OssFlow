@@ -33,7 +33,7 @@ public class RecommendationService {
             throw new ForbiddenException("RECOMMENDATION_NOT_YOUR_ATHLETE", "Not your athlete");
         }
 
-        var technique = techniqueRepo.findById(req.techniqueId(), null)
+        var technique = techniqueRepo.findById(req.techniqueId(), coachId)
                 .orElseThrow(() -> new NotFoundException("TECHNIQUE_NOT_FOUND", "Technique not found"));
 
         String coachName = profileRepo.findByOwnerId(coachId)

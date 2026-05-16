@@ -72,7 +72,7 @@ class RecommendationServiceTest {
     void create_withValidPair_savesAndNotifies() {
         var request = new CreateRecommendationRequest(TECHNIQUE_ID, ATHLETE_ID, "Practica esto");
         given(coachAthleteRepo.existsByCoachIdAndAthleteId(COACH_ID, ATHLETE_ID)).willReturn(true);
-        given(techniqueRepo.findById(TECHNIQUE_ID, null)).willReturn(Optional.of(sampleTechnique()));
+        given(techniqueRepo.findById(TECHNIQUE_ID, COACH_ID)).willReturn(Optional.of(sampleTechnique()));
         given(profileRepo.findByOwnerId(COACH_ID)).willReturn(Optional.of(sampleProfile()));
         given(repo.save(any())).willReturn(sampleRec());
 

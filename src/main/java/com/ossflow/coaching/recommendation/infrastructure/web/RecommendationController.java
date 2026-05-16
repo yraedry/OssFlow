@@ -15,10 +15,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/coaching/recommendations")
@@ -35,7 +31,7 @@ public class RecommendationController {
             @AuthenticationPrincipal AccountPrincipal principal,
             @RequestBody @Valid CreateRecommendationRequest request) {
         var saved = service.create(principal.id(), request);
-        var technique = techniqueRepo.findById(saved.techniqueId(), null).orElse(null);
+        var technique = techniqueRepo.findById(saved.techniqueId(), principal.id()).orElse(null);
         return toResponse(saved, technique);
     }
 
@@ -86,15 +82,8 @@ public class RecommendationController {
     // — helpers —
 
     private List<RecommendationResponse> enrich(List<TechniqueRecommendation> recs) {
-        Set<Long> ids = recs.stream().map(TechniqueRecommendation::techniqueId).collect(Collectors.toSet());
-        Map<Long, Technique> techniqueMap = ids.stream()
-                .map(tid -> techniqueRepo.findById(tid, null))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toMap(Technique::id, t -> t));
-
         return recs.stream()
-                .map(r -> toResponse(r, techniqueMap.get(r.techniqueId())))
+                .map(r -> toResponse(r, techniqueRepo.findById(r.techniqueId(), r.coachId()).orElse(null)))
                 .toList();
     }
 

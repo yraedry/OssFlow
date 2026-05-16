@@ -79,7 +79,7 @@ class RecommendationControllerTest {
     @Test
     void create_happyPath_returns201() throws Exception {
         given(service.create(eq(COACH_ID), any())).willReturn(sampleRec());
-        given(techniqueRepo.findById(TECHNIQUE_ID, null)).willReturn(Optional.of(sampleTechnique()));
+        given(techniqueRepo.findById(TECHNIQUE_ID, COACH_ID)).willReturn(Optional.of(sampleTechnique()));
 
         mvc.perform(post("/api/v1/coaching/recommendations")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -108,7 +108,7 @@ class RecommendationControllerTest {
     @Test
     void listSent_returns200() throws Exception {
         given(service.listSent(COACH_ID, ATHLETE_ID)).willReturn(List.of(sampleRec()));
-        given(techniqueRepo.findById(TECHNIQUE_ID, null)).willReturn(Optional.of(sampleTechnique()));
+        given(techniqueRepo.findById(TECHNIQUE_ID, COACH_ID)).willReturn(Optional.of(sampleTechnique()));
 
         mvc.perform(get("/api/v1/coaching/recommendations/sent/athlete/{athleteId}", ATHLETE_ID))
                 .andExpect(status().isOk())
@@ -127,7 +127,7 @@ class RecommendationControllerTest {
     @Test
     void listReceived_returns200() throws Exception {
         given(service.listReceived(COACH_ID)).willReturn(List.of(sampleRec()));
-        given(techniqueRepo.findById(TECHNIQUE_ID, null)).willReturn(Optional.of(sampleTechnique()));
+        given(techniqueRepo.findById(TECHNIQUE_ID, COACH_ID)).willReturn(Optional.of(sampleTechnique()));
 
         mvc.perform(get("/api/v1/coaching/recommendations/received"))
                 .andExpect(status().isOk())
