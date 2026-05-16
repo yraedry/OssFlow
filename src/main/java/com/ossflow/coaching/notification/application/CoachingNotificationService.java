@@ -35,6 +35,11 @@ public class CoachingNotificationService {
                 "{\"coachId\":" + coachId + "}"));
     }
 
+    public void notifyRecommendationSent(Long athleteId, String coachName, String techniqueName) {
+        repo.save(build(athleteId, NotificationType.RECOMMENDATION_SENT,
+                coachName + " te ha recomendado: " + techniqueName));
+    }
+
     public List<CoachingNotification> getUnread(Long accountId) {
         return repo.findUnreadByRecipient(accountId);
     }
