@@ -1,4 +1,4 @@
-package com.ossflow.coaching.observation.application;
+package com.ossflow.coaching.observation.domain;
 
 import com.ossflow.catalog.technique.domain.TechniqueFamily;
 

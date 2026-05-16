@@ -6,16 +6,15 @@ import com.ossflow.coaching.observation.domain.CoachObservation;
 import com.ossflow.coaching.observation.domain.LabelledBy;
 import com.ossflow.coaching.observation.domain.Tone;
 import com.ossflow.coaching.relationship.application.port.CoachAthleteRepositoryPort;
+import com.ossflow.shared.exception.ForbiddenException;
+import com.ossflow.shared.exception.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -35,7 +34,7 @@ class CoachObservationServiceTest {
         when(coachAthleteRepo.existsByCoachIdAndAthleteId(1L, 2L)).thenReturn(false);
         var request = CoachObservation.builder().athleteId(2L).body("test").tone(Tone.POSITIVE).build();
         assertThatThrownBy(() -> service.create(1L, request))
-                .isInstanceOf(ResponseStatusException.class);
+                .isInstanceOf(ForbiddenException.class);
     }
 
     @Test
@@ -66,7 +65,7 @@ class CoachObservationServiceTest {
     void list_throws_forbidden_when_not_linked() {
         when(coachAthleteRepo.existsByCoachIdAndAthleteId(1L, 2L)).thenReturn(false);
         assertThatThrownBy(() -> service.list(1L, 2L))
-                .isInstanceOf(ResponseStatusException.class);
+                .isInstanceOf(ForbiddenException.class);
     }
 
     @Test
@@ -78,24 +77,22 @@ class CoachObservationServiceTest {
 
     @Test
     void delete_throws_not_found_when_not_owned() {
-        when(repo.findByIdAndCoachId(99L, 1L)).thenReturn(Optional.empty());
+        when(repo.deleteByIdAndCoachId(99L, 1L)).thenReturn(0);
         assertThatThrownBy(() -> service.delete(1L, 99L))
-                .isInstanceOf(ResponseStatusException.class);
+                .isInstanceOf(NotFoundException.class);
     }
 
     @Test
     void delete_removes_when_owned() {
-        var obs = CoachObservation.builder().id(5L).coachId(1L).athleteId(2L)
-                .body("x").tone(Tone.POSITIVE).observedAt(Instant.now()).createdAt(Instant.now()).build();
-        when(repo.findByIdAndCoachId(5L, 1L)).thenReturn(Optional.of(obs));
+        when(repo.deleteByIdAndCoachId(5L, 1L)).thenReturn(1);
         service.delete(1L, 5L);
-        verify(repo).deleteById(5L);
+        verify(repo).deleteByIdAndCoachId(5L, 1L);
     }
 
     @Test
     void radar_throws_forbidden_when_not_linked() {
         when(coachAthleteRepo.existsByCoachIdAndAthleteId(1L, 2L)).thenReturn(false);
         assertThatThrownBy(() -> service.radar(1L, 2L))
-                .isInstanceOf(ResponseStatusException.class);
+                .isInstanceOf(ForbiddenException.class);
     }
 }

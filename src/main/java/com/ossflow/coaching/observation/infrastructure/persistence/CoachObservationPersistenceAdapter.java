@@ -1,20 +1,20 @@
 package com.ossflow.coaching.observation.infrastructure.persistence;
 
-import com.ossflow.coaching.observation.application.RadarRow;
 import com.ossflow.coaching.observation.application.port.CoachObservationRepositoryPort;
 import com.ossflow.coaching.observation.domain.CoachObservation;
+import com.ossflow.coaching.observation.domain.RadarRow;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
 public class CoachObservationPersistenceAdapter implements CoachObservationRepositoryPort {
 
     private final CoachObservationJpaRepository jpa;
-    private final CoachObservationMapper mapper;
+    private final CoachObservationPersistenceMapper mapper;
 
     @Override
     public CoachObservation save(CoachObservation o) {
@@ -28,13 +28,9 @@ public class CoachObservationPersistenceAdapter implements CoachObservationRepos
     }
 
     @Override
-    public Optional<CoachObservation> findByIdAndCoachId(Long id, Long coachId) {
-        return jpa.findByIdAndCoachId(id, coachId).map(mapper::toDomain);
-    }
-
-    @Override
-    public void deleteById(Long id) {
-        jpa.deleteById(id);
+    @Transactional
+    public int deleteByIdAndCoachId(Long id, Long coachId) {
+        return jpa.deleteByIdAndCoachId(id, coachId);
     }
 
     @Override

@@ -3,10 +3,12 @@ package com.ossflow.coaching.observation.infrastructure.web;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ossflow.catalog.technique.domain.TechniqueFamily;
 import com.ossflow.coaching.observation.application.CoachObservationService;
-import com.ossflow.coaching.observation.application.RadarRow;
 import com.ossflow.coaching.observation.domain.CoachObservation;
+import com.ossflow.coaching.observation.domain.RadarRow;
 import com.ossflow.coaching.observation.domain.Tone;
+import com.ossflow.shared.exception.ForbiddenException;
 import com.ossflow.shared.exception.GlobalExceptionHandler;
+import com.ossflow.shared.exception.NotFoundException;
 import com.ossflow.testsupport.TestSecurityContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,12 +16,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.web.method.annotation.AuthenticationPrincipalArgumentResolver;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 import java.util.List;
@@ -82,7 +82,7 @@ class CoachObservationControllerTest {
     @Test
     void create_returns_403_when_not_linked() throws Exception {
         given(service.create(eq(COACH_ID), any()))
-                .willThrow(new ResponseStatusException(HttpStatus.FORBIDDEN, "Not your athlete"));
+                .willThrow(new ForbiddenException("OBSERVATION_NOT_YOUR_ATHLETE", "Not your athlete"));
         mvc.perform(post("/api/v1/coaching/observations")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json.writeValueAsString(Map.of(
@@ -101,7 +101,7 @@ class CoachObservationControllerTest {
     @Test
     void list_returns_403_when_not_linked() throws Exception {
         given(service.list(COACH_ID, ATHLETE_ID))
-                .willThrow(new ResponseStatusException(HttpStatus.FORBIDDEN, "Not your athlete"));
+                .willThrow(new ForbiddenException("OBSERVATION_NOT_YOUR_ATHLETE", "Not your athlete"));
         mvc.perform(get("/api/v1/coaching/observations/athlete/" + ATHLETE_ID))
                 .andExpect(status().isForbidden());
     }
@@ -115,7 +115,7 @@ class CoachObservationControllerTest {
 
     @Test
     void delete_returns_404_when_not_found() throws Exception {
-        doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "not found"))
+        doThrow(new NotFoundException("OBSERVATION_NOT_FOUND", "not found"))
                 .when(service).delete(COACH_ID, 99L);
         mvc.perform(delete("/api/v1/coaching/observations/99"))
                 .andExpect(status().isNotFound());
@@ -134,7 +134,7 @@ class CoachObservationControllerTest {
     @Test
     void radar_returns_403_when_not_linked() throws Exception {
         given(service.radar(COACH_ID, ATHLETE_ID))
-                .willThrow(new ResponseStatusException(HttpStatus.FORBIDDEN, "Not your athlete"));
+                .willThrow(new ForbiddenException("OBSERVATION_NOT_YOUR_ATHLETE", "Not your athlete"));
         mvc.perform(get("/api/v1/coaching/observations/athlete/" + ATHLETE_ID + "/radar"))
                 .andExpect(status().isForbidden());
     }
