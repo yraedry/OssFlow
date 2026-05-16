@@ -9,6 +9,7 @@ public record RecommendationResponse(
         String techniqueFamily,
         String note,
         String status,
+        String coachName,
         Instant recommendedAt,
         Instant resolvedAt
 ) {}

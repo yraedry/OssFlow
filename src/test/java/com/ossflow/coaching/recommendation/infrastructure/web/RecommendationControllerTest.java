@@ -6,6 +6,8 @@ import com.ossflow.catalog.technique.domain.Technique;
 import com.ossflow.coaching.recommendation.application.RecommendationService;
 import com.ossflow.coaching.recommendation.domain.RecommendationStatus;
 import com.ossflow.coaching.recommendation.domain.TechniqueRecommendation;
+import com.ossflow.identity.profile.application.port.UserProfileRepositoryPort;
+import com.ossflow.identity.profile.domain.UserProfile;
 import com.ossflow.shared.exception.ForbiddenException;
 import com.ossflow.shared.exception.GlobalExceptionHandler;
 import com.ossflow.shared.exception.NotFoundException;
@@ -38,6 +40,7 @@ class RecommendationControllerTest {
 
     @Mock RecommendationService service;
     @Mock TechniqueRepositoryPort techniqueRepo;
+    @Mock UserProfileRepositoryPort profileRepo;
     MockMvc mvc;
     ObjectMapper json = new ObjectMapper().findAndRegisterModules();
 
@@ -49,7 +52,7 @@ class RecommendationControllerTest {
     void setUp() {
         TestSecurityContext.setCoach(COACH_ID);
         mvc = MockMvcBuilders
-                .standaloneSetup(new RecommendationController(service, techniqueRepo))
+                .standaloneSetup(new RecommendationController(service, techniqueRepo, profileRepo))
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .setCustomArgumentResolvers(new AuthenticationPrincipalArgumentResolver())
                 .build();
@@ -76,10 +79,19 @@ class RecommendationControllerTest {
                 .build();
     }
 
+    private UserProfile sampleCoachProfile() {
+        return UserProfile.builder()
+                .id(1L)
+                .ownerId(COACH_ID)
+                .displayName("Sensei Carlos")
+                .build();
+    }
+
     @Test
     void create_happyPath_returns201() throws Exception {
         given(service.create(eq(COACH_ID), any())).willReturn(sampleRec());
         given(techniqueRepo.findById(TECHNIQUE_ID, COACH_ID)).willReturn(Optional.of(sampleTechnique()));
+        given(profileRepo.findByOwnerId(COACH_ID)).willReturn(Optional.of(sampleCoachProfile()));
 
         mvc.perform(post("/api/v1/coaching/recommendations")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -109,6 +121,7 @@ class RecommendationControllerTest {
     void listSent_returns200() throws Exception {
         given(service.listSent(COACH_ID, ATHLETE_ID)).willReturn(List.of(sampleRec()));
         given(techniqueRepo.findById(TECHNIQUE_ID, COACH_ID)).willReturn(Optional.of(sampleTechnique()));
+        given(profileRepo.findByOwnerId(COACH_ID)).willReturn(Optional.of(sampleCoachProfile()));
 
         mvc.perform(get("/api/v1/coaching/recommendations/sent/athlete/{athleteId}", ATHLETE_ID))
                 .andExpect(status().isOk())
@@ -128,6 +141,7 @@ class RecommendationControllerTest {
     void listReceived_returns200() throws Exception {
         given(service.listReceived(COACH_ID)).willReturn(List.of(sampleRec()));
         given(techniqueRepo.findById(TECHNIQUE_ID, COACH_ID)).willReturn(Optional.of(sampleTechnique()));
+        given(profileRepo.findByOwnerId(COACH_ID)).willReturn(Optional.of(sampleCoachProfile()));
 
         mvc.perform(get("/api/v1/coaching/recommendations/received"))
                 .andExpect(status().isOk())

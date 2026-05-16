@@ -7,6 +7,7 @@ import com.ossflow.coaching.recommendation.domain.TechniqueRecommendation;
 import com.ossflow.coaching.recommendation.infrastructure.web.dto.CreateRecommendationRequest;
 import com.ossflow.coaching.recommendation.infrastructure.web.dto.RecommendationResponse;
 import com.ossflow.identity.auth.infrastructure.security.AccountPrincipal;
+import com.ossflow.identity.profile.application.port.UserProfileRepositoryPort;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ public class RecommendationController {
 
     private final RecommendationService service;
     private final TechniqueRepositoryPort techniqueRepo;
+    private final UserProfileRepositoryPort profileRepo;
 
     @PostMapping
     @PreAuthorize("hasRole('COACH')")
@@ -88,6 +90,9 @@ public class RecommendationController {
     }
 
     private RecommendationResponse toResponse(TechniqueRecommendation r, Technique technique) {
+        String coachName = profileRepo.findByOwnerId(r.coachId())
+                .map(p -> p.displayName() != null ? p.displayName() : null)
+                .orElse(null);
         return new RecommendationResponse(
                 r.id(),
                 r.techniqueId(),
@@ -95,6 +100,7 @@ public class RecommendationController {
                 technique != null && technique.family() != null ? technique.family().name() : null,
                 r.note(),
                 r.status() != null ? r.status().name() : null,
+                coachName,
                 r.recommendedAt(),
                 r.resolvedAt()
         );
