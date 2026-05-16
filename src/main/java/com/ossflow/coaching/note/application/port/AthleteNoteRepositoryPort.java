@@ -8,8 +8,8 @@ import java.util.Optional;
 
 public interface AthleteNoteRepositoryPort {
     AthleteNote save(AthleteNote note);
-    List<AthleteNote> findByCoachIdAndAthleteIdOrderByCreatedAtDesc(Long coachId, Long athleteId);
-    Optional<AthleteNote> findByIdAndAthleteId(Long id, Long athleteId);
+    List<AthleteNote> findByCoachIdAndAthleteIdAndDeletedAtIsNullOrderByCreatedAtDesc(Long coachId, Long athleteId);
+    Optional<AthleteNote> findByIdAndAthleteIdAndDeletedAtIsNull(Long id, Long athleteId);
     List<AthleteNote> findReceivedByAthleteId(Long athleteId);
     long countUnreadByAthleteId(Long athleteId);
     int softDeleteByIdAndCoachId(Long id, Long coachId);

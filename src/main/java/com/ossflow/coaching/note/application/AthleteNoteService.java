@@ -9,6 +9,7 @@ import com.ossflow.shared.exception.ForbiddenException;
 import com.ossflow.shared.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
@@ -21,6 +22,7 @@ public class AthleteNoteService {
     private final CoachAthleteRepositoryPort coachAthleteRepo;
     private final CoachingNotificationService notificationService;
 
+    @Transactional
     public AthleteNote create(Long coachId, CreateNoteRequest request) {
         if (!coachAthleteRepo.existsByCoachIdAndAthleteId(coachId, request.athleteId())) {
             throw new ForbiddenException("NOTE_NOT_YOUR_ATHLETE", "Not your athlete");
@@ -40,7 +42,7 @@ public class AthleteNoteService {
         if (!coachAthleteRepo.existsByCoachIdAndAthleteId(coachId, athleteId)) {
             throw new ForbiddenException("NOTE_NOT_YOUR_ATHLETE", "Not your athlete");
         }
-        return repo.findByCoachIdAndAthleteIdOrderByCreatedAtDesc(coachId, athleteId);
+        return repo.findByCoachIdAndAthleteIdAndDeletedAtIsNullOrderByCreatedAtDesc(coachId, athleteId);
     }
 
     public void softDelete(Long coachId, Long id) {
@@ -55,12 +57,15 @@ public class AthleteNoteService {
     }
 
     public AthleteNote getReceivedDetail(Long athleteId, Long id) {
-        return repo.findByIdAndAthleteId(id, athleteId)
+        return repo.findByIdAndAthleteIdAndDeletedAtIsNull(id, athleteId)
                 .orElseThrow(() -> new NotFoundException("NOTE_NOT_FOUND", "Note not found"));
     }
 
     public void markRead(Long athleteId, Long id) {
-        repo.markRead(id, athleteId);
+        int rows = repo.markRead(id, athleteId);
+        if (rows == 0) {
+            throw new NotFoundException("NOTE_NOT_FOUND", "Note not found");
+        }
     }
 
     public long countUnread(Long athleteId) {

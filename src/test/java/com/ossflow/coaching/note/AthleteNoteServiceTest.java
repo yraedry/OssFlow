@@ -85,7 +85,7 @@ class AthleteNoteServiceTest {
 
     @Test
     void getReceivedDetail_withWrongAthlete_throwsNotFound() {
-        given(repo.findByIdAndAthleteId(1L, 99L)).willReturn(Optional.empty());
+        given(repo.findByIdAndAthleteIdAndDeletedAtIsNull(1L, 99L)).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> service.getReceivedDetail(99L, 1L))
                 .isInstanceOf(NotFoundException.class)

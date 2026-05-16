@@ -23,14 +23,14 @@ public class AthleteNotePersistenceAdapter implements AthleteNoteRepositoryPort 
     }
 
     @Override
-    public List<AthleteNote> findByCoachIdAndAthleteIdOrderByCreatedAtDesc(Long coachId, Long athleteId) {
-        return jpa.findByCoachIdAndAthleteIdOrderByCreatedAtDesc(coachId, athleteId)
+    public List<AthleteNote> findByCoachIdAndAthleteIdAndDeletedAtIsNullOrderByCreatedAtDesc(Long coachId, Long athleteId) {
+        return jpa.findByCoachIdAndAthleteIdAndDeletedAtIsNullOrderByCreatedAtDesc(coachId, athleteId)
                 .stream().map(mapper::toDomain).toList();
     }
 
     @Override
-    public Optional<AthleteNote> findByIdAndAthleteId(Long id, Long athleteId) {
-        return jpa.findByIdAndAthleteId(id, athleteId).map(mapper::toDomain);
+    public Optional<AthleteNote> findByIdAndAthleteIdAndDeletedAtIsNull(Long id, Long athleteId) {
+        return jpa.findByIdAndAthleteIdAndDeletedAtIsNull(id, athleteId).map(mapper::toDomain);
     }
 
     @Override

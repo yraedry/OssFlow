@@ -12,9 +12,9 @@ import java.util.Optional;
 
 public interface AthleteNoteJpaRepository extends JpaRepository<AthleteNoteEntity, Long> {
 
-    List<AthleteNoteEntity> findByCoachIdAndAthleteIdOrderByCreatedAtDesc(Long coachId, Long athleteId);
+    List<AthleteNoteEntity> findByCoachIdAndAthleteIdAndDeletedAtIsNullOrderByCreatedAtDesc(Long coachId, Long athleteId);
 
-    Optional<AthleteNoteEntity> findByIdAndAthleteId(Long id, Long athleteId);
+    Optional<AthleteNoteEntity> findByIdAndAthleteIdAndDeletedAtIsNull(Long id, Long athleteId);
 
     @Query("SELECT e FROM AthleteNoteEntity e WHERE e.athleteId = :athleteId AND e.deletedAt IS NULL ORDER BY e.createdAt DESC")
     List<AthleteNoteEntity> findReceivedByAthleteId(@Param("athleteId") Long athleteId);
