@@ -30,6 +30,11 @@ public class CoachingNotificationService {
                 "{\"coachName\":\"" + coachName + "\"}"));
     }
 
+    public void notifyNoteSent(Long athleteId, Long coachId) {
+        repo.save(build(athleteId, NotificationType.NOTE_SENT,
+                "{\"coachId\":" + coachId + "}"));
+    }
+
     public List<CoachingNotification> getUnread(Long accountId) {
         return repo.findUnreadByRecipient(accountId);
     }
