@@ -19,6 +19,7 @@ spring:
     show-sql: false
   flyway:
     enabled: true
+    repair-on-migrate: true
 springdoc:
   swagger-ui:
     enabled: false
