@@ -150,7 +150,7 @@ class CoachAthleteControllerTest {
     void get_athlete_summary_returns_200() throws Exception {
         TestSecurityContext.setCoach(COACH_ID);
         var summary = new AthleteSummaryResponse(
-                ATHLETE_ID, "John Doe", "blue", 180, "Academy A",
+                ATHLETE_ID, "John Doe", "blue", 180L, "Academy A",
                 null, null, List.of(), List.of(), null, -1L);
         given(composer.compose(COACH_ID, ATHLETE_ID)).willReturn(summary);
 
