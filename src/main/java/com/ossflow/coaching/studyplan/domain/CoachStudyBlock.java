@@ -8,6 +8,7 @@ import java.util.List;
 public record CoachStudyBlock(
         Long id,
         Long planId,
+        Long classPlanId,
         String title,
         int blockOrder,
         List<CoachStudyItem> items

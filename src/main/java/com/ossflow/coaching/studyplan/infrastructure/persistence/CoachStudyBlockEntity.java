@@ -16,8 +16,12 @@ public class CoachStudyBlockEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "plan_id", nullable = false)
+    @JoinColumn(name = "plan_id", nullable = true)
     private CoachStudyPlanEntity plan;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "class_plan_id")
+    private com.ossflow.coaching.classplan.infrastructure.persistence.ClassPlanEntity classPlan;
 
     @Column(name = "title", nullable = false, length = 200)
     private String title;

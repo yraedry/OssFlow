@@ -98,6 +98,17 @@ public class CoachStudyPlanService {
     }
 
     @Transactional
+    public CoachStudyBlock addBlockToClassPlan(Long classPlanId, Long coachId, String title,
+                                                com.ossflow.coaching.classplan.application.ClassPlanService classPlanService) {
+        classPlanService.get(classPlanId, coachId);
+        return repo.saveBlock(CoachStudyBlock.builder()
+                .classPlanId(classPlanId)
+                .title(title != null ? title : "")
+                .blockOrder(0)
+                .build());
+    }
+
+    @Transactional
     public void deleteBlock(Long planId, Long blockId, Long coachId) {
         requireCoachPlan(planId, coachId);
         repo.deleteBlock(blockId, planId, coachId);

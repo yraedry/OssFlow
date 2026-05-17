@@ -1,5 +1,6 @@
 package com.ossflow.coaching.studyplan.infrastructure.persistence;
 
+import com.ossflow.coaching.classplan.infrastructure.persistence.ClassPlanJpaRepository;
 import com.ossflow.coaching.studyplan.application.port.CoachStudyPlanRepositoryPort;
 import com.ossflow.coaching.studyplan.domain.*;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ public class CoachStudyPlanPersistenceAdapter implements CoachStudyPlanRepositor
     private final CoachStudyPlanJpaRepository planRepo;
     private final CoachStudyBlockJpaRepository blockRepo;
     private final CoachStudyItemJpaRepository itemRepo;
+    private final ClassPlanJpaRepository classPlanRepo;
 
     @Override
     @Transactional
@@ -64,13 +66,17 @@ public class CoachStudyPlanPersistenceAdapter implements CoachStudyPlanRepositor
 
     @Override
     public CoachStudyBlock saveBlock(CoachStudyBlock block) {
-        var plan = planRepo.getReferenceById(block.planId());
-        var entity = CoachStudyBlockEntity.builder()
-                .plan(plan)
+        var entityBuilder = CoachStudyBlockEntity.builder()
                 .title(block.title() != null ? block.title() : "")
-                .blockOrder(block.blockOrder())
-                .build();
-        return toBlockDomain(blockRepo.save(entity));
+                .blockOrder(block.blockOrder());
+
+        if (block.planId() != null) {
+            entityBuilder.plan(planRepo.getReferenceById(block.planId()));
+        }
+        if (block.classPlanId() != null) {
+            entityBuilder.classPlan(classPlanRepo.getReferenceById(block.classPlanId()));
+        }
+        return toBlockDomain(blockRepo.save(entityBuilder.build()));
     }
 
     @Override
@@ -162,6 +168,7 @@ public class CoachStudyPlanPersistenceAdapter implements CoachStudyPlanRepositor
         return CoachStudyBlock.builder()
                 .id(e.getId())
                 .planId(e.getPlan() != null ? e.getPlan().getId() : null)
+                .classPlanId(e.getClassPlan() != null ? e.getClassPlan().getId() : null)
                 .title(e.getTitle())
                 .blockOrder(e.getBlockOrder())
                 .items(items)

@@ -1,5 +1,6 @@
 package com.ossflow.coaching.studyplan.infrastructure.web;
 
+import com.ossflow.coaching.classplan.application.ClassPlanService;
 import com.ossflow.coaching.studyplan.application.CoachStudyPlanService;
 import com.ossflow.coaching.studyplan.domain.*;
 import com.ossflow.coaching.studyplan.infrastructure.web.dto.*;
@@ -19,6 +20,7 @@ import java.util.List;
 public class CoachStudyPlanController {
 
     private final CoachStudyPlanService service;
+    private final ClassPlanService classPlanService;
 
     // ─── Coach endpoints ────────────────────────────────────────────────────
 
@@ -102,6 +104,10 @@ public class CoachStudyPlanController {
             @AuthenticationPrincipal AccountPrincipal principal,
             @PathVariable Long planId,
             @RequestBody @Valid AddBlockRequest req) {
+        if (req.classStudyPlanId() != null) {
+            return toBlockResponse(service.addBlockToClassPlan(
+                    req.classStudyPlanId(), principal.id(), req.title(), classPlanService));
+        }
         return toBlockResponse(service.addBlock(planId, principal.id(), req.title()));
     }
 
