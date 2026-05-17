@@ -49,6 +49,12 @@ public class UserProfileEntity extends BaseEntity {
     @Column(name = "age_category", length = 20)
     private String ageCategory;
 
+    @Column(name = "stripes")
+    private Integer stripes;
+
+    @Column(name = "weight", precision = 5, scale = 2)
+    private Double weight;
+
     @Column(name = "onboarding_completed", nullable = false)
     private boolean onboardingCompleted;
 

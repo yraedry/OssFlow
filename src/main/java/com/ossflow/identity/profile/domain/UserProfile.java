@@ -19,6 +19,8 @@ public record UserProfile(
         String academy,
         String preferredModality,
         String ageCategory,
+        Integer stripes,
+        Double weight,
         boolean onboardingCompleted,
         List<UserProfileFederation> federations,
         Instant createdAt,
