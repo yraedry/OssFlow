@@ -12,5 +12,7 @@ public record CompetitionMatch(
         String outcome,
         String method,
         Long submissionTechniqueId,
+        String round,
+        String techniqueText,
         String notesMarkdown
 ) {}

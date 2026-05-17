@@ -151,7 +151,7 @@ class CoachAthleteControllerTest {
         TestSecurityContext.setCoach(COACH_ID);
         var summary = new AthleteSummaryResponse(
                 ATHLETE_ID, "John Doe", "blue", 180, "Academy A",
-                List.of(), List.of(), null, -1L);
+                null, null, List.of(), List.of(), null, -1L);
         given(composer.compose(COACH_ID, ATHLETE_ID)).willReturn(summary);
 
         mvc.perform(get("/api/v1/coaching/athletes/" + ATHLETE_ID + "/summary"))

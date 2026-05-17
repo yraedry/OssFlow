@@ -1,8 +1,10 @@
 package com.ossflow.journal.competitionlog.application;
 
+import com.ossflow.coaching.relationship.application.port.CoachAthleteRepositoryPort;
 import com.ossflow.journal.competitionlog.application.port.CompetitionLogRepositoryPort;
 import com.ossflow.journal.competitionlog.domain.CompetitionLog;
 import com.ossflow.journal.competitionlog.domain.CompetitionMatch;
+import com.ossflow.shared.exception.ForbiddenException;
 import com.ossflow.shared.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +22,7 @@ import java.util.Map;
 public class CompetitionLogService {
 
     private final CompetitionLogRepositoryPort repository;
+    private final CoachAthleteRepositoryPort coachAthleteRepository;
 
     public CompetitionLog create(CompetitionLog competitionLog) {
         CompetitionLog saved = repository.save(competitionLog);
@@ -80,6 +83,14 @@ public class CompetitionLogService {
         List<CompetitionMatch> matches = new ArrayList<>(existing.matches() != null ? existing.matches() : List.of());
         matches.add(match.toBuilder().competitionLogId(id).build());
         return repository.save(existing.toBuilder().matches(matches).build());
+    }
+
+    public Page<CompetitionLog> listForCoach(Long coachId, Long athleteId, Pageable pageable) {
+        if (!coachAthleteRepository.existsByCoachIdAndAthleteId(coachId, athleteId)) {
+            throw new ForbiddenException("NOT_YOUR_ATHLETE",
+                    "El atleta %d no está vinculado al maestro %d".formatted(athleteId, coachId));
+        }
+        return repository.findAll(athleteId, pageable);
     }
 
     public CompetitionLog removeMatch(Long id, Long ownerId, Long matchId) {
