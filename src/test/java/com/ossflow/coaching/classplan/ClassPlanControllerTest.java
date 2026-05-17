@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.ossflow.coaching.classplan.application.ClassPlanService;
 import com.ossflow.coaching.classplan.domain.ClassPlan;
+import com.ossflow.coaching.studyplan.application.CoachStudyPlanService;
 import com.ossflow.coaching.classplan.domain.ClassPlanStatus;
 import com.ossflow.coaching.classplan.infrastructure.web.ClassPlanController;
 import com.ossflow.coaching.classplan.infrastructure.web.dto.CreateClassPlanRequest;
@@ -34,6 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ClassPlanControllerTest {
 
     @Mock ClassPlanService service;
+    @Mock CoachStudyPlanService studyPlanService;
     MockMvc mvc;
     ObjectMapper json = new ObjectMapper()
             .registerModule(new JavaTimeModule());
@@ -46,7 +48,7 @@ class ClassPlanControllerTest {
     void setUp() {
         TestSecurityContext.setCoach(COACH_ID);
         mvc = MockMvcBuilders
-                .standaloneSetup(new ClassPlanController(service))
+                .standaloneSetup(new ClassPlanController(service, studyPlanService))
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .setCustomArgumentResolvers(new AuthenticationPrincipalArgumentResolver())
                 .build();

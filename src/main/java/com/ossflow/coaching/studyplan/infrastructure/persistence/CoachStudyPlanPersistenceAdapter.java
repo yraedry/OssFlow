@@ -131,6 +131,18 @@ public class CoachStudyPlanPersistenceAdapter implements CoachStudyPlanRepositor
         return blockRepo.updateTitle(blockId, planId, title);
     }
 
+    @Override
+    @Transactional
+    public void deleteBlockByClassPlan(Long blockId, Long classPlanId) {
+        blockRepo.deleteByIdAndClassPlanId(blockId, classPlanId);
+    }
+
+    @Override
+    @Transactional
+    public int updateBlockTitleByClassPlan(Long blockId, Long classPlanId, String title) {
+        return blockRepo.updateTitleByIdAndClassPlanId(blockId, classPlanId, title);
+    }
+
     private CoachStudyPlanEntity toEntity(CoachStudyPlan plan) {
         return CoachStudyPlanEntity.builder()
                 .id(plan.id())

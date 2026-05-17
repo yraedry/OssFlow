@@ -211,6 +211,71 @@ public class CoachStudyPlanService {
         if (rows == 0) throw new NotFoundException("BLOCK_NOT_FOUND", "Block not found in plan");
     }
 
+    // ── ClassPlan block/item operations ─────────────────────────────────────
+
+    @Transactional
+    public void deleteBlockFromClassPlan(Long classPlanId, Long blockId, Long coachId,
+                                          com.ossflow.coaching.classplan.application.ClassPlanService classPlanService) {
+        classPlanService.get(classPlanId, coachId);
+        repo.deleteBlockByClassPlan(blockId, classPlanId);
+    }
+
+    @Transactional
+    public void updateBlockTitleInClassPlan(Long classPlanId, Long blockId, Long coachId, String title,
+                                             com.ossflow.coaching.classplan.application.ClassPlanService classPlanService) {
+        classPlanService.get(classPlanId, coachId);
+        int rows = repo.updateBlockTitleByClassPlan(blockId, classPlanId, title);
+        if (rows == 0) throw new NotFoundException("BLOCK_NOT_FOUND", "Block not found in class plan");
+    }
+
+    @Transactional
+    public void reorderBlocksInClassPlan(Long classPlanId, Long coachId, List<Long> orderedBlockIds,
+                                          com.ossflow.coaching.classplan.application.ClassPlanService classPlanService) {
+        classPlanService.get(classPlanId, coachId);
+        repo.reorderBlocks(classPlanId, orderedBlockIds);
+    }
+
+    @Transactional
+    public CoachStudyItem addTextItemToClassPlan(Long classPlanId, Long blockId, Long coachId, String content,
+                                                  com.ossflow.coaching.classplan.application.ClassPlanService classPlanService) {
+        classPlanService.get(classPlanId, coachId);
+        return repo.saveItem(CoachStudyItem.builder()
+                .blockId(blockId)
+                .itemType(StudyItemType.TEXT)
+                .content(content)
+                .itemOrder(0)
+                .build());
+    }
+
+    @Transactional
+    public CoachStudyItem addTechniqueItemToClassPlan(Long classPlanId, Long blockId, Long coachId, Long techniqueId,
+                                                       com.ossflow.coaching.classplan.application.ClassPlanService classPlanService) {
+        classPlanService.get(classPlanId, coachId);
+        var technique = techniqueRepo.findById(techniqueId, coachId)
+                .orElseThrow(() -> new NotFoundException("TECHNIQUE_NOT_FOUND", "Technique not found"));
+        return repo.saveItem(CoachStudyItem.builder()
+                .blockId(blockId)
+                .itemType(StudyItemType.TECHNIQUE)
+                .techniqueId(techniqueId)
+                .techniqueName(technique.name())
+                .itemOrder(0)
+                .build());
+    }
+
+    @Transactional
+    public void deleteItemFromClassPlan(Long classPlanId, Long blockId, Long itemId, Long coachId,
+                                         com.ossflow.coaching.classplan.application.ClassPlanService classPlanService) {
+        classPlanService.get(classPlanId, coachId);
+        repo.deleteItem(itemId, blockId, coachId);
+    }
+
+    @Transactional
+    public void reorderItemsInClassPlan(Long classPlanId, Long blockId, Long coachId, List<Long> orderedItemIds,
+                                         com.ossflow.coaching.classplan.application.ClassPlanService classPlanService) {
+        classPlanService.get(classPlanId, coachId);
+        repo.reorderItems(blockId, orderedItemIds);
+    }
+
     private CoachStudyPlan requireCoachPlan(Long planId, Long coachId) {
         return repo.findPlanById(planId)
                 .filter(p -> p.coachId().equals(coachId))

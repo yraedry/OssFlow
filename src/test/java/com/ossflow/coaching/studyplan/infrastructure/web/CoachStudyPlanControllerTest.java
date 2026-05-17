@@ -1,6 +1,7 @@
 package com.ossflow.coaching.studyplan.infrastructure.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ossflow.coaching.classplan.application.ClassPlanService;
 import com.ossflow.coaching.studyplan.application.CoachStudyPlanService;
 import com.ossflow.coaching.studyplan.domain.CoachStudyPlan;
 import com.ossflow.coaching.studyplan.domain.StudyPlanStatus;
@@ -37,6 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class CoachStudyPlanControllerTest {
 
     @Mock CoachStudyPlanService service;
+    @Mock ClassPlanService classPlanService;
     MockMvc mvc;
     ObjectMapper json = new ObjectMapper().findAndRegisterModules();
 
@@ -49,7 +51,7 @@ class CoachStudyPlanControllerTest {
     void setUp() {
         TestSecurityContext.setCoach(COACH_ID);
         mvc = MockMvcBuilders
-                .standaloneSetup(new CoachStudyPlanController(service))
+                .standaloneSetup(new CoachStudyPlanController(service, classPlanService))
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .setCustomArgumentResolvers(new AuthenticationPrincipalArgumentResolver())
                 .build();

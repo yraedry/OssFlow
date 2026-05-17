@@ -4,6 +4,10 @@ import com.ossflow.coaching.classplan.application.ClassPlanService;
 import com.ossflow.coaching.classplan.infrastructure.web.dto.ClassPlanResponse;
 import com.ossflow.coaching.classplan.infrastructure.web.dto.CreateClassPlanRequest;
 import com.ossflow.coaching.classplan.infrastructure.web.dto.UpdateClassPlanRequest;
+import com.ossflow.coaching.studyplan.application.CoachStudyPlanService;
+import com.ossflow.coaching.studyplan.domain.CoachStudyBlock;
+import com.ossflow.coaching.studyplan.domain.CoachStudyItem;
+import com.ossflow.coaching.studyplan.infrastructure.web.dto.*;
 import com.ossflow.identity.auth.infrastructure.security.AccountPrincipal;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +24,7 @@ import java.util.List;
 public class ClassPlanController {
 
     private final ClassPlanService service;
+    private final CoachStudyPlanService studyPlanService;
 
     @PostMapping
     @PreAuthorize("hasRole('COACH')")
@@ -67,5 +72,109 @@ public class ClassPlanController {
             @AuthenticationPrincipal AccountPrincipal principal,
             @PathVariable Long id) {
         service.delete(id, principal.id());
+    }
+
+    // ─── Block sub-endpoints ────────────────────────────────────────────────
+
+    @PostMapping("/{planId}/blocks")
+    @PreAuthorize("hasRole('COACH')")
+    @ResponseStatus(HttpStatus.CREATED)
+    public StudyBlockResponse addBlock(
+            @AuthenticationPrincipal AccountPrincipal principal,
+            @PathVariable Long planId,
+            @RequestBody @Valid AddBlockRequest req) {
+        return toBlockResponse(studyPlanService.addBlockToClassPlan(planId, principal.id(), req.title(), service));
+    }
+
+    @PatchMapping("/{planId}/blocks/{blockId}")
+    @PreAuthorize("hasRole('COACH')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateBlockTitle(
+            @AuthenticationPrincipal AccountPrincipal principal,
+            @PathVariable Long planId,
+            @PathVariable Long blockId,
+            @RequestBody @Valid UpdateBlockTitleRequest req) {
+        studyPlanService.updateBlockTitleInClassPlan(planId, blockId, principal.id(), req.title(), service);
+    }
+
+    @DeleteMapping("/{planId}/blocks/{blockId}")
+    @PreAuthorize("hasRole('COACH')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteBlock(
+            @AuthenticationPrincipal AccountPrincipal principal,
+            @PathVariable Long planId,
+            @PathVariable Long blockId) {
+        studyPlanService.deleteBlockFromClassPlan(planId, blockId, principal.id(), service);
+    }
+
+    @PostMapping("/{planId}/blocks/reorder")
+    @PreAuthorize("hasRole('COACH')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void reorderBlocks(
+            @AuthenticationPrincipal AccountPrincipal principal,
+            @PathVariable Long planId,
+            @RequestBody @Valid ReorderRequest req) {
+        studyPlanService.reorderBlocksInClassPlan(planId, principal.id(), req.orderedIds(), service);
+    }
+
+    // ─── Item sub-endpoints ─────────────────────────────────────────────────
+
+    @PostMapping("/{planId}/blocks/{blockId}/items/text")
+    @PreAuthorize("hasRole('COACH')")
+    @ResponseStatus(HttpStatus.CREATED)
+    public StudyItemResponse addTextItem(
+            @AuthenticationPrincipal AccountPrincipal principal,
+            @PathVariable Long planId,
+            @PathVariable Long blockId,
+            @RequestBody @Valid AddTextItemRequest req) {
+        return toItemResponse(studyPlanService.addTextItemToClassPlan(planId, blockId, principal.id(), req.content(), service));
+    }
+
+    @PostMapping("/{planId}/blocks/{blockId}/items/technique")
+    @PreAuthorize("hasRole('COACH')")
+    @ResponseStatus(HttpStatus.CREATED)
+    public StudyItemResponse addTechniqueItem(
+            @AuthenticationPrincipal AccountPrincipal principal,
+            @PathVariable Long planId,
+            @PathVariable Long blockId,
+            @RequestBody @Valid AddTechniqueItemRequest req) {
+        return toItemResponse(studyPlanService.addTechniqueItemToClassPlan(planId, blockId, principal.id(), req.techniqueId(), service));
+    }
+
+    @DeleteMapping("/{planId}/blocks/{blockId}/items/{itemId}")
+    @PreAuthorize("hasRole('COACH')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteItem(
+            @AuthenticationPrincipal AccountPrincipal principal,
+            @PathVariable Long planId,
+            @PathVariable Long blockId,
+            @PathVariable Long itemId) {
+        studyPlanService.deleteItemFromClassPlan(planId, blockId, itemId, principal.id(), service);
+    }
+
+    @PostMapping("/{planId}/blocks/{blockId}/items/reorder")
+    @PreAuthorize("hasRole('COACH')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void reorderItems(
+            @AuthenticationPrincipal AccountPrincipal principal,
+            @PathVariable Long planId,
+            @PathVariable Long blockId,
+            @RequestBody @Valid ReorderRequest req) {
+        studyPlanService.reorderItemsInClassPlan(planId, blockId, principal.id(), req.orderedIds(), service);
+    }
+
+    // ─── Mappers ────────────────────────────────────────────────────────────
+
+    private StudyBlockResponse toBlockResponse(CoachStudyBlock b) {
+        var items = b.items() != null
+                ? b.items().stream().map(this::toItemResponse).toList()
+                : List.<StudyItemResponse>of();
+        return new StudyBlockResponse(b.id(), b.title(), b.blockOrder(), items);
+    }
+
+    private StudyItemResponse toItemResponse(CoachStudyItem i) {
+        return new StudyItemResponse(i.id(), i.itemOrder(),
+                i.itemType() != null ? i.itemType().name() : null,
+                i.content(), i.techniqueId(), i.techniqueName());
     }
 }
