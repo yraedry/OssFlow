@@ -36,8 +36,8 @@ public class UserProfileController {
                 base.id(), base.ownerId(), base.displayName(),
                 base.firstName(), base.lastName(), base.alias(),
                 base.currentBelt(), base.beltSince(), base.academy(),
-                base.preferredModality(), base.ageCategory(), base.onboardingCompleted(),
-                base.federations(), currentOwner.role(),
+                base.preferredModality(), base.ageCategory(), base.stripes(), base.weight(),
+                base.onboardingCompleted(), base.federations(), currentOwner.role(),
                 base.createdAt(), base.updatedAt(), base.version()
         );
     }
@@ -76,8 +76,8 @@ public class UserProfileController {
                 base.id(), base.ownerId(), base.displayName(),
                 base.firstName(), base.lastName(), base.alias(),
                 base.currentBelt(), base.beltSince(), base.academy(),
-                base.preferredModality(), base.ageCategory(), base.onboardingCompleted(),
-                base.federations(), currentOwner.role(),
+                base.preferredModality(), base.ageCategory(), base.stripes(), base.weight(),
+                base.onboardingCompleted(), base.federations(), currentOwner.role(),
                 base.createdAt(), base.updatedAt(), base.version()
         );
     }

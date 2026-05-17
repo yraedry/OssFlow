@@ -18,6 +18,8 @@ public record UserProfileResponse(
         String academy,
         String preferredModality,
         String ageCategory,
+        Integer stripes,
+        Double weight,
         boolean onboardingCompleted,
         List<UserProfileFederationResponse> federations,
         AccountRole role,

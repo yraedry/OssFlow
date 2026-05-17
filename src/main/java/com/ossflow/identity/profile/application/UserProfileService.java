@@ -56,6 +56,9 @@ public class UserProfileService {
                 .beltSince(patch.beltSince() != null ? patch.beltSince() : existing.beltSince())
                 .academy(patch.academy() != null ? patch.academy() : existing.academy())
                 .preferredModality(patch.preferredModality() != null ? patch.preferredModality() : existing.preferredModality())
+                .ageCategory(patch.ageCategory() != null ? patch.ageCategory() : existing.ageCategory())
+                .stripes(patch.stripes() != null ? patch.stripes() : existing.stripes())
+                .weight(patch.weight() != null ? patch.weight() : existing.weight())
                 .build();
         return repository.save(toSave);
     }
