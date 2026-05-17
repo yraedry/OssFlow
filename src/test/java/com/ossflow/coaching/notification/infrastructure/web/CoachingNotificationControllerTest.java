@@ -56,19 +56,20 @@ class CoachingNotificationControllerTest {
     }
 
     @Test
-    void get_unread_returns_200_with_list() throws Exception {
-        given(notificationService.getUnread(USER_ID)).willReturn(List.of(sampleNotification()));
+    void get_recent_returns_200_with_list() throws Exception {
+        given(notificationService.getRecent(USER_ID)).willReturn(List.of(sampleNotification()));
 
         mvc.perform(get("/api/v1/coaching/notifications"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[0].type").value("ATHLETE_JOINED"))
-                .andExpect(jsonPath("$[0].payload").value("{\"athleteName\":\"Carlos\"}"));
+                .andExpect(jsonPath("$[0].payload").value("{\"athleteName\":\"Carlos\"}"))
+                .andExpect(jsonPath("$[0].read").value(false));
     }
 
     @Test
-    void get_unread_returns_200_with_empty_list() throws Exception {
-        given(notificationService.getUnread(USER_ID)).willReturn(List.of());
+    void get_recent_returns_200_with_empty_list() throws Exception {
+        given(notificationService.getRecent(USER_ID)).willReturn(List.of());
 
         mvc.perform(get("/api/v1/coaching/notifications"))
                 .andExpect(status().isOk())

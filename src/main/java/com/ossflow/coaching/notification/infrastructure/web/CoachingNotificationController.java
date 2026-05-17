@@ -19,8 +19,8 @@ public class CoachingNotificationController {
 
     @GetMapping
     @PreAuthorize("isAuthenticated()")
-    public List<NotificationResponse> getUnread(@AuthenticationPrincipal AccountPrincipal principal) {
-        return notificationService.getUnread(principal.id())
+    public List<NotificationResponse> getRecent(@AuthenticationPrincipal AccountPrincipal principal) {
+        return notificationService.getRecent(principal.id())
                 .stream().map(NotificationResponse::from).toList();
     }
 

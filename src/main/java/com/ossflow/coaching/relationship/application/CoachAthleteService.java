@@ -38,6 +38,9 @@ public class CoachAthleteService {
         if (inv == null) {
             throw new com.ossflow.shared.exception.UnprocessableException("INVALID_CODE", "Código de invitación inválido o expirado");
         }
+        if (inv.coachId().equals(athleteId)) {
+            throw new com.ossflow.shared.exception.UnprocessableException("SELF_LINK", "No puedes vincularte a ti mismo como atleta");
+        }
         link(inv.coachId(), athleteId, inv.id());
         invitationService.incrementUsedCount(inv);
 

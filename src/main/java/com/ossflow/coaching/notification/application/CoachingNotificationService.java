@@ -44,6 +44,10 @@ public class CoachingNotificationService {
         return repo.findUnreadByRecipient(accountId);
     }
 
+    public List<CoachingNotification> getRecent(Long accountId) {
+        return repo.findRecentByRecipient(accountId, 30);
+    }
+
     public void markAllRead(Long accountId) {
         repo.markAllReadByRecipient(accountId);
     }
