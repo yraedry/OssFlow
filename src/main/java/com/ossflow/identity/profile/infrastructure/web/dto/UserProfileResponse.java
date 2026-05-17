@@ -17,6 +17,7 @@ public record UserProfileResponse(
         LocalDate beltSince,
         String academy,
         String preferredModality,
+        String ageCategory,
         boolean onboardingCompleted,
         List<UserProfileFederationResponse> federations,
         AccountRole role,

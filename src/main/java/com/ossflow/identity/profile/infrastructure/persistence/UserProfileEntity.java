@@ -46,6 +46,9 @@ public class UserProfileEntity extends BaseEntity {
     @Column(name = "preferred_modality", nullable = false, length = 10)
     private String preferredModality;
 
+    @Column(name = "age_category", length = 20)
+    private String ageCategory;
+
     @Column(name = "onboarding_completed", nullable = false)
     private boolean onboardingCompleted;
 

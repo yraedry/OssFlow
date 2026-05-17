@@ -75,6 +75,8 @@ public class AthleteProfileComposer {
                 profile.currentBelt(),
                 daysInBelt,
                 profile.academy(),
+                profile.ageCategory(),
+                profile.preferredModality(),
                 activeInjuries,
                 recentCompetitions,
                 lastSessionDate,

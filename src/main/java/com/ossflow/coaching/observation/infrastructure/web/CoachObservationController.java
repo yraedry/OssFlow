@@ -5,6 +5,7 @@ import com.ossflow.coaching.observation.domain.CoachObservation;
 import com.ossflow.coaching.observation.infrastructure.web.dto.CreateObservationRequest;
 import com.ossflow.coaching.observation.infrastructure.web.dto.ObservationResponse;
 import com.ossflow.coaching.observation.infrastructure.web.dto.RadarPointResponse;
+import com.ossflow.coaching.observation.infrastructure.web.dto.UpdateObservationRequest;
 import com.ossflow.identity.auth.infrastructure.security.AccountPrincipal;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +45,17 @@ public class CoachObservationController {
             @PathVariable Long athleteId) {
         return service.list(principal.id(), athleteId).stream()
                 .map(ObservationResponse::from).toList();
+    }
+
+    @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('COACH')")
+    public ObservationResponse update(
+            @AuthenticationPrincipal AccountPrincipal principal,
+            @PathVariable Long id,
+            @RequestBody @Valid UpdateObservationRequest request) {
+        CoachObservation updated = service.update(
+                principal.id(), id, request.body(), request.tone(), request.techniqueFamily());
+        return ObservationResponse.from(updated);
     }
 
     @DeleteMapping("/{id}")

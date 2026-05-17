@@ -1,9 +1,11 @@
 package com.ossflow.coaching.observation.application;
 
+import com.ossflow.catalog.technique.domain.TechniqueFamily;
 import com.ossflow.coaching.observation.application.port.CoachObservationRepositoryPort;
 import com.ossflow.coaching.observation.domain.CoachObservation;
 import com.ossflow.coaching.observation.domain.LabelledBy;
 import com.ossflow.coaching.observation.domain.RadarRow;
+import com.ossflow.coaching.observation.domain.Tone;
 import com.ossflow.coaching.relationship.application.port.CoachAthleteRepositoryPort;
 import com.ossflow.shared.exception.ForbiddenException;
 import com.ossflow.shared.exception.NotFoundException;
@@ -44,6 +46,19 @@ public class CoachObservationService {
             throw new ForbiddenException("OBSERVATION_NOT_YOUR_ATHLETE", "Not your athlete");
         }
         return repo.findAllByCoachIdAndAthleteIdOrderByObservedAtDesc(coachId, athleteId);
+    }
+
+    public CoachObservation update(Long coachId, Long id, String body, Tone tone, TechniqueFamily techniqueFamily) {
+        CoachObservation existing = repo.findByIdAndCoachId(id, coachId)
+                .orElseThrow(() -> new NotFoundException("OBSERVATION_NOT_FOUND", "Observation not found"));
+        LabelledBy labelledBy = techniqueFamily != null ? LabelledBy.MANUAL : null;
+        CoachObservation updated = existing.toBuilder()
+                .body(body)
+                .tone(tone)
+                .techniqueFamily(techniqueFamily)
+                .labelledBy(labelledBy)
+                .build();
+        return repo.save(updated);
     }
 
     public void delete(Long coachId, Long id) {

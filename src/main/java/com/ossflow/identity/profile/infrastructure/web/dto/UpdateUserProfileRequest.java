@@ -17,5 +17,6 @@ public record UpdateUserProfileRequest(
         @Size(max = 15) String currentBelt,
         LocalDate beltSince,
         @Size(max = 200) @Pattern(regexp = "^[^<>]*$", message = "No se permiten caracteres HTML") String academy,
-        @Size(max = 10) String preferredModality
+        @Size(max = 10) String preferredModality,
+        @Size(max = 20) String ageCategory
 ) {}

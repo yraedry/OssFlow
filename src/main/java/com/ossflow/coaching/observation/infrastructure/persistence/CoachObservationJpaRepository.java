@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface CoachObservationJpaRepository extends JpaRepository<CoachObservationEntity, Long> {
 
+    java.util.Optional<CoachObservationEntity> findByIdAndCoachId(Long id, Long coachId);
+
     List<CoachObservationEntity> findAllByCoachIdAndAthleteIdOrderByObservedAtDesc(Long coachId, Long athleteId);
 
     int deleteByIdAndCoachId(Long id, Long coachId);

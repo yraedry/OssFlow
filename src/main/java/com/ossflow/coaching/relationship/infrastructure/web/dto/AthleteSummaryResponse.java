@@ -9,6 +9,8 @@ public record AthleteSummaryResponse(
         String currentBelt,
         long daysInBelt,
         String academy,
+        String ageCategory,
+        String preferredModality,
         List<ActiveInjury> activeInjuries,
         List<RecentCompetition> recentCompetitions,
         LocalDate lastSessionDate,

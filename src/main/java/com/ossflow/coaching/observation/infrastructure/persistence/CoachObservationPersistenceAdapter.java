@@ -22,6 +22,11 @@ public class CoachObservationPersistenceAdapter implements CoachObservationRepos
     }
 
     @Override
+    public java.util.Optional<CoachObservation> findByIdAndCoachId(Long id, Long coachId) {
+        return jpa.findByIdAndCoachId(id, coachId).map(mapper::toDomain);
+    }
+
+    @Override
     public List<CoachObservation> findAllByCoachIdAndAthleteIdOrderByObservedAtDesc(Long coachId, Long athleteId) {
         return jpa.findAllByCoachIdAndAthleteIdOrderByObservedAtDesc(coachId, athleteId)
                 .stream().map(mapper::toDomain).toList();
