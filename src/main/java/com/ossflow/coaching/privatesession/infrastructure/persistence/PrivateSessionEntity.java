@@ -4,10 +4,14 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "private_session")
@@ -43,6 +47,10 @@ public class PrivateSessionEntity {
 
     @Column(name = "notes", columnDefinition = "TEXT")
     private String notes;
+
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(name = "techniques_worked", columnDefinition = "text[]")
+    private List<String> techniquesWorked = new ArrayList<>();
 
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;

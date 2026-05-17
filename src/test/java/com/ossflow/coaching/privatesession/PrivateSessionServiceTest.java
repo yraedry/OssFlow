@@ -47,7 +47,7 @@ class PrivateSessionServiceTest {
     @Test
     void create_withValidPair_savesSession() {
         var req = new CreatePrivateSessionRequest(ATHLETE_ID, null, LocalDate.of(2026, 5, 17),
-                null, null, "Single leg X", null);
+                null, null, "Single leg X", null, null);
         given(coachAthleteRepo.existsByCoachIdAndAthleteId(COACH_ID, ATHLETE_ID)).willReturn(true);
         given(repo.save(any())).willReturn(sample());
 
@@ -60,7 +60,7 @@ class PrivateSessionServiceTest {
     @Test
     void create_withUnlinkedAthlete_throwsForbidden() {
         var req = new CreatePrivateSessionRequest(ATHLETE_ID, null, LocalDate.of(2026, 5, 17),
-                null, null, "Test", null);
+                null, null, "Test", null, null);
         given(coachAthleteRepo.existsByCoachIdAndAthleteId(COACH_ID, ATHLETE_ID)).willReturn(false);
 
         assertThatThrownBy(() -> service.create(COACH_ID, req))
@@ -100,7 +100,7 @@ class PrivateSessionServiceTest {
     @Test
     void update_withOwnership_updatesSession() {
         var existing = sample();
-        var req = new UpdatePrivateSessionRequest(null, LocalDate.of(2026, 5, 18), null, null, "Updated title", null);
+        var req = new UpdatePrivateSessionRequest(null, LocalDate.of(2026, 5, 18), null, null, "Updated title", null, null);
         given(repo.findByIdAndCoachId(1L, COACH_ID)).willReturn(Optional.of(existing));
         given(repo.save(any())).willAnswer(inv -> inv.getArgument(0));
 
@@ -115,7 +115,7 @@ class PrivateSessionServiceTest {
         given(repo.findByIdAndCoachId(99L, COACH_ID)).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> service.update(COACH_ID, 99L, new UpdatePrivateSessionRequest(
-                null, null, null, null, null, null)))
+                null, null, null, null, null, null, null)))
                 .isInstanceOf(NotFoundException.class)
                 .hasFieldOrPropertyWithValue("errorCode", "SESSION_NOT_FOUND");
     }

@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 public record CreatePrivateSessionRequest(
         @NotNull Long athleteId,
@@ -12,5 +13,6 @@ public record CreatePrivateSessionRequest(
         LocalTime startTime,
         Integer durationMinutes,
         String title,
-        String notes
+        String notes,
+        List<String> techniquesWorked
 ) {}

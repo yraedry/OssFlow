@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +34,7 @@ public class PrivateSessionService {
                 .durationMinutes(request.durationMinutes())
                 .title(request.title())
                 .notes(request.notes())
+                .techniquesWorked(Objects.requireNonNullElse(request.techniquesWorked(), List.of()))
                 .createdAt(Instant.now())
                 .build());
     }
@@ -58,6 +60,7 @@ public class PrivateSessionService {
                 .durationMinutes(request.durationMinutes() != null ? request.durationMinutes() : existing.durationMinutes())
                 .title(request.title() != null ? request.title() : existing.title())
                 .notes(request.notes() != null ? request.notes() : existing.notes())
+                .techniquesWorked(request.techniquesWorked() != null ? request.techniquesWorked() : existing.techniquesWorked())
                 .build();
 
         return repo.save(updated);
