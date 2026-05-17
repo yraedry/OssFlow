@@ -10,6 +10,8 @@ public record AthleteSummaryResponse(
         long daysInBelt,
         String academy,
         String ageCategory,
+        Integer stripes,
+        Double weight,
         String preferredModality,
         List<ActiveInjury> activeInjuries,
         List<RecentCompetition> recentCompetitions,
