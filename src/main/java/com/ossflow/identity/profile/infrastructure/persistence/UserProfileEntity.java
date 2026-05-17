@@ -52,7 +52,7 @@ public class UserProfileEntity extends BaseEntity {
     @Column(name = "stripes")
     private Integer stripes;
 
-    @Column(name = "weight", precision = 5, scale = 2)
+    @Column(name = "weight")
     private Double weight;
 
     @Column(name = "onboarding_completed", nullable = false)
