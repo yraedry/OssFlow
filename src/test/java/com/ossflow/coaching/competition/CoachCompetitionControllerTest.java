@@ -60,7 +60,7 @@ class CoachCompetitionControllerTest {
 
     private CompetitionLogResponse sampleResponse() {
         return new CompetitionLogResponse(1L, "Copa BJJ Madrid", LocalDate.of(2026, 5, 1),
-                null, null, null, null, null, null, null, List.of(), null, null);
+                null, null, null, null, null, null, null, null, null, List.of(), null, null);
     }
 
     @Test

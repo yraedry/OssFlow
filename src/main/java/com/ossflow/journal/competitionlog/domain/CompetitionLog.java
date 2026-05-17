@@ -17,6 +17,8 @@ public record CompetitionLog(
         String location,
         String giNogi,
         Integer totalMatches,
+        Integer winsCount,
+        Integer lossesCount,
         String result,
         String analysisMarkdown,
         List<CompetitionMatch> matches,

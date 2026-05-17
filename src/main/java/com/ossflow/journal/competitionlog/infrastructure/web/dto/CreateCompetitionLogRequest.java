@@ -16,6 +16,8 @@ public record CreateCompetitionLogRequest(
         @Size(max = 255) @Pattern(regexp = "^[^<>]*$", message = "No se permiten caracteres HTML") String location,
         @Size(max = 10) String giNogi,
         Integer totalMatches,
+        Integer winsCount,
+        Integer lossesCount,
         @Size(max = 50) @Pattern(regexp = "^[^<>]*$", message = "No se permiten caracteres HTML") String result,
         @Size(max = 50000) String analysisMarkdown
 ) {}

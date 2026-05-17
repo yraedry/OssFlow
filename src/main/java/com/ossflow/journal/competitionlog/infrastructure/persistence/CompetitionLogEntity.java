@@ -49,6 +49,12 @@ public class CompetitionLogEntity extends BaseEntity {
     @Column(name = "gi_nogi", length = 10)
     private String giNogi;
 
+    @Column(name = "wins_count")
+    private Integer winsCount;
+
+    @Column(name = "losses_count")
+    private Integer lossesCount;
+
     @OneToMany(mappedBy = "competitionLog", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<CompetitionMatchEntity> matches = new ArrayList<>();
