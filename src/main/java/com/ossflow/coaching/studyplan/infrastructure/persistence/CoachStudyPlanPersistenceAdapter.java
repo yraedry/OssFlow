@@ -121,8 +121,8 @@ public class CoachStudyPlanPersistenceAdapter implements CoachStudyPlanRepositor
 
     @Override
     @Transactional
-    public void updateBlockTitle(Long blockId, Long planId, String title) {
-        blockRepo.updateTitle(blockId, planId, title);
+    public int updateBlockTitle(Long blockId, Long planId, String title) {
+        return blockRepo.updateTitle(blockId, planId, title);
     }
 
     private CoachStudyPlanEntity toEntity(CoachStudyPlan plan) {

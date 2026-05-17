@@ -196,7 +196,8 @@ public class CoachStudyPlanService {
     @Transactional
     public void updateBlockTitle(Long planId, Long blockId, Long coachId, String title) {
         requireCoachPlan(planId, coachId);
-        repo.updateBlockTitle(blockId, planId, title);
+        int rows = repo.updateBlockTitle(blockId, planId, title);
+        if (rows == 0) throw new NotFoundException("BLOCK_NOT_FOUND", "Block not found in plan");
     }
 
     private CoachStudyPlan requireCoachPlan(Long planId, Long coachId) {

@@ -38,5 +38,5 @@ public interface CoachStudyPlanRepositoryPort {
 
     void markViewedByAthlete(Long planId);
 
-    void updateBlockTitle(Long blockId, Long planId, String title);
+    int updateBlockTitle(Long blockId, Long planId, String title);
 }

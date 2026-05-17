@@ -109,10 +109,10 @@ public class CoachStudyPlanController {
     @PreAuthorize("hasRole('COACH')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateBlockTitle(
+            @AuthenticationPrincipal AccountPrincipal principal,
             @PathVariable Long planId,
             @PathVariable Long blockId,
-            @Valid @RequestBody UpdateBlockTitleRequest request,
-            @AuthenticationPrincipal AccountPrincipal principal) {
+            @Valid @RequestBody UpdateBlockTitleRequest request) {
         service.updateBlockTitle(planId, blockId, principal.id(), request.title());
     }
 
