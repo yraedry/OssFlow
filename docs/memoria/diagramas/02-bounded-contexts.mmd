@@ -6,17 +6,20 @@ flowchart TB
         Validation[ValidationChain + JSON schema validator]
     end
 
+    subgraph Identity["identity (autenticación y perfil)"]
+        Account[Account<br/>email · password_hash · role<br/>email_verified · token_version]
+        UserProfile[UserProfile<br/>cinturón · academia · onboarding]
+        UserFed[UserProfileFederation<br/>federaciones preferidas]
+        Account -->|owner_id| UserProfile
+        UserProfile --> UserFed
+    end
+
     subgraph Catalog["catalog (conocimiento BJJ)"]
         Position[Position]
         Technique[Technique]
         System[System con flowDefinition JSON]
         Federation[Federation + Ruleset + RulesetTechnique]
-        Importers[Importadores Strategy plus Template Method]
-    end
-
-    subgraph Identity["identity (usuario)"]
-        UserProfile[UserProfile]
-        UserFed[UserProfileFederation multi-select]
+        Importers[Importadores Strategy + Template Method]
     end
 
     subgraph Journal["journal (diario subjetivo)"]
@@ -25,10 +28,11 @@ flowchart TB
         Competition[CompetitionLog + Match]
     end
 
-    subgraph Planning["planning (mirada al futuro)"]
+    subgraph Planning["planning (planificación de estudio)"]
         StudyPlan[StudyPlan]
         StudyBlock[StudyBlock]
         StudyItem[StudyItem con StateMachine]
+        StudyPlan --> StudyBlock --> StudyItem
     end
 
     Catalog -->|Note refs Position/Technique| Journal
@@ -37,10 +41,7 @@ flowchart TB
     Identity -.-> Journal
     Identity -.-> Planning
 
-    Shared -.usado por.- Catalog
-    Shared -.usado por.- Journal
-    Shared -.usado por.- Planning
-    Shared -.usado por.- Identity
-
-    classDef ctx fill:#1e293b,stroke:#475569,color:#f1f5f9
-    classDef shared fill:#374151,stroke:#6b7280,color:#f9fafb
+    Shared -.->|usado por| Catalog
+    Shared -.->|usado por| Journal
+    Shared -.->|usado por| Planning
+    Shared -.->|usado por| Identity

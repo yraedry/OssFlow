@@ -1,34 +1,34 @@
 flowchart LR
     subgraph Internet["Internet"]
         User([Usuario navegador])
-        CFEdge[Cloudflare Edge<br/>TLS automático]
+        CFEdge["Cloudflare Edge<br/>TLS automático"]
     end
 
-    subgraph Proxmox["Servidor Proxmox"]
-        subgraph DockerHost["Host Docker"]
+    subgraph ProxmoxHost["Servidor Proxmox / LXC"]
+        CFProcess["cloudflared<br/>proceso en host<br/>(no contenedor)"]
+
+        subgraph DockerCompose["Docker Compose"]
             subgraph Network["Red interna ossflow-net"]
-                CF[cloudflared<br/>contenedor]
-                FE[ossflow-frontend<br/>Nginx + React build]
-                BE[ossflow-backend<br/>Spring Boot 3 - Java 21<br/>distroless]
+                FE["ossflow-frontend<br/>Nginx + React build<br/>sirve estáticos + proxy /api/"]
+                BE["ossflow-backend<br/>Spring Boot 4 · Java 25<br/>distroless"]
             end
-            Volume[(Volumen sqlite-data<br/>data/ossflow.db)]
+            Volume[("PostgreSQL 17<br/>volumen postgres-data")]
+            PG["ossflow-db<br/>postgres:17-alpine"]
         end
-        BackupCron[Cron 4am<br/>backup-sqlite.sh<br/>tar gz retención 30d]
     end
 
-    subgraph GitHub["GitHub"]
-        GHCR[ghcr.io<br/>imágenes versionadas]
-        Actions[GitHub Actions<br/>CI plus Release]
+    subgraph GitHub["GitHub / GHCR"]
+        GHCR["ghcr.io/yraedry/<br/>ossflow-backend:main<br/>ossflow-frontend:main<br/>ossflow-*:feature-xxx-dev"]
+        Actions["GitHub Actions<br/>CI + Release"]
     end
 
     User -->|HTTPS| CFEdge
-    CFEdge -->|tunnel| CF
-    CF -->|HTTP red interna| FE
-    FE -->|proxy /api| BE
-    BE -->|JDBC| Volume
+    CFEdge -->|tunnel| CFProcess
+    CFProcess -->|HTTP red interna| FE
+    FE -->|proxy /api/| BE
+    BE -->|JDBC| PG
+    PG --- Volume
 
-    Actions -->|push imagen| GHCR
-    GHCR -.->|docker pull| BE
-    GHCR -.->|docker pull| FE
-
-    BackupCron -->|sqlite .backup| Volume
+    Actions -->|docker push| GHCR
+    GHCR -.->|docker compose pull| BE
+    GHCR -.->|docker compose pull| FE

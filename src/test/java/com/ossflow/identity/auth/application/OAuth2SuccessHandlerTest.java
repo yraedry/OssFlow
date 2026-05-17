@@ -6,6 +6,7 @@ import com.ossflow.identity.auth.domain.Account;
 import com.ossflow.identity.auth.domain.AccountProvider;
 import com.ossflow.identity.auth.domain.AccountRole;
 import com.ossflow.identity.auth.domain.RefreshToken;
+import com.ossflow.shared.properties.AppProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -32,9 +33,10 @@ class OAuth2SuccessHandlerTest {
     void setUp() {
         accountRepository = mock(AccountRepositoryPort.class);
         refreshTokenRepository = mock(RefreshTokenRepositoryPort.class);
-        handler = new OAuth2SuccessHandler(
-                accountRepository, refreshTokenRepository,
-                "http://localhost:5173", 2592000L, false, "Lax", "/api/auth");
+        handler = new OAuth2SuccessHandler(accountRepository, refreshTokenRepository,
+                new AppProperties("http://localhost:5173",
+                        new AppProperties.CookieProperties(false, "Lax", "/api/auth"),
+                        new AppProperties.RefreshTokenProperties(2592000L)));
     }
 
     @Test

@@ -1,5 +1,6 @@
 package com.ossflow.identity.auth.application;
 
+import com.ossflow.shared.properties.AppProperties;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -11,7 +12,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class OAuth2FailureHandlerTest {
 
-    private final OAuth2FailureHandler handler = new OAuth2FailureHandler("http://localhost:5173");
+    private final OAuth2FailureHandler handler = new OAuth2FailureHandler(
+            new AppProperties("http://localhost:5173",
+                    new AppProperties.CookieProperties(false, "Lax", "/api/auth"),
+                    new AppProperties.RefreshTokenProperties(2592000L)));
 
     @Test
     void redirects_with_email_unverified_code() throws Exception {

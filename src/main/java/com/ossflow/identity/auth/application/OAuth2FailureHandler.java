@@ -1,8 +1,8 @@
 package com.ossflow.identity.auth.application;
 
+import com.ossflow.shared.properties.AppProperties;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
@@ -15,8 +15,8 @@ public class OAuth2FailureHandler extends SimpleUrlAuthenticationFailureHandler 
 
     private final String frontendUrl;
 
-    public OAuth2FailureHandler(@Value("${app.frontend-url:http://localhost:5173}") String frontendUrl) {
-        this.frontendUrl = frontendUrl;
+    public OAuth2FailureHandler(AppProperties appProperties) {
+        this.frontendUrl = appProperties.frontendUrl();
     }
 
     @Override

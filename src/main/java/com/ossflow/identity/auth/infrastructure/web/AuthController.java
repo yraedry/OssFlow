@@ -3,11 +3,11 @@ package com.ossflow.identity.auth.infrastructure.web;
 import com.ossflow.identity.auth.application.AuthService;
 import com.ossflow.identity.auth.infrastructure.security.AccountPrincipal;
 import com.ossflow.identity.auth.infrastructure.web.dto.*;
+import com.ossflow.shared.properties.AppProperties;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -24,21 +24,11 @@ public class AuthController {
     private static final String REFRESH_COOKIE_NAME = "refresh_token";
 
     private final AuthService authService;
-    private final boolean cookieSecure;
-    private final String cookieSameSite;
-    private final String cookiePath;
-    private final long refreshExpirySeconds;
+    private final AppProperties appProperties;
 
-    public AuthController(AuthService authService,
-                          @Value("${app.cookie.secure:true}") boolean cookieSecure,
-                          @Value("${app.cookie.same-site:Lax}") String cookieSameSite,
-                          @Value("${app.cookie.path:/api/auth}") String cookiePath,
-                          @Value("${app.refresh-token.expiry:2592000}") long refreshExpirySeconds) {
+    public AuthController(AuthService authService, AppProperties appProperties) {
         this.authService = authService;
-        this.cookieSecure = cookieSecure;
-        this.cookieSameSite = cookieSameSite;
-        this.cookiePath = cookiePath;
-        this.refreshExpirySeconds = refreshExpirySeconds;
+        this.appProperties = appProperties;
     }
 
     @PostMapping("/register")
@@ -55,7 +45,7 @@ public class AuthController {
                                               HttpServletResponse response) {
         AuthService.LoginResult result = authService.login(request,
                 httpRequest.getRemoteAddr(), httpRequest.getHeader("User-Agent"));
-        setRefreshCookie(response, result.rawRefreshToken(), refreshExpirySeconds);
+        setRefreshCookie(response, result.rawRefreshToken(), appProperties.refreshToken().expiry());
         AuthResponse body = new AuthResponse(
                 result.accessToken(),
                 new AuthResponse.UserDto(result.account().id(), result.account().email())
@@ -83,7 +73,7 @@ public class AuthController {
         AuthService.RefreshResult result = authService.refresh(rawToken);
         // En la ventana de gracia (double-click) reusa la cookie existente y solo emite access nuevo.
         if (result.rawRefreshToken() != null) {
-            setRefreshCookie(response, result.rawRefreshToken(), refreshExpirySeconds);
+            setRefreshCookie(response, result.rawRefreshToken(), appProperties.refreshToken().expiry());
         }
         return ResponseEntity.ok(new RefreshResponse(result.accessToken()));
     }
@@ -131,10 +121,10 @@ public class AuthController {
     private void setRefreshCookie(HttpServletResponse response, String value, long maxAgeSeconds) {
         ResponseCookie cookie = ResponseCookie.from(REFRESH_COOKIE_NAME, value)
                 .httpOnly(true)
-                .secure(cookieSecure)
-                .path(cookiePath)
+                .secure(appProperties.cookie().secure())
+                .path(appProperties.cookie().path())
                 .maxAge(Duration.ofSeconds(maxAgeSeconds))
-                .sameSite(cookieSameSite)
+                .sameSite(appProperties.cookie().sameSite())
                 .build();
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }

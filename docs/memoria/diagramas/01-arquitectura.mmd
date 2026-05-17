@@ -1,19 +1,23 @@
 flowchart TB
     Internet([Internet])
-    CFTunnel[Cloudflare Tunnel<br/>cloudflared en Proxmox]
-    Nginx[Nginx contenedor<br/>sirve estáticos<br/>proxy /api]
-    Backend[Spring Boot 3 contenedor<br/>Java 21<br/>API REST /api/v1<br/>Actuator<br/>Flyway en arranque]
-    DB[(SQLite volumen<br/>data/ossflow.db<br/>H2 in-memory en dev)]
+    CFTunnel["Cloudflare Tunnel<br/>cloudflared proceso<br/>en host Proxmox/LXC<br/>(no contenedor Docker)"]
+    Nginx["ossflow-frontend<br/>Nginx contenedor<br/>sirve estáticos React<br/>proxy /api/ → backend:8080"]
+    Backend["ossflow-backend contenedor<br/>Spring Boot 4 · Java 25<br/>API REST /api/v1<br/>Actuator · Flyway"]
+    DB[("PostgreSQL 17<br/>volumen postgres-data")]
+    H2Note["H2 in-memory<br/>solo en CI (GitHub Actions)"]
 
     Internet -->|HTTPS público| CFTunnel
     CFTunnel -->|HTTP red interna| Nginx
-    Nginx -->|HTTP red interna| Backend
+    Nginx -->|proxy /api/| Backend
     Backend -->|JDBC| DB
+    H2Note -.-|sustituye en tests CI| DB
 
-    classDef edge fill:#1e293b,stroke:#475569,color:#f1f5f9
-    classDef service fill:#0f766e,stroke:#14b8a6,color:#f0fdfa
-    classDef data fill:#7c2d12,stroke:#ea580c,color:#fff7ed
+    classDef edge fill:#e2e8f0,stroke:#94a3b8,color:#1e293b
+    classDef service fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
+    classDef data fill:#fef3c7,stroke:#f59e0b,color:#78350f
+    classDef note fill:#f0fdf4,stroke:#86efac,color:#14532d
 
     class Internet,CFTunnel edge
     class Nginx,Backend service
     class DB data
+    class H2Note note

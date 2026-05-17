@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 820" width="480" height="820" font-family="'Inter', 'Segoe UI', sans-serif">
+  <!-- Background -->
+  <rect width="480" height="820" fill="#0f0f0f"/>
+  <!-- Dot grid -->
+  <defs>
+    <pattern id="dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="0.8" fill="#2a2a2a"/>
+    </pattern>
+  </defs>
+  <rect width="480" height="820" fill="url(#dots)"/>
+
+  <!-- Title -->
+  <text x="240" y="38" text-anchor="middle" font-size="13" font-weight="700" fill="#f0ebe3" letter-spacing="2" font-family="'Inter', monospace" text-transform="uppercase">ARQUITECTURA DE DESPLIEGUE</text>
+  <line x1="60" y1="50" x2="420" y2="50" stroke="#2a2a2a" stroke-width="1"/>
+
+  <!-- INTERNET -->
+  <rect x="160" y="66" width="160" height="40" fill="none" stroke="#555" stroke-width="1"/>
+  <text x="240" y="82" text-anchor="middle" font-size="9" fill="#888" letter-spacing="1.5" font-family="'Inter', monospace">INTERNET</text>
+  <text x="240" y="97" text-anchor="middle" font-size="11" fill="#f0ebe3" font-weight="600">Usuario / Browser</text>
+
+  <!-- Arrow down -->
+  <line x1="240" y1="106" x2="240" y2="130" stroke="#444" stroke-width="1" stroke-dasharray="4,2"/>
+  <text x="258" y="122" font-size="9" fill="#666" font-family="'Inter', monospace">HTTPS</text>
+  <polygon points="234,130 240,140 246,130" fill="#444"/>
+
+  <!-- CLOUDFLARE BOX -->
+  <rect x="60" y="140" width="360" height="88" fill="#0f0f0f" stroke="#2a2a2a" stroke-width="1"/>
+  <rect x="60" y="140" width="360" height="20" fill="#1a1a1a"/>
+  <text x="240" y="155" text-anchor="middle" font-size="9" fill="#888" letter-spacing="1.5" font-family="'Inter', monospace">CLOUDFLARE</text>
+
+  <rect x="80" y="168" width="320" height="50" fill="none" stroke="#3a3a3a" stroke-width="1"/>
+  <text x="240" y="186" text-anchor="middle" font-size="10" fill="#aaa" letter-spacing="1" font-family="'Inter', monospace">cloudflared tunnel</text>
+  <text x="240" y="203" text-anchor="middle" font-size="10" fill="#666" font-family="'Inter', monospace">Exposición pública sin abrir puertos</text>
+  <text x="240" y="217" text-anchor="middle" font-size="9" fill="#555" font-family="'Inter', monospace">ossflow.es → LXC:80</text>
+
+  <!-- Arrow down -->
+  <line x1="240" y1="228" x2="240" y2="252" stroke="#444" stroke-width="1" stroke-dasharray="4,2"/>
+  <text x="258" y="244" font-size="9" fill="#666" font-family="'Inter', monospace">HTTP interno</text>
+  <polygon points="234,252 240,262 246,252" fill="#444"/>
+
+  <!-- PROXMOX / LXC CONTAINER -->
+  <rect x="30" y="262" width="420" height="440" fill="#0f0f0f" stroke="#2a2a2a" stroke-width="1"/>
+  <rect x="30" y="262" width="420" height="22" fill="#111"/>
+  <text x="240" y="278" text-anchor="middle" font-size="9" fill="#888" letter-spacing="1.5" font-family="'Inter', monospace">PROXMOX · LXC CONTAINER · DOCKER COMPOSE</text>
+
+  <!-- Nginx container -->
+  <rect x="60" y="296" width="360" height="72" fill="#0f1418" stroke="#1e3a4a" stroke-width="1"/>
+  <rect x="60" y="296" width="360" height="18" fill="#0d1f2d"/>
+  <text x="240" y="309" text-anchor="middle" font-size="8" fill="#4a9aba" letter-spacing="1.5" font-family="'Inter', monospace">CONTENEDOR · NGINX</text>
+  <text x="240" y="330" text-anchor="middle" font-size="11" fill="#f0ebe3" font-weight="600">Nginx 1.25</text>
+  <text x="240" y="347" text-anchor="middle" font-size="10" fill="#7ab8cc" font-family="'Inter', monospace">Sirve SPA React (estáticos)</text>
+  <text x="240" y="362" text-anchor="middle" font-size="10" fill="#7ab8cc" font-family="'Inter', monospace">Proxy /api/ → backend:8080</text>
+
+  <!-- Arrow down -->
+  <line x1="240" y1="368" x2="240" y2="388" stroke="#2a4a2a" stroke-width="1" stroke-dasharray="4,2"/>
+  <text x="258" y="382" font-size="9" fill="#555" font-family="'Inter', monospace">HTTP red interna</text>
+  <polygon points="234,388 240,398 246,388" fill="#2a4a2a"/>
+
+  <!-- Spring Boot container -->
+  <rect x="60" y="398" width="360" height="88" fill="#0f180f" stroke="#1e4a1e" stroke-width="1"/>
+  <rect x="60" y="398" width="360" height="18" fill="#0d2a0d"/>
+  <text x="240" y="411" text-anchor="middle" font-size="8" fill="#4aba4a" letter-spacing="1.5" font-family="'Inter', monospace">CONTENEDOR · BACKEND</text>
+  <text x="240" y="432" text-anchor="middle" font-size="11" fill="#f0ebe3" font-weight="600">Spring Boot 4 · Java 25</text>
+  <text x="240" y="449" text-anchor="middle" font-size="10" fill="#7acc7a" font-family="'Inter', monospace">API REST  /api/v1  ·  OpenAPI</text>
+  <text x="240" y="464" text-anchor="middle" font-size="10" fill="#7acc7a" font-family="'Inter', monospace">Flyway migrations en arranque</text>
+  <text x="240" y="479" text-anchor="middle" font-size="10" fill="#7acc7a" font-family="'Inter', monospace">Actuator /actuator/health</text>
+
+  <!-- Arrow down -->
+  <line x1="240" y1="486" x2="240" y2="506" stroke="#4a3a10" stroke-width="1" stroke-dasharray="4,2"/>
+  <text x="258" y="500" font-size="9" fill="#555" font-family="'Inter', monospace">JDBC</text>
+  <polygon points="234,506 240,516 246,506" fill="#4a3a10"/>
+
+  <!-- PostgreSQL container -->
+  <rect x="60" y="516" width="360" height="72" fill="#18130a" stroke="#4a3a10" stroke-width="1"/>
+  <rect x="60" y="516" width="360" height="18" fill="#2a1f0a"/>
+  <text x="240" y="529" text-anchor="middle" font-size="8" fill="#ba8a20" letter-spacing="1.5" font-family="'Inter', monospace">CONTENEDOR · BASE DE DATOS</text>
+  <text x="240" y="550" text-anchor="middle" font-size="11" fill="#f0ebe3" font-weight="600">PostgreSQL 17-alpine</text>
+  <text x="240" y="567" text-anchor="middle" font-size="10" fill="#cc9a40" font-family="'Inter', monospace">Volumen persistente  postgres-data</text>
+  <text x="240" y="582" text-anchor="middle" font-size="10" fill="#cc9a40" font-family="'Inter', monospace">Healthcheck pg_isready</text>
+
+  <!-- CI/CD note -->
+  <rect x="60" y="612" width="360" height="60" fill="#111" stroke="#2a2a2a" stroke-width="1" stroke-dasharray="6,3"/>
+  <text x="240" y="629" text-anchor="middle" font-size="8" fill="#666" letter-spacing="1.5" font-family="'Inter', monospace">CI/CD</text>
+  <text x="240" y="646" text-anchor="middle" font-size="10" fill="#666" font-family="'Inter', monospace">GitHub Actions → build → GHCR</text>
+  <text x="240" y="661" text-anchor="middle" font-size="10" fill="#666" font-family="'Inter', monospace">docker compose pull en LXC</text>
+  <text x="240" y="676" text-anchor="middle" font-size="9" fill="#555" font-family="'Inter', monospace">ghcr.io/yraedry/ossflow-{backend,frontend}:tag</text>
+
+  <!-- H2 note -->
+  <rect x="60" y="690" width="360" height="38" fill="#111" stroke="#2a2a2a" stroke-width="1" stroke-dasharray="4,2"/>
+  <text x="240" y="705" text-anchor="middle" font-size="9" fill="#555" letter-spacing="1" font-family="'Inter', monospace">TESTS CI</text>
+  <text x="240" y="720" text-anchor="middle" font-size="10" fill="#555" font-family="'Inter', monospace">H2 in-memory · solo en GitHub Actions</text>
+
+  <!-- Footer -->
+  <line x1="60" y1="752" x2="420" y2="752" stroke="#1a1a1a" stroke-width="1"/>
+  <text x="240" y="768" text-anchor="middle" font-size="8" fill="#444" font-family="'Inter', monospace" letter-spacing="1">OssFlow · Arquitectura de despliegue · feature/dam</text>
+  <text x="240" y="782" text-anchor="middle" font-size="8" fill="#333" font-family="'Inter', monospace">Spring Boot 4 · React 19 · PostgreSQL 17 · Docker Compose · Proxmox LXC</text>
+</svg>

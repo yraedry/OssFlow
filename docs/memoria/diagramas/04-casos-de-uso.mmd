@@ -1,8 +1,12 @@
 flowchart TB
     Usuario((Practicante BJJ))
 
+    subgraph Autenticacion["Autenticación"]
+        UC0[UC0 Registro y login con JWT]
+    end
+
     subgraph CatalogoConocimiento["Gestionar catálogo de conocimiento"]
-        UC1[UC1 Crear posición técnica o sistema]
+        UC1[UC1 Crear posición, técnica o sistema]
         UC2[UC2 Editar grafo de técnicas y posiciones]
         UC3[UC3 Diseñar sistema con árbol de decisión]
         UC4[UC4 Importar catálogo desde JSON]
@@ -16,20 +20,21 @@ flowchart TB
 
     subgraph PlanEstudio["Planificar estudio"]
         UC8[UC8 Crear plan de estudio multinivel]
-        UC9[UC9 Avanzar estado de un ítem TODO DOING DONE]
+        UC9[UC9 Avanzar estado de ítem TODO→DOING→DONE]
         UC10[UC10 Visualizar timeline tipo Gantt]
     end
 
     subgraph Identidad["Configurar identidad"]
-        UC11[UC11 Onboarding inicial]
+        UC11[UC11 Onboarding inicial 5 pasos]
         UC12[UC12 Cambiar cinturón actual]
         UC13[UC13 Seleccionar federaciones preferidas]
     end
 
     subgraph Portabilidad["Portabilidad de datos"]
-        UC14[UC14 Exportar backup completo]
+        UC14[UC14 Exportar backup completo JSON]
     end
 
+    Usuario --> UC0
     Usuario --> UC1
     Usuario --> UC2
     Usuario --> UC3
@@ -45,6 +50,8 @@ flowchart TB
     Usuario --> UC13
     Usuario --> UC14
 
+    UC0 -.precondición.-> UC1
+    UC0 -.precondición.-> UC5
     UC11 -.precondición.-> UC5
     UC11 -.precondición.-> UC6
     UC11 -.precondición.-> UC7

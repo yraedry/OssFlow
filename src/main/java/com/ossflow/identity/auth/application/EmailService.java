@@ -1,7 +1,7 @@
 package com.ossflow.identity.auth.application;
 
+import com.ossflow.shared.properties.AppProperties;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -13,10 +13,9 @@ public class EmailService {
     private final JavaMailSender mailSender;
     private final String frontendUrl;
 
-    public EmailService(JavaMailSender mailSender,
-                        @Value("${app.frontend-url:http://localhost:5173}") String frontendUrl) {
+    public EmailService(JavaMailSender mailSender, AppProperties appProperties) {
         this.mailSender = mailSender;
-        this.frontendUrl = frontendUrl;
+        this.frontendUrl = appProperties.frontendUrl();
     }
 
     // ── Send helpers ────────────────────────────────────────────────────────
