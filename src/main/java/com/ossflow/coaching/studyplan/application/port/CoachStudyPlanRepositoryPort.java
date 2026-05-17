@@ -37,4 +37,6 @@ public interface CoachStudyPlanRepositoryPort {
     void reorderBlocks(Long planId, List<Long> orderedBlockIds);
 
     void markViewedByAthlete(Long planId);
+
+    void updateBlockTitle(Long blockId, Long planId, String title);
 }

@@ -119,6 +119,12 @@ public class CoachStudyPlanPersistenceAdapter implements CoachStudyPlanRepositor
         planRepo.markViewed(planId);
     }
 
+    @Override
+    @Transactional
+    public void updateBlockTitle(Long blockId, Long planId, String title) {
+        blockRepo.updateTitle(blockId, planId, title);
+    }
+
     private CoachStudyPlanEntity toEntity(CoachStudyPlan plan) {
         return CoachStudyPlanEntity.builder()
                 .id(plan.id())

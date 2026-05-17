@@ -13,4 +13,8 @@ public interface CoachStudyBlockJpaRepository extends JpaRepository<CoachStudyBl
     @Modifying
     @Query("UPDATE CoachStudyBlockEntity b SET b.blockOrder = :order WHERE b.id = :id")
     void updateOrder(Long id, int order);
+
+    @Modifying
+    @Query("UPDATE CoachStudyBlockEntity b SET b.title = :title WHERE b.id = :blockId AND b.plan.id = :planId")
+    int updateTitle(Long blockId, Long planId, String title);
 }
