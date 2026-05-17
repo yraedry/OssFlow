@@ -58,6 +58,16 @@ public class CoachStudyPlanController {
         service.updatePlanContent(planId, principal.id(), req);
     }
 
+    @PostMapping("/{planId}/duplicate")
+    @PreAuthorize("hasRole('COACH')")
+    @ResponseStatus(HttpStatus.CREATED)
+    public StudyPlanResponse duplicatePlan(
+            @PathVariable Long planId,
+            @Valid @RequestBody DuplicatePlanRequest request,
+            @AuthenticationPrincipal AccountPrincipal principal) {
+        return toResponse(service.duplicatePlan(planId, principal.id(), request.targetAthleteId()));
+    }
+
     @PostMapping("/{planId}/publish")
     @PreAuthorize("hasRole('COACH')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -93,6 +103,17 @@ public class CoachStudyPlanController {
             @PathVariable Long planId,
             @RequestBody @Valid AddBlockRequest req) {
         return toBlockResponse(service.addBlock(planId, principal.id(), req.title()));
+    }
+
+    @PatchMapping("/{planId}/blocks/{blockId}")
+    @PreAuthorize("hasRole('COACH')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateBlockTitle(
+            @PathVariable Long planId,
+            @PathVariable Long blockId,
+            @Valid @RequestBody UpdateBlockTitleRequest request,
+            @AuthenticationPrincipal AccountPrincipal principal) {
+        service.updateBlockTitle(planId, blockId, principal.id(), request.title());
     }
 
     @DeleteMapping("/{planId}/blocks/{blockId}")

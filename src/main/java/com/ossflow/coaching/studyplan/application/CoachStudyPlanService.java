@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -143,6 +144,59 @@ public class CoachStudyPlanService {
     public void reorderItems(Long planId, Long blockId, Long coachId, List<Long> orderedItemIds) {
         requireCoachPlan(planId, coachId);
         repo.reorderItems(blockId, orderedItemIds);
+    }
+
+    @Transactional
+    public CoachStudyPlan duplicatePlan(Long planId, Long coachId, Long targetAthleteId) {
+        var source = requireCoachPlan(planId, coachId);
+        requireLinked(coachId, targetAthleteId);
+
+        // Save plan shell first to obtain the new plan ID
+        var savedPlan = repo.savePlan(CoachStudyPlan.builder()
+                .id(null)
+                .coachId(coachId)
+                .athleteId(targetAthleteId)
+                .title(source.title() + " (copia)")
+                .description(source.description())
+                .status(StudyPlanStatus.DRAFT)
+                .viewedByAthlete(false)
+                .build());
+
+        // Clone blocks + items using the new plan ID
+        if (source.blocks() != null) {
+            for (var srcBlock : source.blocks()) {
+                var savedBlock = repo.saveBlock(CoachStudyBlock.builder()
+                        .id(null)
+                        .planId(savedPlan.id())
+                        .title(srcBlock.title())
+                        .blockOrder(srcBlock.blockOrder())
+                        .build());
+
+                if (srcBlock.items() != null) {
+                    for (var srcItem : srcBlock.items()) {
+                        repo.saveItem(CoachStudyItem.builder()
+                                .id(null)
+                                .blockId(savedBlock.id())
+                                .itemOrder(srcItem.itemOrder())
+                                .itemType(srcItem.itemType())
+                                .content(srcItem.content())
+                                .techniqueId(srcItem.techniqueId())
+                                .techniqueName(srcItem.techniqueName())
+                                .build());
+                    }
+                }
+            }
+        }
+
+        // Return the full plan with blocks + items loaded
+        return repo.findPlanById(savedPlan.id())
+                .orElseThrow(() -> new NotFoundException("PLAN_NOT_FOUND", "Duplicated plan not found"));
+    }
+
+    @Transactional
+    public void updateBlockTitle(Long planId, Long blockId, Long coachId, String title) {
+        requireCoachPlan(planId, coachId);
+        repo.updateBlockTitle(blockId, planId, title);
     }
 
     private CoachStudyPlan requireCoachPlan(Long planId, Long coachId) {
