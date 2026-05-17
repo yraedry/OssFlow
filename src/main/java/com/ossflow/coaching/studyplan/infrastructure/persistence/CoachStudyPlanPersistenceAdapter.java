@@ -19,23 +19,27 @@ public class CoachStudyPlanPersistenceAdapter implements CoachStudyPlanRepositor
     private final CoachStudyItemJpaRepository itemRepo;
 
     @Override
+    @Transactional
     public CoachStudyPlan savePlan(CoachStudyPlan plan) {
         var entity = planRepo.save(toEntity(plan));
         return toDomain(entity);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<CoachStudyPlan> findPlanById(Long id) {
         return planRepo.findById(id).map(this::toDomain);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CoachStudyPlan> findPlansByCoachAndAthlete(Long coachId, Long athleteId) {
         return planRepo.findByCoachIdAndAthleteIdOrderByCreatedAtDesc(coachId, athleteId)
                 .stream().map(this::toDomain).toList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CoachStudyPlan> findPublishedPlansForAthlete(Long athleteId) {
         return planRepo.findByAthleteIdAndStatusOrderByCreatedAtDesc(athleteId, StudyPlanStatus.PUBLISHED)
                 .stream().map(this::toDomain).toList();
