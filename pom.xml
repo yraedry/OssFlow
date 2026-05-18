@@ -25,7 +25,7 @@
         <springdoc.version>2.7.0</springdoc.version>
         <json-schema-validator.version>1.5.4</json-schema-validator.version>
         <logstash-logback-encoder.version>8.0</logstash-logback-encoder.version>
-        <jacoco.version>0.8.13</jacoco.version>
+        <jacoco.version>0.8.14</jacoco.version>
     </properties>
 
     <dependencies>
