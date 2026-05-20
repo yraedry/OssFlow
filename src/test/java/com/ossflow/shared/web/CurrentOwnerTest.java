@@ -1,5 +1,6 @@
 package com.ossflow.shared.web;
 
+import com.ossflow.identity.auth.domain.AccountRole;
 import com.ossflow.identity.auth.infrastructure.security.AccountPrincipal;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,7 @@ class CurrentOwnerTest {
 
     @Test
     void returns_principal_id_when_authenticated() {
-        AccountPrincipal principal = new AccountPrincipal(42L, "user@example.com");
+        AccountPrincipal principal = new AccountPrincipal(42L, "user@example.com", AccountRole.ATHLETE);
         var auth = new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);
 

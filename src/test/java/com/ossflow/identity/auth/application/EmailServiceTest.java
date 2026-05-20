@@ -1,5 +1,6 @@
 package com.ossflow.identity.auth.application;
 
+import com.ossflow.shared.properties.AppProperties;
 import jakarta.mail.Session;
 import jakarta.mail.internet.MimeMessage;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +20,10 @@ import static org.mockito.Mockito.verify;
 
 class EmailServiceTest {
 
+    private static final AppProperties TEST_PROPS = new AppProperties("http://localhost:5173",
+            new AppProperties.CookieProperties(false, "Lax", "/api/auth"),
+            new AppProperties.RefreshTokenProperties(2592000L));
+
     private JavaMailSender mailSender;
     private EmailService service;
 
@@ -26,7 +31,7 @@ class EmailServiceTest {
     void setUp() {
         mailSender = mock(JavaMailSender.class);
         given(mailSender.createMimeMessage()).willReturn(new MimeMessage(Session.getInstance(new Properties())));
-        service = new EmailService(mailSender, "http://localhost:5173");
+        service = new EmailService(mailSender, TEST_PROPS);
     }
 
     @Test

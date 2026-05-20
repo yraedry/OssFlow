@@ -3,6 +3,7 @@ package com.ossflow.identity.auth.infrastructure.web;
 import com.ossflow.identity.auth.application.port.AccountRepositoryPort;
 import com.ossflow.identity.auth.domain.Account;
 import com.ossflow.identity.auth.domain.AccountProvider;
+import com.ossflow.identity.auth.domain.AccountRole;
 import com.ossflow.testsupport.TestSecurityContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,7 +47,7 @@ class AuthControllerCookieTest {
         accountRepository.save(new Account(
                 null, "cookie@example.com",
                 new BCryptPasswordEncoder(12).encode("Pass1234"),
-                AccountProvider.LOCAL, null, true, 0, null, null));
+                AccountProvider.LOCAL, null, true, 0, AccountRole.ATHLETE, null, null));
 
         MvcResult result = mvc().perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)

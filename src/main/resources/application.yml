@@ -70,9 +70,18 @@ auth:
     refresh-token-expiry: 604800
 
 app:
+  frontend-url: ${APP_FRONTEND_URL:http://localhost:5173}
   cookie:
     secure: ${APP_COOKIE_SECURE:true}
     same-site: ${APP_COOKIE_SAME_SITE:Lax}
     path: /api/auth
   refresh-token:
     expiry: ${APP_REFRESH_EXPIRY:2592000}
+
+ossflow:
+  flyway:
+    enabled: true
+    baseline-on-migrate: false
+    baseline-version: "1"
+    out-of-order: false
+    validate-on-migrate: true

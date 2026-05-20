@@ -35,6 +35,12 @@ public class CompetitionMatchEntity {
     @Column(name = "notes_markdown", columnDefinition = "TEXT")
     private String notesMarkdown;
 
+    @Column(name = "round", length = 50)
+    private String round;
+
+    @Column(name = "technique_text", length = 255)
+    private String techniqueText;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "competition_log_id", nullable = false)
     private CompetitionLogEntity competitionLog;

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ossflow.identity.auth.application.port.AccountRepositoryPort;
 import com.ossflow.identity.auth.domain.Account;
 import com.ossflow.identity.auth.domain.AccountProvider;
+import com.ossflow.identity.auth.domain.AccountRole;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -53,7 +54,7 @@ class AuthIntegrationTest {
         Account account = accountRepository.save(new Account(
                 null, "verified@example.com",
                 new BCryptPasswordEncoder(12).encode("Test1234"),
-                AccountProvider.LOCAL, null, true, 0, null, null
+                AccountProvider.LOCAL, null, true, 0, AccountRole.ATHLETE, null, null
         ));
         assertThat(account.id()).isNotNull();
 
@@ -81,7 +82,7 @@ class AuthIntegrationTest {
         accountRepository.save(new Account(
                 null, "wrong@example.com",
                 new BCryptPasswordEncoder(12).encode("RightPass1"),
-                AccountProvider.LOCAL, null, true, 0, null, null
+                AccountProvider.LOCAL, null, true, 0, AccountRole.ATHLETE, null, null
         ));
 
         mvc().perform(post("/api/auth/login")
@@ -99,7 +100,7 @@ class AuthIntegrationTest {
         accountRepository.save(new Account(
                 null, "refresh@example.com",
                 new BCryptPasswordEncoder(12).encode("Test1234"),
-                AccountProvider.LOCAL, null, true, 0, null, null
+                AccountProvider.LOCAL, null, true, 0, AccountRole.ATHLETE, null, null
         ));
 
         MvcResult loginResult = mvc().perform(post("/api/auth/login")

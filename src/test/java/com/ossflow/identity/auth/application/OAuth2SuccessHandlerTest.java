@@ -4,7 +4,9 @@ import com.ossflow.identity.auth.application.port.AccountRepositoryPort;
 import com.ossflow.identity.auth.application.port.RefreshTokenRepositoryPort;
 import com.ossflow.identity.auth.domain.Account;
 import com.ossflow.identity.auth.domain.AccountProvider;
+import com.ossflow.identity.auth.domain.AccountRole;
 import com.ossflow.identity.auth.domain.RefreshToken;
+import com.ossflow.shared.properties.AppProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -31,15 +33,16 @@ class OAuth2SuccessHandlerTest {
     void setUp() {
         accountRepository = mock(AccountRepositoryPort.class);
         refreshTokenRepository = mock(RefreshTokenRepositoryPort.class);
-        handler = new OAuth2SuccessHandler(
-                accountRepository, refreshTokenRepository,
-                "http://localhost:5173", 2592000L, false, "Lax", "/api/auth");
+        handler = new OAuth2SuccessHandler(accountRepository, refreshTokenRepository,
+                new AppProperties("http://localhost:5173",
+                        new AppProperties.CookieProperties(false, "Lax", "/api/auth"),
+                        new AppProperties.RefreshTokenProperties(2592000L)));
     }
 
     @Test
     void sets_refresh_cookie_and_redirects_without_token_in_url() throws Exception {
         Account account = new Account(42L, "user@example.com", null,
-                AccountProvider.GOOGLE, "google-id", true, 0, null, null);
+                AccountProvider.GOOGLE, "google-id", true, 0, AccountRole.ATHLETE, null, null);
         given(accountRepository.findById(42L)).willReturn(Optional.of(account));
         given(refreshTokenRepository.save(any(RefreshToken.class)))
                 .willAnswer(inv -> inv.getArgument(0));

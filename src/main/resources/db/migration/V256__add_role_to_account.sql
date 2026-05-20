@@ -1,0 +1,6 @@
+ALTER TABLE account
+    ADD COLUMN role VARCHAR(20) NOT NULL DEFAULT 'ATHLETE';
+
+ALTER TABLE account
+    ADD CONSTRAINT ck_account_role
+    CHECK (role IN ('ATHLETE', 'ATHLETE_COACH'));

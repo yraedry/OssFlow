@@ -8,17 +8,18 @@ import org.springframework.stereotype.Component;
 public class AccountPersistenceMapper {
 
     public Account toDomain(AccountEntity entity) {
-        return new Account(
-                entity.getId(),
-                entity.getEmail(),
-                entity.getPasswordHash(),
-                entity.getProvider(),
-                entity.getProviderId(),
-                entity.isEmailVerified(),
-                entity.getTokenVersion(),
-                entity.getCreatedAt(),
-                entity.getUpdatedAt()
-        );
+        return Account.builder()
+                .id(entity.getId())
+                .email(entity.getEmail())
+                .passwordHash(entity.getPasswordHash())
+                .provider(entity.getProvider())
+                .providerId(entity.getProviderId())
+                .emailVerified(entity.isEmailVerified())
+                .tokenVersion(entity.getTokenVersion())
+                .role(entity.getRole())
+                .createdAt(entity.getCreatedAt())
+                .updatedAt(entity.getUpdatedAt())
+                .build();
     }
 
     public AccountEntity toEntity(Account domain) {
@@ -30,6 +31,7 @@ public class AccountPersistenceMapper {
                 .providerId(domain.providerId())
                 .emailVerified(domain.emailVerified())
                 .tokenVersion(domain.tokenVersion())
+                .role(domain.role())
                 .createdAt(domain.createdAt())
                 .updatedAt(domain.updatedAt())
                 .build();

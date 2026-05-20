@@ -1,7 +1,7 @@
 package com.ossflow.shared.config;
 
+import com.ossflow.shared.properties.FlywayMigrationProperties;
 import org.flywaydb.core.Flyway;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,27 +10,19 @@ import javax.sql.DataSource;
 @Configuration
 public class FlywayConfig {
 
-    @Value("${spring.flyway.enabled:false}")
-    private boolean flywayEnabled;
-
-    @Value("${spring.flyway.baseline-on-migrate:false}")
-    private boolean baselineOnMigrate;
-
-    @Value("${spring.flyway.baseline-version:1}")
-    private String baselineVersion;
-
     @Bean
-    public Flyway flyway(DataSource dataSource) {
-        if (!flywayEnabled) {
-            return Flyway.configure().dataSource(dataSource).load();
-        }
+    public Flyway flyway(DataSource dataSource, FlywayMigrationProperties props) {
         Flyway flyway = Flyway.configure()
                 .dataSource(dataSource)
                 .locations("classpath:db/migration")
-                .baselineOnMigrate(baselineOnMigrate)
-                .baselineVersion(baselineVersion)
+                .baselineOnMigrate(props.baselineOnMigrate())
+                .baselineVersion(props.baselineVersion())
+                .outOfOrder(props.outOfOrder())
+                .validateOnMigrate(props.validateOnMigrate())
                 .load();
-        flyway.migrate();
+        if (props.enabled()) {
+            flyway.migrate();
+        }
         return flyway;
     }
 }

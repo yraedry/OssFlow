@@ -7,6 +7,7 @@ import com.ossflow.identity.auth.application.port.RefreshTokenRepositoryPort;
 import com.ossflow.identity.auth.domain.*;
 import com.ossflow.identity.auth.infrastructure.web.dto.*;
 import com.ossflow.shared.exception.BadRequestException;
+import com.ossflow.shared.exception.ConflictException;
 import com.ossflow.shared.exception.NotFoundException;
 import com.ossflow.shared.exception.UnprocessableException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -62,13 +63,10 @@ public class AuthService {
     public void register(RegisterRequest request, String ip, String userAgent) {
         var existing = accountRepository.findByEmail(request.email());
         if (existing.isPresent()) {
-            // Anti-enumeración: respuesta uniforme 201. Si la cuenta existe y NO está
-            // verificada, reenvía verificación; si está verificada, no hace nada
-            // (el usuario verá su email/login normal). Ejecutamos el hash bcrypt
-            // igualmente para evitar timing attack basado en latencia.
-            passwordEncoder.encode(request.password());
             Account account = existing.get();
             if (!account.emailVerified()) {
+                // Reenvía email de verificación y devuelve 409 para que el usuario sepa
+                // que ya tiene una cuenta pendiente de verificar.
                 emailVerificationTokenRepository.deleteByAccountId(account.id());
                 String rawToken = generateToken();
                 emailVerificationTokenRepository.save(new EmailVerificationToken(
@@ -76,14 +74,28 @@ public class AuthService {
                         Instant.now().plusSeconds(86400), null
                 ));
                 emailOutbox.enqueueVerification(account.id(), account.email(), rawToken);
+                throw new ConflictException("EMAIL_UNVERIFIED",
+                        "Ya existe una cuenta con este email pendiente de verificación. Te hemos reenviado el correo de verificación.");
             }
-            return;
+            throw new ConflictException("EMAIL_ALREADY_EXISTS",
+                    "Ya existe una cuenta con este email. Inicia sesión o usa ¿Olvidaste tu contraseña?");
         }
+        AccountRole resolvedRole = (request.role() == AccountRole.ATHLETE_COACH)
+                ? AccountRole.ATHLETE_COACH
+                : AccountRole.ATHLETE;
+
         String hash = passwordEncoder.encode(request.password());
-        Account account = accountRepository.save(new Account(
-                null, request.email(), hash, AccountProvider.LOCAL,
-                null, false, 0, null, null
-        ));
+        Account account = accountRepository.save(Account.builder()
+                .email(request.email().toLowerCase())
+                .passwordHash(hash)
+                .provider(AccountProvider.LOCAL)
+                .providerId(null)
+                .emailVerified(false)
+                .tokenVersion(0)
+                .role(resolvedRole)
+                .createdAt(Instant.now())
+                .updatedAt(Instant.now())
+                .build());
         String rawToken = generateToken();
         emailVerificationTokenRepository.save(new EmailVerificationToken(
                 null, account.id(), sha256(rawToken),
@@ -155,9 +167,10 @@ public class AuthService {
             refreshTokenRepository.revokeByAccountId(rt.accountId());
             // Bumpea tokenVersion para invalidar access tokens vivos (15min).
             accountRepository.findById(rt.accountId()).ifPresent(account ->
-                    accountRepository.save(new Account(account.id(), account.email(), account.passwordHash(),
-                            account.provider(), account.providerId(), account.emailVerified(),
-                            account.tokenVersion() + 1, account.createdAt(), account.updatedAt()))
+                    accountRepository.save(account.toBuilder()
+                            .tokenVersion(account.tokenVersion() + 1)
+                            .updatedAt(Instant.now())
+                            .build())
             );
             accountEventService.record(rt.accountId(), AccountEventType.LOGOUT, ip, userAgent);
         });
@@ -207,9 +220,10 @@ public class AuthService {
         }
         // Reuse detectado: invalida toda la familia + bumpea tokenVersion para tumbar access tokens vivos
         refreshTokenRepository.revokeByAccountId(account.id());
-        accountRepository.save(new Account(account.id(), account.email(), account.passwordHash(),
-                account.provider(), account.providerId(), account.emailVerified(),
-                account.tokenVersion() + 1, account.createdAt(), account.updatedAt()));
+        accountRepository.save(account.toBuilder()
+                .tokenVersion(account.tokenVersion() + 1)
+                .updatedAt(Instant.now())
+                .build());
         accountEventService.record(account.id(), AccountEventType.TOKEN_REUSE_DETECTED, null, null);
         throw new UnprocessableException("INVALID_REFRESH_TOKEN", "Token reuse detectado: sesión invalidada");
     }
@@ -242,9 +256,10 @@ public class AuthService {
 
         Account account = accountRepository.findById(token.accountId())
                 .orElseThrow(() -> new NotFoundException("ACCOUNT_NOT_FOUND", "Cuenta no encontrada"));
-        Account verified = new Account(account.id(), account.email(), account.passwordHash(),
-                account.provider(), account.providerId(), true, account.tokenVersion(),
-                account.createdAt(), account.updatedAt());
+        Account verified = account.toBuilder()
+                .emailVerified(true)
+                .updatedAt(Instant.now())
+                .build();
         accountRepository.save(verified);
 
         // Mark token as used
@@ -296,10 +311,11 @@ public class AuthService {
                 .orElseThrow(() -> new NotFoundException("ACCOUNT_NOT_FOUND", "Cuenta no encontrada"));
 
         String newHash = passwordEncoder.encode(newPassword);
-        int newTokenVersion = account.tokenVersion() + 1;
-        Account updated = new Account(account.id(), account.email(), newHash,
-                account.provider(), account.providerId(), account.emailVerified(), newTokenVersion,
-                account.createdAt(), account.updatedAt());
+        Account updated = account.toBuilder()
+                .passwordHash(newHash)
+                .tokenVersion(account.tokenVersion() + 1)
+                .updatedAt(Instant.now())
+                .build();
         accountRepository.save(updated);
 
         // Mark token as used
@@ -323,10 +339,11 @@ public class AuthService {
         // Bump tokenVersion para invalidar todas las sesiones activas (access + refresh tokens).
         // Escenario clave: el usuario cambia contraseña porque fue comprometido — todas las
         // sesiones deben quedar inválidas inmediatamente, no solo tras que expiren los JWT.
-        int newTokenVersion = account.tokenVersion() + 1;
-        accountRepository.save(new Account(account.id(), account.email(), newHash,
-                account.provider(), account.providerId(), account.emailVerified(),
-                newTokenVersion, account.createdAt(), account.updatedAt()));
+        accountRepository.save(account.toBuilder()
+                .passwordHash(newHash)
+                .tokenVersion(account.tokenVersion() + 1)
+                .updatedAt(Instant.now())
+                .build());
         refreshTokenRepository.revokeByAccountId(account.id());
         accountEventService.record(accountId, AccountEventType.PASSWORD_CHANGED, null, null);
     }
@@ -334,6 +351,20 @@ public class AuthService {
     public Account findAccountById(Long id) {
         return accountRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("ACCOUNT_NOT_FOUND", "Cuenta no encontrada"));
+    }
+
+    @Transactional
+    public void changeRole(Long accountId, AccountRole newRole) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new NotFoundException("ACCOUNT_NOT_FOUND", "Cuenta no encontrada"));
+        // No bumpeamos tokenVersion: el rol nuevo se incluirá en el siguiente access token
+        // que se emita. El bump solo es necesario cuando hay que invalidar sesiones activas
+        // (cambio de contraseña, cuenta comprometida), no para un cambio de rol voluntario.
+        Account updated = account.toBuilder()
+                .role(newRole)
+                .updatedAt(Instant.now())
+                .build();
+        accountRepository.save(updated);
     }
 
     private String generateToken() {

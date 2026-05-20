@@ -3,6 +3,7 @@ package com.ossflow.identity.auth.application;
 import com.ossflow.identity.auth.application.port.AccountRepositoryPort;
 import com.ossflow.identity.auth.domain.Account;
 import com.ossflow.identity.auth.domain.AccountProvider;
+import com.ossflow.identity.auth.domain.AccountRole;
 import com.ossflow.identity.auth.infrastructure.security.AccountPrincipal;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -55,14 +56,21 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
                                 "Ya existe una cuenta con email/contraseña — inicia sesión con tu contraseña primero",
                                 null));
             }
-            account = byEmail.orElseGet(() -> accountRepository.save(new Account(
-                    null, email, null, AccountProvider.GOOGLE, providerId,
-                    true, 0, null, null
-            )));
+            account = byEmail.orElseGet(() -> accountRepository.save(Account.builder()
+                    .email(email)
+                    .passwordHash(null)
+                    .provider(AccountProvider.GOOGLE)
+                    .providerId(providerId)
+                    .emailVerified(true)
+                    .tokenVersion(0)
+                    .role(AccountRole.ATHLETE)
+                    .createdAt(java.time.Instant.now())
+                    .updatedAt(java.time.Instant.now())
+                    .build()));
         }
 
         return new DefaultOAuth2User(
-                new AccountPrincipal(account.id(), account.email()).getAuthorities(),
+                new AccountPrincipal(account.id(), account.email(), account.role()).getAuthorities(),
                 Map.of("sub", providerId, "email", email, "accountId", account.id()),
                 "sub"
         );

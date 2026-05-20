@@ -5,6 +5,7 @@ import com.ossflow.identity.auth.application.port.AccountRepositoryPort;
 import com.ossflow.identity.auth.application.port.RefreshTokenRepositoryPort;
 import com.ossflow.identity.auth.domain.Account;
 import com.ossflow.identity.auth.domain.AccountProvider;
+import com.ossflow.identity.auth.domain.AccountRole;
 import com.ossflow.testsupport.TestSecurityContext;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.AfterEach;
@@ -51,7 +52,7 @@ class AuthControllerLogoutTest {
         Account saved = accountRepository.save(new Account(
                 null, "logout@example.com",
                 new BCryptPasswordEncoder(12).encode("Pass1234"),
-                AccountProvider.LOCAL, null, true, 0, null, null));
+                AccountProvider.LOCAL, null, true, 0, AccountRole.ATHLETE, null, null));
         int originalVersion = saved.tokenVersion();
 
         MvcResult loginResult = mvc().perform(post("/api/auth/login")
@@ -107,7 +108,7 @@ class AuthControllerLogoutTest {
         Account saved = accountRepository.save(new Account(
                 null, "refresh-after-logout@example.com",
                 new BCryptPasswordEncoder(12).encode("Pass1234"),
-                AccountProvider.LOCAL, null, true, 0, null, null));
+                AccountProvider.LOCAL, null, true, 0, AccountRole.ATHLETE, null, null));
 
         MvcResult loginResult = mvc().perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
