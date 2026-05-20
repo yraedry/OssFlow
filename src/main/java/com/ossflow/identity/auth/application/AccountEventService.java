@@ -5,15 +5,12 @@ import com.ossflow.identity.auth.infrastructure.persistence.AccountEventEntity;
 import com.ossflow.identity.auth.infrastructure.persistence.AccountEventJpaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.time.Instant;
 
-/**
- * S1.5: Audit log de eventos de cuenta.
- * Los eventos se persisten de forma asíncrona para no bloquear el flujo de autenticación.
- */
 @Service
 public class AccountEventService {
 
@@ -25,9 +22,29 @@ public class AccountEventService {
         this.repository = repository;
     }
 
-    @Async
+    /**
+     * Registra un evento de auditoría.
+     *
+     * Si se llama dentro de una transacción activa, encola la escritura para
+     * ejecutarse en afterCommit — garantizando que el account ya existe en BD
+     * antes de insertar la FK. Si no hay transacción activa, persiste directamente.
+     */
     public void record(Long accountId, AccountEventType eventType,
                        String ipAddress, String userAgent) {
+        if (TransactionSynchronizationManager.isActualTransactionActive()) {
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                @Override
+                public void afterCommit() {
+                    persist(accountId, eventType, ipAddress, userAgent);
+                }
+            });
+        } else {
+            persist(accountId, eventType, ipAddress, userAgent);
+        }
+    }
+
+    private void persist(Long accountId, AccountEventType eventType,
+                         String ipAddress, String userAgent) {
         try {
             repository.save(new AccountEventEntity(
                     accountId,
@@ -37,7 +54,6 @@ public class AccountEventService {
                     Instant.now()
             ));
         } catch (Exception e) {
-            // El audit log no debe interrumpir el flujo de negocio.
             log.error("Failed to record account event {} for account {}: {}",
                     eventType, accountId, e.getMessage());
         }

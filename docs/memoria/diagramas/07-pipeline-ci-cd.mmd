@@ -1,40 +1,41 @@
 flowchart LR
     Dev[Desarrollador]
-    PR[Pull Request a main]
-    Push[Push a main]
-    Tag[Tag v X Y Z]
+    PR[Pull Request]
+    PushAny["Push a cualquier rama<br/>(push: branches: '**')"]
+    PushMain["Push a main"]
 
-    subgraph CI["W1 - Workflow CI"]
-        Compile[mvn compile o npm ci]
-        Tests[mvn test o vitest]
-        Lint[Checkstyle o ESLint]
-        Coverage[JaCoCo umbral 75 porciento]
-        GodFiles[Top 10 archivos largos]
+    subgraph CI["W1 - Workflow CI (todas las ramas)"]
+        Compile["mvn compile / npm ci"]
+        Tests["mvn test (H2 in-memory)<br/>vitest"]
+        Lint["Checkstyle / ESLint"]
+        Coverage["JaCoCo umbral 75%"]
+        GodFiles["Top 10 archivos largos"]
     end
 
-    subgraph Release["W2 - Workflow Release"]
-        Build[Docker build multistage]
-        Push2[Push a ghcr.io]
-        Tags[Tags semver - latest]
-        OpenAPI[Publicar openapi.json en GitHub Release]
+    subgraph Release["W2 - Workflow Release (push: branches: '**')"]
+        Build["Docker build multistage"]
+        TagCalc["Tag = branch-slug + '-dev'<br/>main → 'main'"]
+        Push2["Push a ghcr.io/yraedry/<br/>ossflow-backend:TAG<br/>ossflow-frontend:TAG"]
+        OpenAPI["Publicar openapi.json<br/>en GitHub Release (solo main)"]
     end
 
-    Sync[repository_dispatch<br/>backend dispara regen tipos en frontend]
+    Deploy["docker compose pull + up -d<br/>en LXC (manual o webhook)"]
 
     Dev --> PR
-    Dev --> Push
-    Dev --> Tag
+    Dev --> PushAny
+    Dev --> PushMain
 
     PR --> CI
-    Push --> CI
-
-    Tag --> Release
-    Release --> Sync
+    PushAny --> CI
+    PushAny --> Release
+    PushMain --> Release
 
     CI -->|verde| MergeOk[Merge permitido]
     CI -->|rojo| Block[Bloquea merge]
 
-    classDef ok fill:#16a34a,stroke:#15803d,color:#f0fdf4
-    classDef bad fill:#dc2626,stroke:#b91c1c,color:#fef2f2
+    Release --> Deploy
+
+    classDef ok fill:#dcfce7,stroke:#16a34a,color:#14532d
+    classDef bad fill:#fee2e2,stroke:#dc2626,color:#7f1d1d
     class MergeOk ok
     class Block bad

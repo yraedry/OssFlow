@@ -119,6 +119,11 @@ public class TechniqueController {
                 .map(rulesetMapper::toResponse).toList();
     }
 
+    @GetMapping("/families")
+    public List<TechniqueFamilyResponse> families() {
+        return TechniqueFamilyResponse.all();
+    }
+
     private static Sort parseSort(String s) {
         String[] parts = s.split(",");
         Sort.Direction dir = parts.length > 1 && "desc".equalsIgnoreCase(parts[1])

@@ -1,4 +1,16 @@
 erDiagram
+    ACCOUNT ||--|| USER_PROFILE : "owner_id"
+    ACCOUNT {
+        bigint id PK
+        varchar email UK
+        varchar password_hash
+        varchar role "ROLE_USER / ROLE_ADMIN"
+        boolean email_verified
+        int token_version
+        timestamp created_at
+        timestamp updated_at
+    }
+
     POSITION ||--o{ TECHNIQUE : "start_position_id"
     POSITION ||--o{ TECHNIQUE : "end_position_id (nullable)"
     POSITION ||--o{ SYSTEM : "anchor_position_id"
@@ -22,13 +34,26 @@ erDiagram
     STUDY_PLAN ||--o{ STUDY_BLOCK : ""
     STUDY_BLOCK ||--o{ STUDY_ITEM : ""
 
+    USER_PROFILE {
+        bigint id PK
+        bigint owner_id UK "FK → account.id"
+        varchar current_belt
+        date belt_since
+        varchar academy
+        boolean onboarding_completed
+    }
+    USER_PROFILE_FEDERATION {
+        bigint user_profile_id FK
+        bigint federation_id FK
+        boolean is_primary
+    }
     POSITION {
         bigint id PK
         varchar name
         varchar type "TOP/BOTTOM/STANDING/GROUND_NEUTRAL/SUBMITTED"
         text description
         varchar visibility "PRIVATE/PUBLIC"
-        bigint owner_id
+        bigint owner_id FK
         timestamp deleted_at
         timestamp purge_at
     }
@@ -40,16 +65,18 @@ erDiagram
         varchar modality
         bigint start_position_id FK
         bigint end_position_id FK
+        bigint owner_id FK
     }
     SYSTEM {
         bigint id PK
         varchar name
         bigint anchor_position_id FK
         text flow_definition "JSON validado por schema"
+        bigint owner_id FK
     }
     FEDERATION {
         bigint id PK
-        varchar code "IBJJF/ADCC/AJP/NAGA/UAEJJF/FEJJB/AEJJ/SBJJ/CBJJE/GI"
+        varchar code "IBJJF/ADCC/AJP/NAGA/UAEJJF/FEJJB"
         varchar name
     }
     RULESET {
@@ -64,25 +91,13 @@ erDiagram
         bigint technique_id FK
         varchar status "ALLOWED/PROHIBITED/CONDITIONAL"
     }
-    USER_PROFILE {
-        bigint id PK
-        bigint owner_id UK
-        varchar current_belt
-        date belt_since
-        varchar academy
-        boolean onboarding_completed
-    }
-    USER_PROFILE_FEDERATION {
-        bigint user_profile_id FK
-        bigint federation_id FK
-        boolean is_primary
-    }
     NOTE {
         bigint id PK
         varchar title
         text body_markdown
         varchar target_type "POSITION/TECHNIQUE/SYSTEM/NONE"
         bigint target_id
+        bigint owner_id FK
     }
     TAG {
         bigint id PK
@@ -98,6 +113,7 @@ erDiagram
         int duration_minutes
         varchar intensity
         text notes_markdown
+        bigint owner_id FK
     }
     TRAINING_SESSION_TECHNIQUE {
         bigint training_session_id FK
@@ -109,6 +125,7 @@ erDiagram
         varchar event_name
         date event_date
         varchar result
+        bigint owner_id FK
     }
     COMPETITION_MATCH {
         bigint id PK
@@ -125,6 +142,7 @@ erDiagram
         date start_date
         date end_date
         varchar status
+        bigint owner_id FK
     }
     STUDY_BLOCK {
         bigint id PK

@@ -15,6 +15,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface UserProfileWebMapper {
 
+    @Mapping(target = "role", ignore = true)
     UserProfileResponse toResponse(UserProfile profile);
 
     UserProfileFederationResponse toFederationResponse(UserProfileFederation federation);

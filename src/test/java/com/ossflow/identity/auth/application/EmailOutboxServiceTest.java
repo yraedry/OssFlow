@@ -3,6 +3,7 @@ package com.ossflow.identity.auth.application;
 import com.ossflow.identity.auth.application.port.EmailOutboxRepositoryPort;
 import com.ossflow.identity.auth.domain.EmailOutboxEntry;
 import com.ossflow.identity.auth.domain.EmailOutboxStatus;
+import com.ossflow.shared.properties.AppProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -21,7 +22,10 @@ class EmailOutboxServiceTest {
     @BeforeEach
     void setUp() {
         repository = mock(EmailOutboxRepositoryPort.class);
-        emailService = new EmailService(mock(JavaMailSender.class), "http://localhost:5173");
+        emailService = new EmailService(mock(JavaMailSender.class),
+                new AppProperties("http://localhost:5173",
+                        new AppProperties.CookieProperties(false, "Lax", "/api/auth"),
+                        new AppProperties.RefreshTokenProperties(2592000L)));
         service = new EmailOutboxService(repository, emailService);
         when(repository.save(org.mockito.ArgumentMatchers.any(EmailOutboxEntry.class)))
                 .thenAnswer(inv -> inv.getArgument(0));

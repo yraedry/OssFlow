@@ -1,5 +1,7 @@
 package com.ossflow.identity.profile.infrastructure.web.dto;
 
+import com.ossflow.identity.auth.domain.AccountRole;
+
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
@@ -15,8 +17,12 @@ public record UserProfileResponse(
         LocalDate beltSince,
         String academy,
         String preferredModality,
+        String ageCategory,
+        Integer stripes,
+        Double weight,
         boolean onboardingCompleted,
         List<UserProfileFederationResponse> federations,
+        AccountRole role,
         Instant createdAt,
         Instant updatedAt,
         Long version

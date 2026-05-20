@@ -9,5 +9,7 @@ public record CompetitionMatchResponse(
         String outcome,
         String method,
         Long submissionTechniqueId,
+        String round,
+        String techniqueText,
         String notesMarkdown
 ) {}

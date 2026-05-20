@@ -4,6 +4,7 @@ import com.ossflow.identity.auth.application.port.AccountRepositoryPort;
 import com.ossflow.identity.auth.application.port.RefreshTokenRepositoryPort;
 import com.ossflow.identity.auth.domain.Account;
 import com.ossflow.identity.auth.domain.AccountProvider;
+import com.ossflow.identity.auth.domain.AccountRole;
 import com.ossflow.identity.auth.infrastructure.web.dto.LoginRequest;
 import com.ossflow.shared.exception.UnprocessableException;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +35,7 @@ class AuthServiceRefreshRotationTest {
         Account saved = accountRepository.save(new Account(
                 null, "rotate@example.com",
                 new BCryptPasswordEncoder(12).encode("Pass1234"),
-                AccountProvider.LOCAL, null, true, 0, null, null));
+                AccountProvider.LOCAL, null, true, 0, AccountRole.ATHLETE, null, null));
         accountId = saved.id();
         var login = authService.login(new LoginRequest("rotate@example.com", "Pass1234"));
         rawRefreshToken = login.rawRefreshToken();
